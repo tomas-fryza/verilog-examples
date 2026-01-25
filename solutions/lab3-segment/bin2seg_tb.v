@@ -11,9 +11,9 @@ module bin2seg_tb;
     // Testbench internal signals
     // Must be `reg`, so we can assign values
     // ---------------------------------------------
-    reg  [3:0] bin;   // DUT input: 4-bit value
-    reg        blank; // DUT input: active-low enable (0 = ON)
-    wire [6:0] seg;   // DUT output: {a,b,c,d,e,f,g}, active-low
+    reg  [3:0] bin;    // DUT input: 4-bit value
+    reg        blank;  // DUT input: active-low enable (0 = ON)
+    wire [6:0] seg;    // DUT output: {a,b,c,d,e,f,g}, active-low
 
     // ---------------------------------------------
     // Instantiate Device Under Test (DUT)
