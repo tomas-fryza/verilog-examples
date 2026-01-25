@@ -13,7 +13,10 @@
 
 module gates_tb;
 
-    // Must be `reg`, so you can assign values
+    // ---------------------------------------------
+    // Testbench internal signals
+    // Must be `reg`, so we can assign values
+    // ---------------------------------------------
     reg a, b;
     wire y_and, y_or, y_xor;
 
@@ -64,7 +67,9 @@ module gates_tb;
         b = 1; a = 1; #10;
         $display("[%0t]    %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
 
-        #10;
+        $display("---------------------------");
+        $display("Simulation finished.");
+
         $finish;
     end
 

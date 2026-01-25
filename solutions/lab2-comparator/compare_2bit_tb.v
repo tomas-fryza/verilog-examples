@@ -8,13 +8,14 @@
 module compare_2bit_tb;
 
     // ---------------------------------------------
-    // Testbench signals
+    // Testbench internal signals
+    // Must be `reg`, so we can assign values
     // ---------------------------------------------
-    reg  [1:0] b;  // DUT input b
-    reg  [1:0] a;  // DUT input a
-    wire       b_gt;
-    wire       b_a_eq;
-    wire       a_gt;
+    reg [1:0] b;  // DUT input b
+    reg [1:0] a;  // DUT input a
+    wire      b_gt;
+    wire      b_a_eq;
+    wire      a_gt;
 
     // ---------------------------------------------
     // Instantiate Device Under Test (DUT)
@@ -40,19 +41,19 @@ module compare_2bit_tb;
         $dumpvars(0, compare_2bit_tb);
 
         // Console header
-        $display("Time  b  a | b>a b==a b<a");
+        $display("Time  b  a | b>a b=a b<a");
         $display("-----------+--------------");
 
         // -----------------------------------------
         // Exhaustive test of all combinations
         // -----------------------------------------
-        for (i = 0; i < 4; i = i + 1) begin
-            for (j = 0; j < 4; j = j + 1) begin
+        for (i = 0; i < 4; i = i+1) begin
+            for (j = 0; j < 4; j = j+1) begin
                 b = i[1:0];  // Take only the lowest 2 bits of i
                 a = j[1:0];
                 #10;
 
-                $display("%4t  %0d  %0d |  %b    %b    %b",
+                $display("%4t  %0d  %0d |  %b   %b    %b",
                          $time, b, a, b_gt, b_a_eq, a_gt);
             end
         end
