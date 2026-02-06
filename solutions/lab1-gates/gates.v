@@ -1,6 +1,6 @@
 // =================================================
 // Basic logic gates (AND, OR, XOR)
-// Version 1.2
+// Version 2.0
 // (c) 2019-2026 Tomas Fryza, MIT license
 //
 // This module implements three basic combinational

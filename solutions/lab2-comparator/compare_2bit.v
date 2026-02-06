@@ -1,6 +1,6 @@
 // =================================================
 // 2-bit binary comparator
-// Version 1.2
+// Version 2.0
 // (c) 2020-2026 Tomas Fryza, MIT license
 //
 // A digital or binary comparator compares digital

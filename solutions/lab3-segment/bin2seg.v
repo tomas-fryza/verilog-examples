@@ -1,6 +1,6 @@
 // =================================================
 // Binary to 7-segment decoder (common anode, 1 digit)
-// Version 1.4
+// Version 2.0
 // (c) 2018-2026 Tomas Fryza, MIT license
 //
 // This module decodes a 4-bit binary input into
