@@ -1,7 +1,4 @@
-# Laboratory 1  
-## Basic Logic Gates
-
----
+# Laboratory 1: Basic Logic Gates
 
 ## Objectives
 
@@ -14,8 +11,6 @@ After completing this lab, students will be able to:
 - write and run a simple **testbench**,
 - simulate a design and inspect waveforms using **GTKWave** or Vivado.
 
----
-
 ## Assignment
 
 Design a Verilog module that implements the following logic functions:
@@ -26,16 +21,12 @@ Design a Verilog module that implements the following logic functions:
 
 The module has two single-bit inputs and three single-bit outputs.
 
----
-
 ## Design Requirements
 
 - Use **combinational logic only**.
 - Use **continuous assignments** (`assign`).
 - Do **not** use clocks or sequential logic.
 - The design must be synthesizable.
-
----
 
 ## Provided Verilog Template (Design)
 
@@ -47,19 +38,19 @@ Create a file named **`gates.v`** and use the following template:
 // =================================================
 
 module gates (
-    input  wire a,       // First input
+    input  wire a,     // First input
 
     // TODO: Complete input / output ports
 
-    output wire xor_out  // XOR gate output
+    output wire y_xor  // XOR gate output
 );
 
     // ---------------------------------------------
     // TODO: Implement logic gates using assign
     // ---------------------------------------------
-    // assign and_out = ...
-    // assign or_out  = ...
-    // assign xor_out = ...
+    // assign y_and = ...
+    // assign y_or  = ...
+    // assign y_xor = ...
 
 endmodule
 ```
@@ -84,19 +75,19 @@ module gates_tb;
     // ---------------------------------------------
     reg  a;
     reg  b;
-    wire and_out;
-    wire or_out;
-    wire xor_out;
+    wire y_and;
+    wire y_or;
+    wire y_xor;
 
     // ---------------------------------------------
     // Instantiate Device Under Test (DUT)
     // ---------------------------------------------
     gates dut (
-        .a(a),
-        .b(b),
-        .and_out(and_out),
-        .or_out(or_out),
-        .xor_out(xor_out)
+        .a     (a),
+        .b     (b),
+        .y_and (y_and),
+        .y_or  (y_or),
+        .y_xor (y_xor)
     );
 
     // ---------------------------------------------
@@ -116,6 +107,18 @@ module gates_tb;
 endmodule
 ```
 
+## Using the Makefile in VS Code (not Vivado)
+
+A **`Makefile`** is provided to simplify the simulation workflow. Instead of typing long commands manually, common tasks are executed using short `make` commands.
+
+1. Copy/paste the [`Makefile`](../solutions/lab1-gates/Makefile) to your project folder.
+2. Open the integrated terminal (**View → Terminal**).
+3. Run commands from the terminal:
+
+   - `make` -- compiles and runs the simulation  
+   - `make wave` -- opens the waveform in GTKWave  
+   - `make clean` -- removes generated files  
+
 ## Expected Results
 
 After a successful simulation, the outputs must follow the truth tables of the basic logic gates:
@@ -131,8 +134,6 @@ The GTKWave waveform should show that:
 - inputs `a` and `b` change over time,
 - outputs update immediately after input changes,
 - no clock signal is present.
-
----
 
 ## Common Mistakes and Troubleshooting
 
@@ -151,8 +152,6 @@ The GTKWave waveform should show that:
 - **GTKWave shows nothing**
   - Confirm the correct `.vcd` file is opened.
   - Reload signals in GTKWave if needed.
-
----
 
 ## Optional Extensions
 
