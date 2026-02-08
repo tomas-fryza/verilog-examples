@@ -49,5 +49,6 @@ xvlog.*
 *.backup.*
 *.debug
 
-
 unisims
+
+.DS_Store
