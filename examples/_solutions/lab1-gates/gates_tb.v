@@ -11,7 +11,9 @@
 // Time unit = 1 ns / Time precision = 1 ps
 `timescale 1ns/1ps
 
-module gates_tb;
+module gates_tb (
+    // Testbench module has no ports
+);
 
     // ---------------------------------------------
     // Testbench internal signals

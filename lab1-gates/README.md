@@ -57,6 +57,10 @@ endmodule
 
 ## Provided Verilog Template (Testbench)
 
+The primary approach to testing VHDL designs involves creating a **testbench**. A testbench is essentially a separate VHDL file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
+
+   ![testench idea](images/testbench.png)
+
 Create a file named **`gates_tb.v`** and use the following template to verify your design by simulation.
 
 ```verilog
@@ -66,7 +70,7 @@ Create a file named **`gates_tb.v`** and use the following template to verify yo
 // Testbench for basic logic gates
 // =================================================
 
-module gates_tb;
+module gates_tb ();  // Testbench module has no ports
 
     // ---------------------------------------------
     // Testbench internal signals
@@ -157,11 +161,12 @@ The GTKWave waveform should show that:
 
 For students who finish early:
 
-- Add a **NAND** or **NOR** gate.
-- Modify the testbench to print results to the console using `$display`, such as:
+1. Modify the testbench to print results to the console using `$display`, such as:
 
   ```verilog
   $display("[%0t] %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
   ```
 
-- Use deMorgan laws and replace individual gates with Boolean expressions.
+2. Use deMorgan laws and replace individual gates with Boolean expressions.
+
+3. Add a **NAND** or **NOR** gate.
