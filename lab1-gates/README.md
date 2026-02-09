@@ -1,15 +1,15 @@
 # Laboratory 1: Basic Logic Gates
 
-## Objectives
+### Learning Objectives
 
 The goal of this laboratory is to introduce the **Verilog hardware description language** and the **basic digital design workflow**. Students will learn how to describe simple **combinational logic** in Verilog, simulate the design, and analyze its behavior using waveforms.
 
 After completing this lab, students will be able to:
 
-- understand the structure of a Verilog module,
-- describe basic logic gates using Verilog operators,
-- write and run a simple **testbench**,
-- simulate a design and inspect waveforms using **GTKWave** or Vivado.
+- Understand the structure of a Verilog module
+- Describe basic logic gates using Verilog operators
+- Write and run a simple **testbench**
+- Simulate a design and inspect waveforms using **GTKWave** or Vivado
 
 ## Assignment
 
@@ -157,7 +157,7 @@ The GTKWave waveform should show that:
   - Confirm the correct `.vcd` file is opened.
   - Reload signals in GTKWave if needed.
 
-## Optional Extensions
+## Optional Tasks
 
 For students who finish early:
 
