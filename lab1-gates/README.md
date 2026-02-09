@@ -16,15 +16,15 @@ After completing this laboratory, students will be able to:
 
 Digital systems are built from **logic gates**, which implement Boolean functions. In this laboratory, three fundamental gates are implemented:
 
-- **AND**: Output is `1` only when both inputs are `1`.
-- **OR**: Output is `1` when at least one input is `1`.
-- **XOR**: Output is `1` when inputs are different.
+   - **AND**: Output is `1` only when both inputs are `1`.
+   - **OR**: Output is `1` when at least one input is `1`.
+   - **XOR**: Output is `1` when inputs are different.
 
 In Verilog, combinational logic can be described using **continuous assignments**:
 
-```verilog
-assign y = a & b;
-```
+   ```verilog
+   assign y = a & b;  // AND gate
+   ```
 
 Concurrent assignments exist simultaneously in hardware; there is **no execution order**.
 
@@ -157,26 +157,28 @@ Open the generated `.vcd` file in GTKWave and verify that:
 
 The behavior must correspond exactly to the truth table above.
 
-### Compile and Run Simulation from Command Line (Without Makefile)
+### Compile and Run Simulation from Command Line
 
 The simulation can be performed using **Icarus Verilog** from the terminal.
 
 1. Compile the design and testbench:
 
     ```bash
-    # compiles the design (gates.v)
-    # compiles the testbench (gates_tb.v)
-    # produces a simulation executable (gates_tb.vvp)
     $ iverilog -o gates_tb.vvp gates.v gates_tb.v
     ```
+
+    - compiles the design (`gates.v`)
+    - compiles the testbench (`gates_tb.v`)
+    - produces a simulation executable (`gates_tb.vvp`)
 
 2. Run the simulation:
 
     ```bash
-    # runs the simulation
-    # generates the waveform file (gates.vcd)
     $ vvp gates_tb.vvp
     ```
+
+    - runs the simulation
+    - generates the waveform file (`gates.vcd`)
 
 3. Open waveform in GTKWave:
 
