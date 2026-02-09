@@ -51,7 +51,7 @@ module gates_tb (
         $display("---------------+-------------");
 
         // Test vectors
-        // Set both `a`, `b`, then wait 10 time units
+        // Set both `a`, `b` and wait 10 time units
         b = 0; a = 0; #10;
     
         // `%0t` prints a time value without any leading spaces

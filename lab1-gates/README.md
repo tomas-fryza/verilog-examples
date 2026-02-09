@@ -1,34 +1,50 @@
-# Laboratory 1: Basic Logic Gates
+# Laboratory 1 – Basic Logic Gates
+Digital Electronics – Verilog  
+Simulation using Icarus Verilog + GTKWave
 
-### Learning Objectives
+## 1. Objectives
 
-The goal of this laboratory is to introduce the **Verilog hardware description language** and the **basic digital design workflow**. Students will learn how to describe simple **combinational logic** in Verilog, simulate the design, and analyze its behavior using waveforms.
+After completing this laboratory, students will be able to:
 
-After completing this lab, students will be able to:
+- describe the structure of a simple Verilog module,
+- implement basic combinational logic using Verilog operators,
+- use continuous assignments (`assign`) correctly,
+- create a simple Verilog testbench,
+- simulate a design and analyze waveforms.
 
-- Understand the structure of a Verilog module
-- Describe basic logic gates using Verilog operators
-- Write and run a simple **testbench**
-- Simulate a design and inspect waveforms using **GTKWave** or Vivado
+## 2. Background
 
-## Assignment
+Digital systems are built from **logic gates**, which implement Boolean functions. In this laboratory, three fundamental gates are implemented:
+
+- **AND**: Output is `1` only when both inputs are `1`.
+- **OR**: Output is `1` when at least one input is `1`.
+- **XOR**: Output is `1` when inputs are different.
+
+In Verilog, combinational logic can be described using **continuous assignments**:
+
+```verilog
+assign y = a & b;
+```
+
+Concurrent assignments exist simultaneously in hardware; there is **no execution order**.
+
+## 3. Task
 
 Design a Verilog module that implements the following logic functions:
 
-- 2-input **AND** gate,
-- 2-input **OR** gate,
-- 2-input **XOR** gate.
+- one 2-input **AND** gate,
+- one 2-input **OR** gate,
+- one 2-input **XOR** gate.
 
-The module has two single-bit inputs and three single-bit outputs.
+The module shall have two single-bit inputs `a`, `b` and three single-bit outputs `y_and`, `y_or`, `y_xor`.
 
-## Design Requirements
+- Use **combinational logic only**
+- Use **continuous assignments** (`assign`)
+- Do not use clocks or sequential logic
+- The design must be synthesizable
+- All input combinations must be verified by simulation
 
-- Use **combinational logic only**.
-- Use **continuous assignments** (`assign`).
-- Do **not** use clocks or sequential logic.
-- The design must be synthesizable.
-
-## Provided Verilog Template (Design)
+## 4. Provided Templates
 
 Create a file named **`gates.v`** and use the following template:
 
@@ -38,11 +54,11 @@ Create a file named **`gates.v`** and use the following template:
 // =================================================
 
 module gates (
-    input  wire a,     // First input
+    input  wire a,      // First input
 
-    // TODO: Complete input / output ports
+    // TODO: Complete input/output ports
 
-    output wire y_xor  // XOR gate output
+    output wire y_xor   // XOR output
 );
 
     // ---------------------------------------------
@@ -54,8 +70,6 @@ module gates (
 
 endmodule
 ```
-
-## Provided Verilog Template (Testbench)
 
 The primary approach to testing VHDL designs involves creating a **testbench**. A testbench is essentially a separate VHDL file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
 
@@ -102,8 +116,11 @@ module gates_tb ();  // Testbench module has no ports
         $dumpfile("gates.vcd");
         $dumpvars(0, gates_tb);
 
-        // TODO: Apply all input combinations
+        // Test vectors
+        // Set both `a`, `b` and wait 10 time units
         a = 0; b = 0; #10;
+
+        // TODO: Apply all input combinations
 
         $finish;
     end
@@ -111,21 +128,16 @@ module gates_tb ();  // Testbench module has no ports
 endmodule
 ```
 
-## Using the Makefile in VS Code (not Vivado)
+## 5. Verification / Testing
 
-A **`Makefile`** is provided to simplify the simulation workflow. Instead of typing long commands manually, common tasks are executed using short `make` commands.
+After completing the design, verify correct functionality by simulation.
 
-1. Copy/paste the [`Makefile`](../solutions/lab1-gates/Makefile) to your project folder.
-2. Open the integrated terminal (**View → Terminal**).
-3. Run commands from the terminal:
+- All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
+- Each input combination should remain stable for a defined simulation time (e.g., `#10`).
+- The simulation must generate a waveform file (`gates.vcd`).
+- The simulation must terminate using `$finish`.
 
-   - `make` -- compiles and runs the simulation  
-   - `make wave` -- opens the waveform in GTKWave  
-   - `make clean` -- removes generated files  
-
-## Expected Results
-
-After a successful simulation, the outputs must follow the truth tables of the basic logic gates:
+### Expected Truth Table
 
 | a | b | AND | OR | XOR |
 |---|---|-----|----|-----|
@@ -134,32 +146,45 @@ After a successful simulation, the outputs must follow the truth tables of the b
 | 1 | 0 |  0  | 1  |  1  |
 | 1 | 1 |  1  | 1  |  0  |
 
-The GTKWave waveform should show that:
-- inputs `a` and `b` change over time,
-- outputs update immediately after input changes,
-- no clock signal is present.
+### Waveform Verification
 
-## Common Mistakes and Troubleshooting
+Open the generated `.vcd` file in GTKWave and verify that:
 
-- **Simulation does not start**
-  - Check file names and module names.
-  - Ensure the testbench module has no ports.
+- Inputs `a` and `b` change according to the stimulus.
+- Outputs update immediately after input changes.
+- There is no clock signal.
+- No unknown (`X`) or high-impedance (`Z`) values appear.
 
-- **No waveform file generated**
-  - Verify that `$dumpfile` and `$dumpvars` are present in the testbench.
-  - Make sure the simulation reaches `$finish`.
+The behavior must correspond exactly to the truth table above.
 
-- **Outputs are always `0` or `X`**
-  - Check that `assign` statements are correctly written.
-  - Ensure all signals are declared with correct directions and types.
+### Compile and Run Simulation from Command Line (Without Makefile)
 
-- **GTKWave shows nothing**
-  - Confirm the correct `.vcd` file is opened.
-  - Reload signals in GTKWave if needed.
+The simulation can be performed using **Icarus Verilog** from the terminal.
 
-## Optional Tasks
+1. Compile the design and testbench:
 
-For students who finish early:
+    ```bash
+    # compiles the design (gates.v)
+    # compiles the testbench (gates_tb.v)
+    # produces a simulation executable (gates_tb.vvp)
+    $ iverilog -o gates_tb.vvp gates.v gates_tb.v
+    ```
+
+2. Run the simulation:
+
+    ```bash
+    # runs the simulation
+    # generates the waveform file (gates.vcd)
+    $ vvp gates_tb.vvp
+    ```
+
+3. Open waveform in GTKWave:
+
+    ```bash
+    $ gtkwave gates.vcd
+    ```
+
+## 6. Optional Tasks
 
 1. Modify the testbench to print results to the console using `$display`, such as:
 
@@ -169,4 +194,14 @@ For students who finish early:
 
 2. Use deMorgan laws and replace individual gates with Boolean expressions.
 
-3. Add a **NAND** or **NOR** gate.
+3. Implement additional gates (NAND, NOR).
+
+## 7. Questions
+
+<!--What is the difference between assign and always blocks?-->
+
+1. Why does the testbench module have no ports?
+
+2. What happens if one `assign` statement is missing?
+
+3. Why are testbench input signals declared as `reg`?
