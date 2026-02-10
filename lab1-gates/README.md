@@ -164,17 +164,17 @@ The simulation can be performed using **Icarus Verilog** from the terminal.
 1. Compile the design and testbench:
 
     ```bash
-    $ iverilog -o gates_tb.vvp gates.v gates_tb.v
+    $ iverilog -o sim gates.v gates_tb.v
     ```
 
     - compiles the design (`gates.v`)
     - compiles the testbench (`gates_tb.v`)
-    - produces a simulation executable (`gates_tb.vvp`)
+    - produces a simulation executable (`sim`)
 
 2. Run the simulation:
 
     ```bash
-    $ vvp gates_tb.vvp
+    $ vvp sim
     ```
 
     - runs the simulation
