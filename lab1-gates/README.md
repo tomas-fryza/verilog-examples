@@ -4,11 +4,11 @@
 
 After completing this laboratory, students will be able to:
 
-- describe the structure of a simple Verilog module,
-- implement basic combinational logic using Verilog operators,
-- use continuous assignments (`assign`) correctly,
-- create a simple Verilog testbench,
-- simulate a design and analyze waveforms.
+- Describe the structure of a simple Verilog module
+- Implement basic combinational logic using Verilog operators
+- Use continuous assignments (`assign`) correctly
+- Create a simple Verilog testbench
+- Simulate a design and analyze waveforms
 
 ### Background
 
@@ -194,7 +194,7 @@ The simulation can be performed using **Icarus Verilog** from the terminal.
   $display("[%0t] %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
   ```
 
-2. Use deMorgan laws and replace individual gates with Boolean expressions.
+2. De Morgan's laws and replace individual gates with Boolean expressions.
 
 3. Implement additional gates (NAND, NOR).
 
