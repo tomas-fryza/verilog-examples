@@ -11,29 +11,34 @@ After completing this lab, students should be able to:
 
 ### Background
 
-A **binary comparator** compares two binary numbers and determines their relationship.
+*Digital* or *Binary comparator* compares the digital signals A, B presented at input terminal and produce outputs depending upon the condition of those inputs.
 
-For two 2-bit inputs:
+![Binary comparator](images/two-bit-comparator.png)
 
-```
-a = a1 a0
-b = b1 b0
-```
-
-The comparator generates three outputs but only **one output** should be HIGH at a time:
+Complete the truth table for 2-bit *Identity comparator* (B equals A), and two *Magnitude comparators* (B is greater than A, A is greater than B). Note that, such a digital device has four inputs and three outputs/functions but only **one output** should be HIGH at a time:
 
    - `b_gt`: Output is `1` when `b > a`
    - `b_a_eq`: Output is `1` when `b == a`
    - `a_gt`: Output is `1` when `b < a`
 
-Example:
-
-| b  | a  | b_gt | b_a_eq | a_gt |
-|----|----|------|--------|------|
-| 00 | 00 | 0    | 1      | 0    |
-| 01 | 00 | 1    | 0      | 0    |
-| 01 | 10 | 0    | 0      | 1    |
-
+   | **Dec. equivalent** | **B[1:0]** | **A[1:0]** | **B is greater than A** | **B equals A** | **A is greater than B** |
+   | :-: | :-: | :-: | :-: | :-: | :-: |
+   |  0 | 0 0 | 0 0 | 0 | 1 | 0 |
+   |  1 | 0 0 | 0 1 | 0 | 0 | 1 |
+   |  2 | 0 0 | 1 0 | 0 | 0 | 1 |
+   |  3 | 0 0 | 1 1 | 0 | 0 | 1 |
+   |  4 | 0 1 | 0 0 |  | 0 |  |
+   |  5 | 0 1 | 0 1 |  | 1 |  |
+   |  6 | 0 1 | 1 0 |  | 0 |  |
+   |  7 | 0 1 | 1 1 |  | 0 |  |
+   |  8 | 1 0 | 0 0 |  | 0 |  |
+   |  9 | 1 0 | 0 1 |  | 0 |  |
+   | 10 | 1 0 | 1 0 |  | 1 |  |
+   | 11 | 1 0 | 1 1 |  | 0 |  |
+   | 12 | 1 1 | 0 0 |  | 0 |  |
+   | 13 | 1 1 | 0 1 |  | 0 |  |
+   | 14 | 1 1 | 1 0 |  | 0 |  |
+   | 15 | 1 1 | 1 1 |  | 1 |  |
 
 ## 1. Task
 
