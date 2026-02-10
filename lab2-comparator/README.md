@@ -1,6 +1,6 @@
 # Laboratory 2: 2-Bit Binary Comparator  
 
-### Learning Objectives
+### Objectives
 
 After completing this lab, students should be able to:
 
@@ -9,7 +9,7 @@ After completing this lab, students should be able to:
 - Write structured testbenches
 - Analyze digital waveforms
 
-## Background
+### Background
 
 A **binary comparator** compares two binary numbers and determines their relationship.
 
@@ -20,13 +20,11 @@ a = a1 a0
 b = b1 b0
 ```
 
-The comparator generates three outputs:
+The comparator generates three outputs but only **one output** should be HIGH at a time:
 
-- `b_gt`   → 1 when `b > a`
-- `b_a_eq` → 1 when `b == a`
-- `a_gt`   → 1 when `b < a`
-
-Only **one output** should be HIGH at a time.
+   - `b_gt`: Output is `1` when `b > a`
+   - `b_a_eq`: Output is `1` when `b == a`
+   - `a_gt`: Output is `1` when `b < a`
 
 Example:
 
@@ -36,13 +34,20 @@ Example:
 | 01 | 00 | 1    | 0      | 0    |
 | 01 | 10 | 0    | 0      | 1    |
 
-## Design Requirements
 
-Create file: `compare_2bit.v`
+## 1. Task
 
-Implement a combinational 2-bit comparator.
+Design a Verilog module that implements a combinational 2-bit comparator. The module shall have two 2-bit inputs `a[1:0]`, `b[1:0]` and three single-bit outputs `a_gt`, `b_a_eq`, `a_gt`.
 
-### Module template
+   - Use **continuous assignments (`assign`)**
+   - Do NOT use `always` blocks for this version
+   - Use relational operators (`>`, `<`, `==`)
+   - The design shall use combinational logic only (no clocks, latches, or flip-flops)
+   - Verify the desing using a testbench that checks all possible input combinations
+
+## 2. Provided Templates
+
+Create a file named **`compare_2bit.v`** and use the following template:
 
 ```verilog
 // =================================================
@@ -51,35 +56,29 @@ Implement a combinational 2-bit comparator.
 
 module compare_2bit (
     input  wire [1:0] b,
-    input  wire [1:0] a,
-    output wire       b_gt,
-    output wire       b_a_eq,
+
+    // TODO: Complete input/output ports
+
     output wire       a_gt
 );
 
-    // Implement logic here using assign statements
+    // ---------------------------------------------
+    // Method 1: Behavioral (recommended for design)
+    // ---------------------------------------------
+    assign b_gt   = (b > a);
+    assign b_a_eq = (b == a);
+    assign a_gt   = (b < a);
+
+    // ---------------------------------------------
+    // Method 2: Gate-level implementation (for learning only)
+    // This logic is derived from the truth table for
+    // a 2-bit magnitude comparator.
+    // ---------------------------------------------
 
 endmodule
 ```
 
-### Implementation Rules
-
-- Use **continuous assignments (`assign`)**
-- Do NOT use `always` blocks for this version
-- Use relational operators (`>`, `<`, `==`)
-
-## Testbench Requirements
-
-Create file: `compare_2bit_tb.v`
-
-The testbench must:
-
-- Apply all 16 input combinations
-- Use nested `for` loops
-- Generate a VCD waveform file
-- Print formatted console output
-
-### Testbench template
+Create a file named **`compare_2bit_tb.v`** and use the following template to verify all 16 input combinations.
 
 ```verilog
 `timescale 1ns/1ps
@@ -127,6 +126,21 @@ module compare_2bit_tb;
 endmodule
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Simulation
 
 Compile and run:
@@ -143,6 +157,12 @@ gtkwave compare_2bit.vcd
 - Waveform must show correct transitions.
 - Simulation time should increase in 10 ns steps.
 
+## Optional Tasks
+
+1. Implement the comparator using gate-level logic instead of relational operators.
+2. Add an assertion that checks only one output is HIGH.
+3. Modify the design for a 4-bit comparator.
+
 ## Questions
 
 1. Why are testbench inputs declared as `reg`?
@@ -152,9 +172,3 @@ gtkwave compare_2bit.vcd
    - Implementing logic manually using `&`, `|`, `~`?
 4. Why is this design considered combinational logic?
 5. What happens if you forget `#10` in the loop?
-
-## Optional Tasks
-
-1. Implement the comparator using gate-level logic instead of relational operators.
-2. Add an assertion that checks only one output is HIGH.
-3. Modify the design for a 4-bit comparator.

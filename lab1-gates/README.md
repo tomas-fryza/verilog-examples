@@ -1,8 +1,6 @@
-# Laboratory 1 – Basic Logic Gates
-Digital Electronics – Verilog  
-Simulation using Icarus Verilog + GTKWave
+# Laboratory 1: Basic Logic Gates
 
-## 1. Objectives
+### Objectives
 
 After completing this laboratory, students will be able to:
 
@@ -12,7 +10,7 @@ After completing this laboratory, students will be able to:
 - create a simple Verilog testbench,
 - simulate a design and analyze waveforms.
 
-## 2. Background
+### Background
 
 Digital systems are built from **logic gates**, which implement Boolean functions. In this laboratory, three fundamental gates are implemented:
 
@@ -20,31 +18,33 @@ Digital systems are built from **logic gates**, which implement Boolean function
    - **OR**: Output is `1` when at least one input is `1`.
    - **XOR**: Output is `1` when inputs are different.
 
-In Verilog, combinational logic can be described using **continuous assignments**:
+   ![basic-logic-gates](images/gates.png)
+
+**Hardware Description Languages** (HDLs) are used to model, design, and simulate digital hardware systems by describing their structure and behavior. VHDL and Verilog are the two most widely used HDLs, both allowing engineers to create designs for digital circuits such as processors, controllers, and FPGA implementations. **VHDL** is strongly typed and more verbose, making it popular in academic, aerospace, and safety-critical applications, while **Verilog** has a C-like syntax and is often considered easier to learn and more concise. Both languages support parallel hardware behavior and timing, which distinguishes them from traditional software programming languages. Designs written in VHDL or Verilog can be simulated for verification and synthesized into real hardware.
+
+In Verilog, combinational logic can be described using **continuous assignments**, which represent hardware that operates in parallel. All such assignments exist and function simultaneously, meaning there is **no execution order** as in software—each assignment continuously reflects changes in its inputs:
 
    ```verilog
    assign y = a & b;  // AND gate
    ```
 
-Concurrent assignments exist simultaneously in hardware; there is **no execution order**.
-
-## 3. Task
+## 1. Task
 
 Design a Verilog module that implements the following logic functions:
 
-- one 2-input **AND** gate,
-- one 2-input **OR** gate,
-- one 2-input **XOR** gate.
+   - one 2-input **AND** gate,
+   - one 2-input **OR** gate,
+   - one 2-input **XOR** gate.
 
 The module shall have two single-bit inputs `a`, `b` and three single-bit outputs `y_and`, `y_or`, `y_xor`.
 
-- Use **combinational logic only**
-- Use **continuous assignments** (`assign`)
-- Do not use clocks or sequential logic
-- The design must be synthesizable
-- All input combinations must be verified by simulation
+   - Use **combinational logic only**
+   - Use **continuous assignments** (`assign`)
+   - Do not use clocks or sequential logic
+   - The design must be synthesizable
+   - All input combinations must be verified by simulation
 
-## 4. Provided Templates
+## 2. Provided Templates
 
 Create a file named **`gates.v`** and use the following template:
 
@@ -128,7 +128,7 @@ module gates_tb ();  // Testbench module has no ports
 endmodule
 ```
 
-## 5. Verification / Testing
+## 3. Verification / Testing
 
 After completing the design, verify correct functionality by simulation.
 
@@ -164,7 +164,7 @@ The simulation can be performed using **Icarus Verilog** from the terminal.
 1. Compile the design and testbench:
 
     ```bash
-    $ iverilog -o sim gates.v gates_tb.v
+    $ iverilog -g2012 -o sim gates.v gates_tb.v
     ```
 
     - compiles the design (`gates.v`)
@@ -186,7 +186,7 @@ The simulation can be performed using **Icarus Verilog** from the terminal.
     $ gtkwave gates.vcd
     ```
 
-## 6. Optional Tasks
+## 4. Optional Tasks
 
 1. Modify the testbench to print results to the console using `$display`, such as:
 
@@ -198,7 +198,7 @@ The simulation can be performed using **Icarus Verilog** from the terminal.
 
 3. Implement additional gates (NAND, NOR).
 
-## 7. Questions
+## 5. Questions
 
 <!--What is the difference between assign and always blocks?-->
 
