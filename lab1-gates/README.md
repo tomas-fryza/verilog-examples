@@ -1,4 +1,4 @@
-# Laboratory 1: Basic Logic Gates
+# Laboratory 1: Basic logic gates
 
 ### Objectives
 
@@ -20,6 +20,20 @@ Digital systems are built from **logic gates**, which implement Boolean function
 
    ![basic-logic-gates](images/gates.png)
 
+De Morgan's laws are two fundamental rules in Boolean algebra that are used to simplify Boolean expressions:
+
+   * De Morgan's law for AND: The complement of the product of two operands is equal to the sum of the complements of the operands.
+   * De Morgan's law for OR: The complement of the sum of two operands is equal to the product of the complements of the operands.
+
+      ![demorgan](images/demorgan.png)
+
+   <!-- https://latexeditor.lagrida.com/ font size 16
+   \begin{align*}
+      \overline{a\cdot b} =&~ \overline{a} + \overline{b}\\
+      \overline{a+b} =&~ \overline{a}\cdot \overline{b}\\
+   \end{align*}
+   -->
+
 **Hardware Description Languages** (HDLs) are used to model, design, and simulate digital hardware systems by describing their structure and behavior. VHDL and Verilog are the two most widely used HDLs, both allowing engineers to create designs for digital circuits such as processors, controllers, and FPGA implementations. **VHDL** is strongly typed and more verbose, making it popular in academic, aerospace, and safety-critical applications, while **Verilog** has a C-like syntax and is often considered easier to learn and more concise. Both languages support parallel hardware behavior and timing, which distinguishes them from traditional software programming languages. Designs written in VHDL or Verilog can be simulated for verification and synthesized into real hardware.
 
 In Verilog, combinational logic can be described using **continuous assignments**, which represent hardware that operates in parallel. All such assignments exist and function simultaneously, meaning there is **no execution order** as in software—each assignment continuously reflects changes in its inputs:
@@ -28,9 +42,9 @@ In Verilog, combinational logic can be described using **continuous assignments*
    assign y = a & b;  // AND gate
    ```
 
-## 1. Task
+## Task 1
 
-Design a Verilog module that implements the following logic functions:
+Design a circuit that implements the following logic functions:
 
    - one 2-input **AND** gate,
    - one 2-input **OR** gate,
@@ -44,161 +58,143 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    - The design must be synthesizable
    - All input combinations must be verified by simulation
 
-## 2. Provided Templates
+   ![schema of gates](images/schematic_gates.png)
 
-Create a file named **`gates.v`** and use the following template:
+1. Create a file named **`gates.v`** and use the following template:
 
-```verilog
-// =================================================
-// Basic logic gates
-// =================================================
+    ```verilog
+    // =================================================
+    // Basic logic gates
+    // =================================================
 
-module gates (
-    input  wire a,      // First input
+    module gates (
+        input  wire a,      // First input
 
-    // TODO: Complete input/output ports
+        // TODO: Complete input/output ports
 
-    output wire y_xor   // XOR output
-);
+        output wire y_xor   // XOR output
+    );
 
-    // ---------------------------------------------
-    // TODO: Implement logic gates using assign
-    // ---------------------------------------------
-    // assign y_and = ...
-    // assign y_or  = ...
-    // assign y_xor = ...
+        // ---------------------------------------------
+        // TODO: Implement logic gates using assign
+        // ---------------------------------------------
+        // assign y_and = ...
+        // assign y_or  = ...
+        // assign y_xor = ...
 
-endmodule
-```
+    endmodule
+    ```
 
-The primary approach to testing VHDL designs involves creating a **testbench**. A testbench is essentially a separate VHDL file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
+2. Create a truth table for all input combinations.
+
+3. The primary approach to testing VHDL designs involves creating a **testbench**. A testbench is essentially a separate VHDL file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
 
    ![testench idea](images/testbench.png)
 
-Create a file named **`gates_tb.v`** and use the following template to verify your design by simulation.
+   Create a file named **`gates_tb.v`** and use the following template to verify your design by simulation.
 
-```verilog
-`timescale 1ns/1ps
+      - All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
+      - Each input combination should remain stable for a defined simulation time (e.g., `#10`).
+      - The simulation must generate a waveform file (`gates.vcd`).
+      - The simulation must terminate using `$finish`.
 
-// =================================================
-// Testbench for basic logic gates
-// =================================================
+    ```verilog
+    `timescale 1ns/1ps
 
-module gates_tb ();  // Testbench module has no ports
+    // =================================================
+    // Testbench for basic logic gates
+    // =================================================
 
-    // ---------------------------------------------
-    // Testbench internal signals
-    // reg  = driven by testbench
-    // wire = driven by DUT outputs
-    // ---------------------------------------------
-    reg  a;
-    reg  b;
-    wire y_and;
-    wire y_or;
-    wire y_xor;
+    module gates_tb ();  // Testbench module has no ports
 
-    // ---------------------------------------------
-    // Instantiate Device Under Test (DUT)
-    // ---------------------------------------------
-    gates dut (
-        .a     (a),
-        .b     (b),
-        .y_and (y_and),
-        .y_or  (y_or),
-        .y_xor (y_xor)
-    );
+        // ---------------------------------------------
+        // Testbench internal signals
+        // reg  = driven by testbench
+        // wire = driven by DUT outputs
+        // ---------------------------------------------
+        reg  a;
+        reg  b;
+        wire y_and;
+        wire y_or;
+        wire y_xor;
 
-    // ---------------------------------------------
-    // Stimulus process
-    // ---------------------------------------------
-    initial begin
-        // Waveform dump for GTKWave
-        $dumpfile("gates.vcd");
-        $dumpvars(0, gates_tb);
+        // ---------------------------------------------
+        // Instantiate Device Under Test (DUT)
+        // ---------------------------------------------
+        gates dut (
+            .a     (a),
+            .b     (b),
+            .y_and (y_and),
+            .y_or  (y_or),
+            .y_xor (y_xor)
+        );
 
-        // Test vectors
-        // Set both `a`, `b` and wait 10 time units
-        a = 0; b = 0; #10;
+        // ---------------------------------------------
+        // Stimulus process
+        // ---------------------------------------------
+        initial begin
+            // Waveform dump for GTKWave
+            $dumpfile("gates.vcd");
+            $dumpvars(0, gates_tb);
 
-        // TODO: Apply all input combinations
+            // Test vectors
+            // Set both `a`, `b` and wait 10 time units
+            a = 0; b = 0; #10;
 
-        $finish;
-    end
+            // TODO: Apply all input combinations
 
-endmodule
-```
+            $finish;
+        end
 
-## 3. Verification / Testing
-
-After completing the design, verify correct functionality by simulation.
-
-- All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
-- Each input combination should remain stable for a defined simulation time (e.g., `#10`).
-- The simulation must generate a waveform file (`gates.vcd`).
-- The simulation must terminate using `$finish`.
-
-### Expected Truth Table
-
-| a | b | AND | OR | XOR |
-|---|---|-----|----|-----|
-| 0 | 0 |  0  | 0  |  0  |
-| 0 | 1 |  0  | 1  |  1  |
-| 1 | 0 |  0  | 1  |  1  |
-| 1 | 1 |  1  | 1  |  0  |
-
-### Waveform Verification
-
-Open the generated `.vcd` file in GTKWave and verify that:
-
-- Inputs `a` and `b` change according to the stimulus.
-- Outputs update immediately after input changes.
-- There is no clock signal.
-- No unknown (`X`) or high-impedance (`Z`) values appear.
-
-The behavior must correspond exactly to the truth table above.
-
-### Compile and Run Simulation from Command Line
-
-The simulation can be performed using **Icarus Verilog** from the terminal.
-
-1. Compile the design and testbench:
-
-    ```bash
-    $ iverilog -g2012 -o sim gates.v gates_tb.v
+    endmodule
     ```
 
-    - compiles the design (`gates.v`)
-    - compiles the testbench (`gates_tb.v`)
-    - produces a simulation executable (`sim`)
+4. Verify that the behavior corresponds exactly to the truth table above.
 
-2. Run the simulation:
+## Task 2: De Morgan's laws
 
-    ```bash
-    $ vvp sim
-    ```
+1. Propose a 3-input logic function, use De Morgan's laws, and implement the function using only NAND or NOR operators.
 
-    - runs the simulation
-    - generates the waveform file (`gates.vcd`)
+2. Create a new source file `demorgan.vhd` with the following I/O ports:
 
-3. Open waveform in GTKWave:
+   * Port name: `a`, Direction: `in`
+   * `b`, `in`
+   * `c`, `in`
+   * `f_org`, `out`
+   * `f_nand`, `out`
+   * `f_nor`, `out`
 
-    ```bash
-    $ gtkwave gates.vcd
-    ```
+   Complete the `module`, add a new simulation source file `demorgan_tb.vhd`, and verify that `f_org`, `f_nand`, and `f_nor` are identical for all 8 input combinations.
 
-## 4. Optional Tasks
+## Optional tasks
 
-1. Modify the testbench to print results to the console using `$display`, such as:
+1. Implement XOR using only AND, OR, NOT.
+
+2. Modify the testbench to print results to the console using `$display`, such as:
 
   ```verilog
   $display("[%0t] %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
   ```
 
-2. De Morgan's laws and replace individual gates with Boolean expressions.
+3. If you want to use online [EDA Playground](https://www.edaplayground.com) tool, you will need Google account, Facebook account, or register your account on EDA Playground.
 
-3. Implement additional gates (NAND, NOR).
+4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including **Icarus Verilog**, **GTKWave**, any text editor such se VS Code, and command line.
 
-## 5. Questions
+    ```bash
+    # compile the design (`gates.v`)
+    # compile the testbench (`gates_tb.v`)
+    # produce a simulation executable (`sim`)
+    $ iverilog -g2012 -o sim gates.v gates_tb.v
+
+    # run the simulation
+    # generate the waveform file (`gates.vcd`)
+    $ vvp sim
+
+    # open waveform in GTKWave
+    $ gtkwave gates.vcd
+    ```
+
+## Questions
 
 <!--What is the difference between assign and always blocks?-->
 
