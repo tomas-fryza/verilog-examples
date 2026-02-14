@@ -1,5 +1,10 @@
 # Laboratory 1: Basic logic gates
 
+* [Task 1: Introduction to Verilog](#task1)
+* [Task 2: De Morgan's laws](#task2)
+* [Optional tasks](#tasks)
+* [Questions](#questions)
+
 ### Objectives
 
 After completing this laboratory, students will be able to:
@@ -18,7 +23,7 @@ Digital systems are built from **logic gates**, which implement Boolean function
    - **OR**: Output is `1` when at least one input is `1`.
    - **XOR**: Output is `1` when inputs are different.
 
-   ![basic-logic-gates](images/gates.png)
+      ![basic-logic-gates](images/gates.png)
 
 De Morgan's laws are two fundamental rules in Boolean algebra that are used to simplify Boolean expressions:
 
@@ -42,7 +47,9 @@ In Verilog, combinational logic can be described using **continuous assignments*
    assign y = a & b;  // AND gate
    ```
 
-## Task 1
+<a name="task1"></a>
+
+## Task 1: Introduction to Verilog
 
 Design a circuit that implements the following logic functions:
 
@@ -60,7 +67,23 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
    ![schema of gates](images/schematic_gates.png)
 
-1. Create a file named **`gates.v`** and use the following template:
+1. Run Vivado and create a new project:
+
+   1. Project name: `gates`
+   2. Project location: your working folder, such as `Documents`
+   3. Project type: **RTL Project** (Note, the Register-Transfer Level refers to a level of abstraction used to describe how the data is transferred and processed inside hardware.)
+   4. Create a new Verilog source file: `gates`
+   5. Do not add any constraints now
+   6. Choose a default board: `Nexys A7-50T` (will be used later in the lab)
+   7. Click **Finish** to create the project
+   8. Define I/O ports of new module `gates`:
+      * Port name: `a`, Direction: `in`
+      * `b`, `in`
+      * `y_and`, `out`
+      * `y_or`, `out`
+      * `y_xor`, `out`
+
+2. Open a file **`gates.v`** and complete the following template:
 
     ```verilog
     // =================================================
@@ -68,11 +91,11 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
     // =================================================
 
     module gates (
-        input  wire a,      // First input
+        input  wire a,     // First input
 
         // TODO: Complete input/output ports
 
-        output wire y_xor   // XOR output
+        output wire y_xor  // XOR output
     );
 
         // ---------------------------------------------
@@ -85,17 +108,16 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
     endmodule
     ```
 
-2. Create a truth table for all input combinations.
+3. Create a truth table for all input combinations.
 
-3. The primary approach to testing VHDL designs involves creating a **testbench**. A testbench is essentially a separate VHDL file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
+4. The primary approach to testing Verilog designs involves creating a **testbench**. A testbench is essentially a separate Verilog file that stimulates the design under test (DUT) with various input values and monitors its outputs to verify correct functionality. The testbench typically includes DUT component instantiation and stimulus generation.
 
    ![testench idea](images/testbench.png)
 
-   Create a file named **`gates_tb.v`** and use the following template to verify your design by simulation.
+   Add a new simulation file named **`gates_tb.v`**, complete the following template, and to verify your design by simulation:
 
       - All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
       - Each input combination should remain stable for a defined simulation time (e.g., `#10`).
-      - The simulation must generate a waveform file (`gates.vcd`).
       - The simulation must terminate using `$finish`.
 
     ```verilog
@@ -149,13 +171,31 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
     endmodule
     ```
 
-4. Verify that the behavior corresponds exactly to the truth table above.
+6. Use **Flow > Run Simulation > Run Behavioral Simulation** and run Vivado simulator. To see the whole simulated signals, it is recommended to select **View > Zoom Fit**.
+
+   ![Vivado-simulation](images/vivado_simulation_crop.png)
+
+   Verify that the behavior corresponds exactly to the truth table above.
+
+7. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+
+8. To cleanup generated files, close simulation window, right click to SIMULATION or Run Simulation option, and select **Reset Behavioral Simulation** or type some the following command(s) to the Tcl console:
+
+   ```tcl
+   # Close the current simulation session
+   close_sim
+
+   # Reset the current project to its starting condition, clean out generated files
+   reset_project
+   ```
+
+<a name="task2"></a>
 
 ## Task 2: De Morgan's laws
 
 1. Propose a 3-input logic function, use De Morgan's laws, and implement the function using only NAND or NOR operators.
 
-2. Create a new source file `demorgan.vhd` with the following I/O ports:
+2. Create a new Vivado project `deMorgan` and source file `demorgan.vhd` with the following I/O ports:
 
    * Port name: `a`, Direction: `in`
    * `b`, `in`
@@ -165,6 +205,10 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    * `f_nor`, `out`
 
    Complete the `module`, add a new simulation source file `demorgan_tb.vhd`, and verify that `f_org`, `f_nand`, and `f_nor` are identical for all 8 input combinations.
+
+3. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+
+<a name="tasks"></a>
 
 ## Optional tasks
 
@@ -178,7 +222,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 3. If you want to use online [EDA Playground](https://www.edaplayground.com) tool, you will need Google account, Facebook account, or register your account on EDA Playground.
 
-4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including **Icarus Verilog**, **GTKWave**, any text editor such se VS Code, and command line.
+4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including [**Icarus Verilog**](https://github.com/steveicarus/iverilog), [**GTKWave**](https://gtkwave.sourceforge.net/), text editor such se VS Code, and command line.
 
     ```bash
     # compile the design (`gates.v`)
@@ -194,11 +238,15 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
     $ gtkwave gates.vcd
     ```
 
+<a name="questions"></a>
+
 ## Questions
 
 <!--What is the difference between assign and always blocks?-->
 
 1. Why does the testbench module have no ports?
+
+2. Using Boolean algebra, express XOR using only AND, OR, and NOT operators.
 
 2. What happens if one `assign` statement is missing?
 
