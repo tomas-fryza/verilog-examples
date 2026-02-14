@@ -4,4 +4,28 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 
 ## Labs
 
-1. [Basic Logic Gates](lab1-gates)
+1. [Basic logic gates](lab1-gates)
+
+![vhdl_course](lab1-gates/images/nexys-lab.jpg)
+
+## Installation(s)
+
+* Online [EDA Playground](https://edaplayground.com/) simulator (0 B)
+
+* [Vivado Design Suite 2025.2](https://github.com/tomas-fryza/vhdl-examples/wiki/List-of-versions) (tens of GBs)
+
+* **Icarus Verilog**, **GTKWave**, text editor such se VS Code, and command line.
+
+    ```bash
+    # compile the design (`gates.v`)
+    # compile the testbench (`gates_tb.v`)
+    # produce a simulation executable (`sim`)
+    $ iverilog -g2012 -o sim gates.v gates_tb.v
+
+    # run the simulation
+    # generate the waveform file (`gates.vcd`)
+    $ vvp sim
+
+    # open waveform in GTKWave
+    $ gtkwave gates.vcd
+    ```
