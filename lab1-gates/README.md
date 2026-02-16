@@ -114,7 +114,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
    ![testench idea](images/testbench.png)
 
-   Add a new simulation file named **`gates_tb.v`**, complete the following template, and to verify your design by simulation:
+   Add a new simulation file named **`gates_tb.v`**, complete the following template, and verify your design by simulation:
 
       - All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
       - Each input combination should remain stable for a defined simulation time (e.g., `#10`).
