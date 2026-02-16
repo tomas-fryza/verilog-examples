@@ -5,6 +5,7 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 ## Labs
 
 1. [Basic logic gates](lab1-gates)
+2. [Binary comparator](lab2-comparator)
 
 ![vhdl_course](lab1-gates/images/nexys-lab.jpg)
 
