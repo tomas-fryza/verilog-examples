@@ -184,6 +184,14 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 ## Task 3: Checking simulation values
 
+Whereever possible, include code to automatically check whether the DUT's outputs match expected results. Do not rely only on manual waveform inspection.
+
+Using monitors and checkers in testbenches in Verilog involves integrating tools and techniques to enhance the verification and validation process of digital designs. Both monitors and checkers play crucial roles in ensuring that the design behaves as expected during simulation.
+
+**Monitors** are used to observe and report the behavior of signals and variables within a design under test (DUT). They continuously track changes in signal values and interactions within the design.
+
+**Checkers** are used to enforce and verify that the design adheres to specified constraints, properties, or expected behaviors. They actively check for correctness and compliance with predefined rules.
+
 TBD
 
 
