@@ -65,9 +65,13 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    - The design must be synthesizable
    - All input combinations must be verified by simulation
 
-   ![schema of gates](images/schematic_gates.png)
+      ![schema of gates](images/schematic_gates.png)
 
 1. Run Vivado and create a new project:
+
+   > **Note:** When running for the first time, it is recommended to specify the project directory and target language in the **Tools > Settings...** menu.
+   >
+   > ![settings](images/vivado_verilog.png)
 
    1. Project name: `gates`
    2. Project location: your working folder, such as `Documents`
@@ -156,12 +160,12 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
         // ---------------------------------------------
         initial begin
             // Waveform dump for GTKWave
-            $dumpfile("gates.vcd");
-            $dumpvars(0, gates_tb);
+            // $dumpfile("gates.vcd");
+            // $dumpvars(0, gates_tb);
 
             // Test vectors
             // Set both `a`, `b` and wait 10 time units
-            a = 0; b = 0; #10;
+            b = 0; a = 0; #10;
 
             // TODO: Apply all input combinations
 
@@ -173,7 +177,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 6. Use **Flow > Run Simulation > Run Behavioral Simulation** and run Vivado simulator. To see the whole simulated signals, it is recommended to select **View > Zoom Fit**.
 
-   ![Vivado-simulation](images/vivado_simulation_crop.png)
+   ![Vivado-simulation](images/vivado_simulation_zoom.png)
 
    Verify that the behavior corresponds exactly to the truth table above.
 
@@ -184,9 +188,14 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    ```tcl
    # Close the current simulation session
    close_sim
+   # or
+   close_sim -force
 
    # Reset the current project to its starting condition, clean out generated files
    reset_project
+
+   # Closes the current open project
+   close_project
    ```
 
 <a name="task2"></a>
@@ -216,9 +225,13 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 2. Modify the testbench to print results to the console using `$display`, such as:
 
-  ```verilog
-  $display("[%0t] %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
-  ```
+   ```verilog
+   $display("Time(ps) b a | & | ^");
+   $display("-------------+------");
+
+   b = 0; a = 0; #10;
+   $display("[%0t]  %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
+   ```
 
 3. If you want to use online [EDA Playground](https://www.edaplayground.com) tool, you will need Google account, Facebook account, or register your account on EDA Playground.
 
