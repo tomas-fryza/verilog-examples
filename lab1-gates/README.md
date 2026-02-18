@@ -159,10 +159,6 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
         // Stimulus process
         // ---------------------------------------------
         initial begin
-            // Waveform dump for GTKWave
-            // $dumpfile("gates.vcd");
-            // $dumpvars(0, gates_tb);
-
             // Test vectors
             // Set both `a`, `b` and wait 10 time units
             b = 0; a = 0; #10;
@@ -215,6 +211,45 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
    Complete the `module`, add a new simulation source file `demorgan_tb.vhd`, and verify that `f_org`, `f_nand`, and `f_nor` are identical for all 8 input combinations.
 
+   ```verilog
+   `timescale 1ns / 1ps
+
+   module demorgan_tb();
+
+      reg  a;
+      reg  b;
+      reg  c;
+      wire f_org;
+      wire f_nand;
+      wire f_nor;
+
+      // ---------------------------------------------
+      // Instantiate Device Under Test (DUT)
+      // ---------------------------------------------
+      demorgan dut (
+         .a      (a),
+         .b      (b),
+         .c      (c),
+         .f_org  (f_org),
+         .f_nand (f_nand),
+         .f_nor  (f_nor)
+      );
+
+      // ---------------------------------------------
+      // Stimulus process
+      // ---------------------------------------------
+      initial begin
+         // Test vectors
+         c = 0; b = 0; a = 0; #10;
+
+         // TODO: Apply all input combinations
+
+         $finish;
+      end
+
+   endmodule
+   ```
+
 3. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
 
 <a name="tasks"></a>
@@ -237,19 +272,38 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including [**Icarus Verilog**](https://github.com/steveicarus/iverilog), [**GTKWave**](https://gtkwave.sourceforge.net/), text editor such se VS Code, and command line.
 
-    ```bash
-    # compile the design (`gates.v`)
-    # compile the testbench (`gates_tb.v`)
-    # produce a simulation executable (`sim`)
-    $ iverilog -g2012 -o sim gates.v gates_tb.v
+   ```verilog
+   // ---------------------------------------------
+   // Stimulus process
+   // ---------------------------------------------
+   initial begin
+      // Waveform dump for GTKWave
+      $dumpfile("gates.vcd");
+      $dumpvars(0, gates_tb);
 
-    # run the simulation
-    # generate the waveform file (`gates.vcd`)
-    $ vvp sim
+      // Test vectors
+      // Set both `a`, `b` and wait 10 time units
+      b = 0; a = 0; #10;
 
-    # open waveform in GTKWave
-    $ gtkwave gates.vcd
-    ```
+      // TODO: Apply all input combinations
+
+      $finish;
+   end
+   ```
+
+   ```bash
+   # compile the design (`gates.v`)
+   # compile the testbench (`gates_tb.v`)
+   # produce a simulation executable (`sim`)
+   $ iverilog -g2012 -o sim gates.v gates_tb.v
+
+   # run the simulation
+   # generate the waveform file (`gates.vcd`)
+   $ vvp sim
+
+   # open waveform in GTKWave
+   $ gtkwave gates.vcd
+   ```
 
 <a name="questions"></a>
 
