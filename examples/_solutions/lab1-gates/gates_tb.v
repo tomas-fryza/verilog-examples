@@ -47,39 +47,26 @@ module gates_tb (
         $dumpvars(0, gates_tb);
 
         // Console header
-        $display("Time(ps) b a | AND OR  XOR");
-        $display("-------------+-------------");
+        $display("\nStarting simulation...\n");
+        $display("Time b a | AND OR  XOR");
+        $display("---------+------------");
 
-        // Use the monitor task to display the FPGA IO
-        $monitor("%5d    %b %b | %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
+        // Use the monitor task to automaticaly display any change
+        $monitor("%3d  %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
 
         // Test vectors
         // Set both `a`, `b` and wait 10 time units
         b = 0; a = 0; #10;
-        a = 1; #10
+        b = 0; a = 1; #10
         b = 1; a = 0; #10;
-        a = 1; #10
-        $finish;
+        b = 1; a = 1; #10
 
-        // `%0t` prints a time value without any leading spaces
         // `%b` prints a value in binary 
         // `%h` prints a value in hexadecimal
         // `%d` in decimal
-        //$display("[%0t]    %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
-    
-        //b = 0; a = 1; #10;
-        //$display("[%0t]    %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
 
-        //b = 1; a = 0; #10;
-        //$display("[%0t]    %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
-
-        //b = 1; a = 1; #10;
-        //$display("[%0t]    %b %b |  %b   %b   %b", $time, b, a, y_and, y_or, y_xor);
-
-        //$display("---------------------------");
-        //$display("Simulation finished.");
-
-        //$finish;
+        $display("\nSimulation finished\n");
+        $finish;
     end
 
 endmodule

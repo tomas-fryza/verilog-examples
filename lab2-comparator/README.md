@@ -77,7 +77,7 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
    1. Project name: `comparator`
    2. Project location: your working folder, such as `Documents`
    3. Project type: **RTL Project**
-   4. Create a new VHDL source file: `compare_2bit`
+   4. Create a new VHDL source file: `comparator`
    5. Do not add any constraints now
    6. Choose a default board: `Nexys A7-50T`
    7. Click **Finish** to create the project
@@ -89,14 +89,14 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
       * `b_a_eq`, `out`
       * `a_gt`, `out`
 
-2. Open a file **`compare_2bit.v`** and complete the following template:
+2. Open a file **`comparator.v`** and complete the following template:
 
     ```verilog
     // =================================================
     // 2-bit binary comparator
     // =================================================
 
-    module compare_2bit (
+    module comparator (
         input  wire [1:0] b,
 
         // TODO: Complete input/output ports
@@ -120,48 +120,58 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
     endmodule
     ```
 
-3. Add a new simulation file named **`compare_2bit_tb.v`**, complete the following template, and verify your design by simulation:
+3. Add a new simulation file named **`comparator_tb.v`**, complete the following template, and verify your design by simulation:
 
     ```verilog
     `timescale 1ns/1ps
 
-    module compare_2bit_tb;
+    module comparator_tb ();
 
-        reg [1:0] b;
-        reg [1:0] a;
+        // ---------------------------------------------
+        // Testbench internal signals
+        // Must be `reg`, so we can assign values
+        // ---------------------------------------------
+        reg [1:0] b;  // DUT input b
+        reg [1:0] a;  // DUT input a
         wire      b_gt;
         wire      b_a_eq;
         wire      a_gt;
 
-        compare_2bit dut (
-            .b(b),
-            .a(a),
-            .b_gt(b_gt),
-            .b_a_eq(b_a_eq),
-            .a_gt(a_gt)
+        // ---------------------------------------------
+        // Instantiate Device Under Test (DUT)
+        // ---------------------------------------------
+        comparator dut (
+            .b      (b),
+            .a      (a),
+            .b_gt   (b_gt),
+            .b_a_eq (b_a_eq),
+            .a_gt   (a_gt)
         );
 
-        integer i, j;
+        integer i, j;  // Integer in Verilog is typically 32-bit signed
 
         initial begin
 
-            $dumpfile("compare_2bit.vcd");
-            $dumpvars(0, compare_2bit_tb);
+            // Console header
+            $display("\nStarting simulation...\n");
+            $display("Time   b  a | b>a b=a b<a");
+            $display("------------+------------");
 
-            $display("Time  b  a | b>a b=a b<a");
-            $display("-------------------------");
+            // Use the monitor task to automaticaly display any change
+            $monitor("%3d   %b %b |  %b   %b   %b", $time, b, a, b_gt, b_a_eq, a_gt);
 
+            // -----------------------------------------
+            // Exhaustive test of all combinations
+            // -----------------------------------------
             for (i = 0; i < 4; i = i + 1) begin
                 for (j = 0; j < 4; j = j + 1) begin
-                    b = i[1:0];
+                    b = i[1:0];  // Take only the lowest 2 bits of i
                     a = j[1:0];
                     #10;
-
-                    $display("%4t  %0d  %0d |  %b   %b    %b",
-                            $time, b, a, b_gt, b_a_eq, a_gt);
                 end
             end
 
+            $display("\nSimulation finished\n");
             $finish;
         end
 
@@ -171,9 +181,9 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
     > **Note:** The simulation can be done without Vivado, using Icarus Verilog and GTKWave:
     > 
     > ```bash
-    > $ iverilog -g2012 -o sim compare_2bit.v compare_2bit_tb.v
+    > $ iverilog -g2012 -o sim comparator.v comparator_tb.v
     > $ vvp sim
-    > $ gtkwave compare_2bit.vcd
+    > $ gtkwave comparator.vcd
     > ```
 
 4. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
@@ -183,6 +193,18 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 <a name="task3"></a>
 
 ## Task 3: Checking simulation values
+
+A good testbench does not just stimulate inputs, it automatically checks correctness. There are three levels of testing:
+
+   * Manual checking (bad)
+
+   * Hardcoded expected values (better)
+
+   * Computed expected model (best)
+
+TBD
+
+
 
 Whereever possible, include code to automatically check whether the DUT's outputs match expected results. Do not rely only on manual waveform inspection.
 
@@ -195,7 +217,75 @@ Using monitors and checkers in testbenches in Verilog involves integrating tools
 TBD
 
 
+    ```verilog
+        ...
+        integer i, j;  // Integer in Verilog is typically 32-bit signed
+        integer errors = 0;
 
+        reg exp_b_gt;
+        reg exp_b_a_eq;
+        reg exp_a_gt;
+
+        // ---------------------------------------------
+        // Stimulus process
+        // Applies test vectors to DUT inputs over time
+        // ---------------------------------------------
+        initial begin
+            // Waveform dump for GTKWave
+            $dumpfile("comparator.vcd");
+            $dumpvars(0, comparator_tb);
+
+            // Console header
+            $display("\nStarting simulation...\n");
+            $display("Time   b  a | b>a b=a b<a");
+            $display("------------+------------");
+
+            // Use the monitor task to automaticaly display any change
+            $monitor("%3d   %b %b |  %b   %b   %b", $time, b, a, b_gt, b_a_eq, a_gt);
+
+            // -----------------------------------------
+            // Exhaustive test of all combinations
+            // -----------------------------------------
+            for (i = 0; i < 4; i = i+1) begin
+                for (j = 0; j < 4; j = j+1) begin
+                    b = i[1:0];  // Take only the lowest 2 bits of i
+                    a = j[1:0];
+                    #10;
+
+                    // -----------------------------
+                    // Compute expected values
+                    // -----------------------------
+                    exp_b_gt   = (b > a);
+                    exp_b_a_eq = (b == a);
+                    exp_a_gt   = (a > b);
+
+                    // -----------------------------
+                    // Compare with DUT outputs
+                    // -----------------------------
+                    if (b_gt !== exp_b_gt ||
+                        b_a_eq !== exp_b_a_eq ||
+                        a_gt !== exp_a_gt) begin
+
+                        $display("[Error] a=%0d b=%0d | DUT=%b%b%b EXPECTED=%b%b%b",
+                            a, b,
+                            b_gt, b_a_eq, a_gt,
+                            exp_b_gt, exp_b_a_eq, exp_a_gt);
+                        
+                        errors += 1;
+                    end
+                end
+            end
+
+            if (errors == 0)
+                $display("\nAll tests PASSED\n");
+            else
+                $display("\nTest FAILED with %0d errors\n", errors);
+
+            $finish;
+        end
+
+    endmodule
+    ```
 
 
 

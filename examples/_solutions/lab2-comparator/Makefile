@@ -8,9 +8,9 @@ VVP      = vvp
 GTKWAVE  = gtkwave
 
 # Files
-TOP      = compare_2bit_tb
-VCD      = compare_2bit.vcd
-SRCS     = compare_2bit.v compare_2bit_tb.v
+TOP      = comparator_tb
+VCD      = comparator.vcd
+SRCS     = comparator.v comparator_tb.v
 
 # Default target
 all: sim

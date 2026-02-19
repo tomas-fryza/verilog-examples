@@ -1,6 +1,6 @@
 // =================================================
 //! @brief 2-bit binary comparator
-//! @version 2.0
+//! @version 2.1
 //! @copyright (c) 2020-2026 Tomas Fryza, MIT license
 //!
 //! A digital or binary comparator compares digital
@@ -13,7 +13,7 @@
 //   a_gt   = 1 when b < a
 // =================================================
 
-module compare_2bit (
+module comparator (
     input  wire [1:0] b,       //! Input bus b[1:0]
     input  wire [1:0] a,       //! Input bus a[1:0]
     output wire       b_gt,    //! Output is 1 when b > a
