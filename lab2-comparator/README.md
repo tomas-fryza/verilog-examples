@@ -91,100 +91,94 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 2. Open a file **`comparator.v`** and complete the following template:
 
-    ```verilog
-    // =================================================
-    // 2-bit binary comparator
-    // =================================================
+   ```verilog
+   // =================================================
+   // 2-bit binary comparator
+   // =================================================
 
-    module comparator (
-        input  wire [1:0] b,
+   module comparator (
+       input  wire [1:0] b,
 
-        // TODO: Complete input/output ports
+       // TODO: Complete input/output ports
 
-        output wire       a_gt
-    );
+       output wire       a_gt
+   );
 
-        // ---------------------------------------------
-        // Method 1: Behavioral (recommended for design)
-        // ---------------------------------------------
-        assign b_gt   = (b > a);
-        assign b_a_eq = (b == a);
-        assign a_gt   = (b < a);
+       // ---------------------------------------------
+       // Method 1: Behavioral (recommended for design)
+       // ---------------------------------------------
+       assign b_gt   = (b > a);
+       assign b_a_eq = (b == a);
+       assign a_gt   = (b < a);
 
-        // ---------------------------------------------
-        // Method 2: Gate-level implementation (for learning only)
-        // This logic is derived from the truth table for
-        // a 2-bit magnitude comparator.
-        // ---------------------------------------------
+       // ---------------------------------------------
+       // Method 2: Gate-level implementation (for learning only)
+       // This logic is derived from the truth table for
+       // a 2-bit magnitude comparator.
+       // ---------------------------------------------
 
-    endmodule
-    ```
+   endmodule
+   ```
 
-3. Add a new simulation file named **`comparator_tb.v`**, complete the following template, and verify your design by simulation:
+3. Add a new simulation file named **`comparator_tb.v`**, complete the provided template, and verify your design by simulation.
 
-    ```verilog
-    `timescale 1ns/1ps
+   Use `$display` and `$monitor` to print information to the console. The system task `$display` prints a message once at the moment it is executed. It is typically used to print headers, error messages, intermediate debug information, or a final PASS/FAIL summary. In contrast, `$monitor` continuously observes the listed signals and automatically prints their values whenever any of them change during simulation. This makes `$monitor` useful for tracking signal activity over time without manually inserting multiple print statements.
 
-    module comparator_tb ();
+   ```verilog
+   `timescale 1ns/1ps
 
-        // ---------------------------------------------
-        // Testbench internal signals
-        // Must be `reg`, so we can assign values
-        // ---------------------------------------------
-        reg [1:0] b;  // DUT input b
-        reg [1:0] a;  // DUT input a
-        wire      b_gt;
-        wire      b_a_eq;
-        wire      a_gt;
+   module comparator_tb ();
 
-        // ---------------------------------------------
-        // Instantiate Device Under Test (DUT)
-        // ---------------------------------------------
-        comparator dut (
-            .b      (b),
-            .a      (a),
-            .b_gt   (b_gt),
-            .b_a_eq (b_a_eq),
-            .a_gt   (a_gt)
-        );
+       // ---------------------------------------------
+       // Testbench internal signals
+       // Must be `reg`, so we can assign values
+       // ---------------------------------------------
+       reg [1:0] b;  // DUT input b
+       reg [1:0] a;  // DUT input a
+       wire      b_gt;
+       wire      b_a_eq;
+       wire      a_gt;
 
-        integer i, j;  // Integer in Verilog is typically 32-bit signed
+       // ---------------------------------------------
+       // Instantiate Device Under Test (DUT)
+       // ---------------------------------------------
+       comparator dut (
+           .b      (b),
+           .a      (a),
+           .b_gt   (b_gt),
+           .b_a_eq (b_a_eq),
+           .a_gt   (a_gt)
+       );
 
-        initial begin
+       integer i, j;  // Integer in Verilog is typically 32-bit signed
 
-            // Console header
-            $display("\nStarting simulation...\n");
-            $display("Time   b  a | b>a b=a b<a");
-            $display("------------+------------");
+       // ---------------------------------------------
+       // Stimulus process
+       // Applies test vectors to DUT inputs over time
+       // ---------------------------------------------
+       initial begin
+           $display("\nStarting simulation...\n");
+           $display("Time   b  a | b>a b=a b<a");
+           $display("------------+------------");
 
-            // Use the monitor task to automaticaly display any change
-            $monitor("%3d   %b %b |  %b   %b   %b", $time, b, a, b_gt, b_a_eq, a_gt);
+           // Use the monitor task to automaticaly display any change
+           $monitor("%3d   %b %b |  %b   %b   %b",
+               $time, b, a, b_gt, b_a_eq, a_gt);
 
-            // -----------------------------------------
-            // Exhaustive test of all combinations
-            // -----------------------------------------
-            for (i = 0; i < 4; i = i + 1) begin
-                for (j = 0; j < 4; j = j + 1) begin
-                    b = i[1:0];  // Take only the lowest 2 bits of i
-                    a = j[1:0];
-                    #10;
-                end
-            end
+           // Exhaustive testing
+           for (i = 0; i < 4; i = i + 1) begin
+               for (j = 0; j < 4; j = j + 1) begin
+                   b = i[1:0];  // Take only the lowest 2 bits of i
+                   a = j[1:0];
+                   #10;
+               end
+           end
 
-            $display("\nSimulation finished\n");
-            $finish;
-        end
-
-    endmodule
-    ```
-
-    > **Note:** The simulation can be done without Vivado, using Icarus Verilog and GTKWave:
-    > 
-    > ```bash
-    > $ iverilog -g2012 -o sim comparator.v comparator_tb.v
-    > $ vvp sim
-    > $ gtkwave comparator.vcd
-    > ```
+           $display("\nSimulation finished\n");
+           $finish;
+       end
+   endmodule
+   ```
 
 4. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
 
@@ -194,101 +188,79 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 ## Task 3: Checking simulation values
 
-A good testbench does not just stimulate inputs, it automatically checks correctness. There are three levels of testing:
+Relying only on waveform inspection is not sufficient. Modern digital design requires **self-checking verification**, where the testbench evaluates whether the Design Under Test (DUT) behaves as expected. There are three levels of testing quality:
 
-   * Manual checking (bad)
+   * Manual checking (bad). Inputs are applied and the waveform is visually inspected.
 
-   * Hardcoded expected values (better)
+   * Hardcoded expected values (better). Expected outputs are manually written for each test case.
 
-   * Computed expected model (best)
+   * Computed expected model (best). The testbench computes expected results automatically and compares them with DUT outputs.
 
-TBD
+1. In this task, you will implement a self-checking testbench using **monitors** and **checkers**. The monitor is useful for tracking signal behavior during simulation, but it does not verify correctness. Therefore, your testbench must also include checking logic that compares DUT outputs with expected values and reports mismatches.
 
+   ```verilog
+       ...
+       integer i, j;  // Integer in Verilog is typically 32-bit signed
+       integer errors = 0;
 
+       reg exp_b_gt;
+       reg exp_b_a_eq;
+       reg exp_a_gt;
 
-Whereever possible, include code to automatically check whether the DUT's outputs match expected results. Do not rely only on manual waveform inspection.
+       // ---------------------------------------------
+       // Stimulus process
+       // Applies test vectors to DUT inputs over time
+       // ---------------------------------------------
+       initial begin
+           $display("\nStarting simulation...\n");
+           $display("Time   b  a | b>a b=a b<a");
+           $display("------------+------------");
 
-Using monitors and checkers in testbenches in Verilog involves integrating tools and techniques to enhance the verification and validation process of digital designs. Both monitors and checkers play crucial roles in ensuring that the design behaves as expected during simulation.
+           // Use the monitor task to automaticaly display any change
+           $monitor("%3d   %b %b |  %b   %b   %b",
+               $time, b, a, b_gt, b_a_eq, a_gt);
 
-**Monitors** are used to observe and report the behavior of signals and variables within a design under test (DUT). They continuously track changes in signal values and interactions within the design.
+           // Exhaustive testing
+           for (i = 0; i < 4; i = i+1) begin
+               for (j = 0; j < 4; j = j+1) begin
+                   b = i[1:0];  // Take only the lowest 2 bits of i
+                   a = j[1:0];
+                   #10;
 
-**Checkers** are used to enforce and verify that the design adheres to specified constraints, properties, or expected behaviors. They actively check for correctness and compliance with predefined rules.
+                   // Compute expected values
+                   exp_b_gt   = (b > a);
+                   exp_b_a_eq = (b == a);
+                   exp_a_gt   = (a > b);
 
-TBD
+                   // Compare with DUT outputs
+                   if (b_gt !== exp_b_gt ||
+                       b_a_eq !== exp_b_a_eq ||
+                       a_gt !== exp_a_gt) begin
 
-
-    ```verilog
-        ...
-        integer i, j;  // Integer in Verilog is typically 32-bit signed
-        integer errors = 0;
-
-        reg exp_b_gt;
-        reg exp_b_a_eq;
-        reg exp_a_gt;
-
-        // ---------------------------------------------
-        // Stimulus process
-        // Applies test vectors to DUT inputs over time
-        // ---------------------------------------------
-        initial begin
-            // Waveform dump for GTKWave
-            $dumpfile("comparator.vcd");
-            $dumpvars(0, comparator_tb);
-
-            // Console header
-            $display("\nStarting simulation...\n");
-            $display("Time   b  a | b>a b=a b<a");
-            $display("------------+------------");
-
-            // Use the monitor task to automaticaly display any change
-            $monitor("%3d   %b %b |  %b   %b   %b", $time, b, a, b_gt, b_a_eq, a_gt);
-
-            // -----------------------------------------
-            // Exhaustive test of all combinations
-            // -----------------------------------------
-            for (i = 0; i < 4; i = i+1) begin
-                for (j = 0; j < 4; j = j+1) begin
-                    b = i[1:0];  // Take only the lowest 2 bits of i
-                    a = j[1:0];
-                    #10;
-
-                    // -----------------------------
-                    // Compute expected values
-                    // -----------------------------
-                    exp_b_gt   = (b > a);
-                    exp_b_a_eq = (b == a);
-                    exp_a_gt   = (a > b);
-
-                    // -----------------------------
-                    // Compare with DUT outputs
-                    // -----------------------------
-                    if (b_gt !== exp_b_gt ||
-                        b_a_eq !== exp_b_a_eq ||
-                        a_gt !== exp_a_gt) begin
-
-                        $display("[Error] a=%0d b=%0d | DUT=%b%b%b EXPECTED=%b%b%b",
-                            a, b,
-                            b_gt, b_a_eq, a_gt,
-                            exp_b_gt, exp_b_a_eq, exp_a_gt);
+                       $display("[Error] a=%0d b=%0d | DUT=%b%b%b EXPECTED=%b%b%b",
+                           a, b,
+                           b_gt, b_a_eq, a_gt,
+                           exp_b_gt, exp_b_a_eq, exp_a_gt);
                         
-                        errors += 1;
-                    end
-                end
-            end
+                       errors = errors + 1;
+                   end
+               end
+           end
 
-            if (errors == 0)
-                $display("\nAll tests PASSED\n");
-            else
-                $display("\nTest FAILED with %0d errors\n", errors);
+           // Final result
+           if (errors == 0)
+               $display("\nAll tests PASSED\n");
+           else
+               $display("\nTest FAILED with %0d errors\n", errors);
 
-            $finish;
-        end
+           $finish;
+       end
+   endmodule
+   ```
 
-    endmodule
-    ```
+   > **Note:** In Verilog testbenches, the operators `===` (case equality) and `!==` (case inequality) should be used when comparing signals. Unlike `==` and `!=`, which perform logical comparisons, `===` and `!==` compare every bit explicitly, including unknown (`X`) and high-impedance (`Z`) values. This guarantees reliable mismatch detection and prevents hidden simulation errors.
 
-
-
+2. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
 
 <a name="tasks"></a>
 
@@ -299,6 +271,22 @@ TBD
 2. Design a [*Prime number detector*](https://link.springer.com/chapter/10.1007/978-3-030-10552-5_1) that takes in values from 0 to 15.
 
    ![prime detector](images/digital-design-flow_prime.png)
+
+3. The simulation can be done without Vivado. Just add the following lines to the testbench module:
+
+   ```verilog
+   // Waveform dump for GTKWave
+   $dumpfile("comparator.vcd");
+   $dumpvars(0, comparator_tb);
+   ```
+   
+   and use Icarus Verilog and GTKWave tools from command line:
+   
+   ```bash
+   $ iverilog -g2012 -o sim comparator.v comparator_tb.v
+   $ vvp sim
+   $ gtkwave comparator.vcd
+   ```
 
 <a name="questions"></a>
 
@@ -313,3 +301,7 @@ TBD
 4. How many input combinations must be tested for a 2-bit comparator?
 
 5. What happens if you forget `#10` in the loop?
+
+6. Why is a self-checking testbench better than manually writing expected output values?
+
+7. What is the difference between using `$monitor` and `$display` system tasks?
