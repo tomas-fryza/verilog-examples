@@ -33,24 +33,24 @@ After completing this lab, students should be able to:
    - `b_a_eq`: Output is `1` when `b == a`
    - `a_gt`: Output is `1` when `b < a`
 
-   | **Dec. equivalent** | **B[1:0]** | **A[1:0]** | **B is greater than A** | **B equals A** | **A is greater than B** |
-   | :-: | :-: | :-: | :-: | :-: | :-: |
-   |  0 | 0 0 | 0 0 | 0 | 1 | 0 |
-   |  1 | 0 0 | 0 1 | 0 | 0 | 1 |
-   |  2 | 0 0 | 1 0 | 0 | 0 | 1 |
-   |  3 | 0 0 | 1 1 | 0 | 0 | 1 |
-   |  4 | 0 1 | 0 0 |  | 0 |  |
-   |  5 | 0 1 | 0 1 |  | 1 |  |
-   |  6 | 0 1 | 1 0 |  | 0 |  |
-   |  7 | 0 1 | 1 1 |  | 0 |  |
-   |  8 | 1 0 | 0 0 |  | 0 |  |
-   |  9 | 1 0 | 0 1 |  | 0 |  |
-   | 10 | 1 0 | 1 0 |  | 1 |  |
-   | 11 | 1 0 | 1 1 |  | 0 |  |
-   | 12 | 1 1 | 0 0 |  | 0 |  |
-   | 13 | 1 1 | 0 1 |  | 0 |  |
-   | 14 | 1 1 | 1 0 |  | 0 |  |
-   | 15 | 1 1 | 1 1 |  | 1 |  |
+      | **Dec. equivalent** | **B[1:0]** | **A[1:0]** | **B is greater than A** | **B equals A** | **A is greater than B** |
+      | :-: | :-: | :-: | :-: | :-: | :-: |
+      |  0 | 0 0 | 0 0 | 0 | 1 | 0 |
+      |  1 | 0 0 | 0 1 | 0 | 0 | 1 |
+      |  2 | 0 0 | 1 0 | 0 | 0 | 1 |
+      |  3 | 0 0 | 1 1 | 0 | 0 | 1 |
+      |  4 | 0 1 | 0 0 |  | 0 |  |
+      |  5 | 0 1 | 0 1 |  | 1 |  |
+      |  6 | 0 1 | 1 0 |  | 0 |  |
+      |  7 | 0 1 | 1 1 |  | 0 |  |
+      |  8 | 1 0 | 0 0 |  | 0 |  |
+      |  9 | 1 0 | 0 1 |  | 0 |  |
+      | 10 | 1 0 | 1 0 |  | 1 |  |
+      | 11 | 1 0 | 1 1 |  | 0 |  |
+      | 12 | 1 1 | 0 0 |  | 0 |  |
+      | 13 | 1 1 | 0 1 |  | 0 |  |
+      | 14 | 1 1 | 1 0 |  | 0 |  |
+      | 15 | 1 1 | 1 1 |  | 1 |  |
 
 2. According to truth table, create K-maps for all functions.
 
@@ -83,11 +83,11 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
    7. Click **Finish** to create the project
    8. Define I/O ports of new module:
 
-      * Port name: `a`, Direction: `in`, Bus: `check`, MSB: `1`, LSB: `0`
-      * `b`, `in`, Bus: `check`, MSB: `1`, LSB: `0`
-      * `b_gt`, `out`
-      * `b_a_eq`, `out`
-      * `a_gt`, `out`
+      * Port name: `a`, Direction: `input`, Bus: `check`, MSB: `1`, LSB: `0`
+      * `b`, `input`, Bus: `check`, MSB: `1`, LSB: `0`
+      * `b_gt`, `output`
+      * `b_a_eq`, `output`
+      * `a_gt`, `output`
 
 2. Open a file **`comparator.v`** and complete the following template:
 
@@ -122,8 +122,6 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 3. Add a new simulation file named **`comparator_tb.v`**, complete the provided template, and verify your design by simulation.
 
-   Use `$display` and `$monitor` to print information to the console. The system task `$display` prints a message once at the moment it is executed. It is typically used to print headers, error messages, intermediate debug information, or a final PASS/FAIL summary. In contrast, `$monitor` continuously observes the listed signals and automatically prints their values whenever any of them change during simulation. This makes `$monitor` useful for tracking signal activity over time without manually inserting multiple print statements.
-
    ```verilog
    `timescale 1ns/1ps
 
@@ -157,14 +155,6 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
        // Applies test vectors to DUT inputs over time
        // ---------------------------------------------
        initial begin
-           $display("\nStarting simulation...\n");
-           $display("Time   b  a | b>a b=a b<a");
-           $display("------------+------------");
-
-           // Use the monitor task to automaticaly display any change
-           $monitor("%3d   %b %b |  %b   %b   %b",
-               $time, b, a, b_gt, b_a_eq, a_gt);
-
            // Exhaustive testing
            for (i = 0; i < 4; i = i + 1) begin
                for (j = 0; j < 4; j = j + 1) begin
@@ -174,13 +164,33 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
                end
            end
 
-           $display("\nSimulation finished\n");
            $finish;
        end
    endmodule
    ```
 
-4. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
+4. Use `$display` and `$monitor` to print information to the console. The system task `$display` prints a message once at the moment it is executed. It is typically used to print headers, error messages, intermediate debug information, or a final PASS/FAIL summary. In contrast, `$monitor` continuously observes the listed signals and automatically prints their values whenever any of them change during simulation. This makes `$monitor` useful for tracking signal activity over time without manually inserting multiple print statements.
+
+   ```verilog
+   ...
+   // ---------------------------------------------
+   // Stimulus process
+   // Applies test vectors to DUT inputs over time
+   // ---------------------------------------------
+   initial begin
+       $display("\nStarting simulation...\n");
+       $display("Time   b  a | b>a b=a b<a");
+       $display("------------+------------");
+
+       // Use the monitor task to automaticaly display any change
+       $monitor("%3d   %b %b |  %b   %b   %b",
+           $time, b, a, b_gt, b_a_eq, a_gt);
+
+       // Exhaustive testing
+   ...
+   ```
+
+5. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
 
    > **Note:** The behavioral implementation is synthesizable and preferred in real designs because it is clearer, scalable, and less error-prone than manual Boolean equations.
 
@@ -272,7 +282,7 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 
    ![prime detector](images/digital-design-flow_prime.png)
 
-3. The simulation can be done without Vivado. Just add the following lines to the testbench module:
+3. The simulation can be done without Vivado. Just add the following lines to the testbench:
 
    ```verilog
    // Waveform dump for GTKWave
@@ -280,7 +290,7 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
    $dumpvars(0, comparator_tb);
    ```
    
-   and use Icarus Verilog and GTKWave tools from command line:
+   and use Icarus Verilog and GTKWave tools from command line to simulate your desing.
    
    ```bash
    $ iverilog -g2012 -o sim comparator.v comparator_tb.v

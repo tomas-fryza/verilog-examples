@@ -272,6 +272,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including [**Icarus Verilog**](https://github.com/steveicarus/iverilog), [**GTKWave**](https://gtkwave.sourceforge.net/), text editor such se VS Code, and command line.
 
+   Add lines `$dumpfiles` and `$dumpvars` to your testbench.
+
    ```verilog
    // ---------------------------------------------
    // Stimulus process
@@ -290,6 +292,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
       $finish;
    end
    ```
+
+   Open the terminal nad use the following commands to simulate your design.
 
    ```bash
    # compile the design (`gates.v`)
