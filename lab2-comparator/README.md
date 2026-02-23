@@ -204,11 +204,11 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 Relying only on waveform inspection is not sufficient. Modern digital design requires **self-checking verification**, where the testbench evaluates whether the Design Under Test (DUT) behaves as expected. There are three levels of testing quality:
 
-   * Manual checking (bad). Inputs are applied and the waveform is visually inspected.
+   * **Manual checking** (bad). Inputs are applied and the waveform is visually inspected.
 
-   * Hardcoded expected values (better). Expected outputs are manually written for each test case.
+   * **Hardcoded expected values** (better). Expected outputs are manually written for each test case.
 
-   * Computed expected model (best). The testbench computes expected results automatically and compares them with DUT outputs.
+   * **Computed expected model** (best). The testbench computes expected results automatically and compares them with DUT outputs.
 
 1. In this task, you will implement a self-checking testbench using **monitors** and **checkers**. The monitor is useful for tracking signal behavior during simulation, but it does not verify correctness. Therefore, your testbench must also include checking logic that compares DUT outputs with expected values and reports mismatches.
 
@@ -289,11 +289,13 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 3. The simulation can be done without Vivado. Just add the following lines to the testbench:
 
    ```verilog
-   // Waveform dump for GTKWave
-   $dumpfile("comparator.vcd");
-   $dumpvars(0, comparator_tb);
+   initial begin
+
+       // Waveform dump for GTKWave
+       $dumpfile("comparator.vcd");
+       $dumpvars(0, comparator_tb);
    ```
-   
+
    and use Icarus Verilog and GTKWave tools from command line to simulate your desing.
    
    ```bash
