@@ -192,6 +192,10 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
 5. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
 
+   ```verilog
+   assign b_gt = (b[1] & ~a[1]) | ...
+   ```
+
    > **Note:** The behavioral implementation is synthesizable and preferred in real designs because it is clearer, scalable, and less error-prone than manual Boolean equations.
 
 <a name="task3"></a>
