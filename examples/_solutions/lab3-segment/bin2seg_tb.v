@@ -18,8 +18,8 @@ module bin2seg_tb;
     // Instantiate Device Under Test (DUT)
     // ---------------------------------------------
     bin2seg dut (
-        .bin   (bin),
-        .seg   (seg)
+        .bin (bin),
+        .seg (seg)
     );
 
     integer i;  // Loop variable
@@ -34,8 +34,11 @@ module bin2seg_tb;
         $dumpvars(0, bin2seg_tb);
 
         // Console header
-        $display("Time  bin  | seg (abcdefg, active-low)");
-        $display("-----------+--------------------------");
+        $display("Time bin | seg (abcdefg, active-low)");
+        $display("---------+--------------------------");
+
+        // Use the monitor task to automaticaly display any change
+        $monitor(" %3d  %h  | %b", $time, bin, seg);
 
         // -----------------------------------------
         // Enable display and test 0..F
@@ -43,12 +46,7 @@ module bin2seg_tb;
         for (i = 0; i < 16; i = i+1) begin
             bin = i[3:0];   // Apply hex value; use only lowest 4 bits of i
             #10;
-
-            $display("%4t    %h  | %b", $time, bin, seg);
         end
-
-        $display("------------+--------------------------");
-        $display("Simulation finished.");
 
         $finish;
     end
