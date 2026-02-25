@@ -50,7 +50,9 @@ module comparator_tb ();
         $display("------------+------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor("%3d   %b %b |  %b   %b   %b", $time, b, a, b_gt, b_a_eq, a_gt);
+        $monitor("%3d   %b %b |  %b   %b   %b",
+            $time, b, a,
+            b_gt, b_a_eq, a_gt);
 
         // -----------------------------------------
         // Exhaustive test of all combinations
@@ -75,10 +77,7 @@ module comparator_tb ();
                     b_a_eq !== exp_b_a_eq ||
                     a_gt !== exp_a_gt) begin
 
-                    $display("[Error] a=%0d b=%0d | DUT=%b%b%b EXPECTED=%b%b%b",
-                         a, b,
-                         b_gt, b_a_eq, a_gt,
-                         exp_b_gt, exp_b_a_eq, exp_a_gt);
+                    $display("[Error] a=%0d b=%0d", a, b);
                     
                     errors += 1;
                 end

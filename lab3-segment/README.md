@@ -61,18 +61,81 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `bin` | input | `xxxxx` | 4-bit hexadecimal input |
-   | `seg` | output | `xxxxx` | {a,b,c,d,e,f,g} active-low outputs |
+   | `bin` | input | `wire [3:0]` | 4-bit hexadecimal input |
+   | `seg` | output | `reg wire [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
 
+   > **Note:** Because `seg` will be assigned inside an always block (see below), it must be declared as reg in Verilog. This does NOT mean it becomes a flip-flop or register in hardware.
 
-   TBD
+3. Use a Verilog **combinational procedural block** `always @(*) begin ... end` to describe the inner module structure. The `always` block executes whenever a signal in its sensitivity list (ie. signal after the `@` symbol) changes. Here, `(*)` means all signals used inside the block and the simulator automatically creates a complete sensitivity list.
 
+   ```verilog
+   module bin2seg (
+       input  wire [3:0] bin,  //! 4-bit input
+       output reg  [6:0] seg   //! {a,b,c,d,e,f,g} active-low
+   );
+
+   always @(*) begin
+       case (bin)
+           4'h0: seg = 7'b000_0001;  // 0
+           4'h1: seg = 7'b100_1111;  // 1
+
+           // TODO: Complete settings for 2, 3, 4, 5, 6
+
+           4'h7: seg = 7'b000_1111;  // 7
+           4'h8: seg = 7'b000_0000;  // 8
+
+           // TODO: Complete settings for 9, A, b, C, d
+
+           4'hE: seg = 7'b011_0000;  // E
+           4'hF: seg = 7'b011_1000;  // F
+
+           default: seg = 7'b111_1111;  // Blank for safety
+       endcase
+   end
+   ```
+
+   > **Note:** The notation `4'h0: seg = 7'b000_0001;` means
+   >
+   >    * `4'h0` -- a 4-bit hexadecimal value 0
+   >       * `4` = width (4 bits)
+   >       * `'h` = hexadecimal base
+   >       * `0` = value
+   >    * `seg = 7'b000_0001;` -- assign a 7-bit binary value to `seg`
+   >       * `7` = width (7 bits)
+   >       * `'b` = binary base
+   >       * `000_0001` = binary pattern (underscore is just for readability)
 
 4. Create a Verilog simulation file named `bin2seg_tb`, complete the provided template, and verify the functionality of your decoder.
 
+   ```verilog
+   `timescale 1ns/1ps
 
-   TBD
+   module bin2seg_tb ();
 
+       reg  [3:0] bin;  // DUT input: 4-bit value
+       wire [6:0] seg;  // DUT output: {a,b,c,d,e,f,g}, active-low
+
+       bin2seg dut (
+           .bin (bin),
+           .seg (seg)
+       );
+
+       integer i;  // Loop variable
+
+       initial begin
+
+           // TODO: Add $display and $monitor tasks
+
+           for (i = 0; i < 16; i = i+1) begin
+               bin = i[3:0];  // Use only lowest 4 bits of i
+               #10;
+           end
+
+           $finish;
+       end
+
+   endmodule
+   ```
 
 5. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
@@ -80,9 +143,56 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
 ## Task 2: Structural modeling and instantiation
 
+**Structural design** is a modeling style in digital hardware description languages (such as VHDL or Verilog) where a system is described by connecting smaller building blocks together. Instead of describing what the logic does (behavioral style), structural design describes how the system is built from submodules.
 
-TBD
+**Component instantiation** is the act of creating an instance of a previously defined module/entity inside another design unit. When you instantiate a component: (a) you create a copy of that hardware block, (b) connect its input and output ports to signals, and (c) integrate it into a higher-level system.
 
+The following example shows a simple structural design consisting of two 2-input XOR gates. The top-level entity connects two instances (`U1` and `U2`) of the `xor2` component.
+
+   ![component instance](images/component_example.png)
+
+   XOR module:
+
+   ```verilog
+   module xor2 (
+       input  in1,
+       input  in2,
+       output out1
+   );
+       assign out1 = in1 ^ in2;
+   endmodule
+   ```
+
+   Top-level structural design:
+
+   ```verilog
+   module top_level (
+       input  a,
+       input  b,
+       input  c,
+       output y
+   );
+
+       wire sig_tmp;  // Internal signal
+
+       // First XOR instance
+       xor2 U1 (
+           .in1  (a),
+           .in2  (b),
+           .out1 (sig_tmp)
+       );
+
+       // Second XOR instance
+       xor2 U2 (
+           .in1  (sig_tmp),
+           .in2  (c),
+           .out1 (y)
+       );
+
+   endmodule
+   ```
+
+In this example, `U1` and `U2` are two independent instances of the same component, the signal `sig_tmp` connects the output of the first XOR gate to the input of the second, and the architecture describes a structural netlist rather than behavioral logic.
 
 <a name="task3"></a>
 
@@ -95,20 +205,43 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `sw`  | input  | `xxx` | Slide switch inputs |
-   | `seg` | output | `xxx` | Seven-segment cathodes CA..CG (active-low) |
-   | `dp` | output | `xxx` | Decimal point (active-low) |
-   | `an` | output | `xxx` | Digit enable anodes AN7..AN0 (active-low) |
+   | `sw`  | input | `wire [3:0]` | Slide switches SW3..SW0 |
+   | `seg` | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
+   | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `an` | output | `wire` | Seven-segment anodes AN7..AN0 (active-low) |
 
 3. Use component instantiation to connect `bin2seg` and define the top-level architecture.
 
    ![Top level, 1-digit](images/top-level_1-digit.png)
 
-   > **Note:** In Vivado, individual templates can be found in **Flow Navigator** or in the menu **Tools > Language Templates**. Search for `component declaration` and `component instantiation`.
+   > **Note:** In Vivado, individual templates can be found in **Flow Navigator** or in the menu **Tools > Language Templates**. Search for `component instantiation`.
 
+   ```verilog
+   module segment_top (
+      input  wire [3:0] sw,   //! Slide switches SW3..SW0
 
-   TBD
+      // TODO: Complete input/output ports
 
+      output wire [7:0] an    //! Seven-segment anodes AN7..AN0 (active-low)
+   );
+
+      // ---------------------------------------------
+      //! Instantiate 7-segment decoder
+      //! (Prefix `u_` means unit or instance.)
+      // ---------------------------------------------
+      bin2seg u_bin2seg (
+         .bin (sw),
+         .seg (seg)
+      );
+
+      // Turn off decimal point (inactive = '1')
+      assign dp = ...
+
+      // Enable AN0 only (active-low)
+      assign an = ...
+
+   endmodule
+   ```
 
    Only one digit must be enabled. All other digits must remain disabled to prevent multiple digits from lighting simultaneously.
 
@@ -173,9 +306,33 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    ![Top level, 2-digit](images/top-level_2-digit.png)
 
+   ```verilog
+   module segment_top (
+       input  wire [3:0] sw_l,
 
-   TBD
+       // TODO: Complete input/output ports
 
+       output wire [7:0] an
+   );
+       
+       // Internal signal for selected 4-bit input
+       wire [3:0] sig_tmp;
+
+       // Instantiate your DUT
+       ...
+
+       // Select left or right 4-bit input (multiplexer)
+       assign sig_tmp = (btnd == 1'b1) ? sw_l : sw_r;
+
+       // Disable unused digits (active-low logic)
+       assign an[7:2] = 6'b11_1111;
+
+       // Enable only one digit at a time
+       assign an[1] = ...  // left digit
+       assign an[0] = ...  // right digit
+
+   endmodule
+   ```
 
 <a name="questions"></a>
 
