@@ -42,14 +42,14 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
    | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
    | `0` | 0000 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
    | `1` | 0001 | 1 | 0 | 0 | 1 | 1 | 1 | 1 |
-   | `2` |      |   |   |   |   |   |   |   |
+   | `2` | 0010 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |
    | `3` |      |   |   |   |   |   |   |   |
    | `4` |      |   |   |   |   |   |   |   |
    | `5` |      |   |   |   |   |   |   |   |
    | `6` |      |   |   |   |   |   |   |   |
    | `7` | 0111 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
    | `8` | 1000 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-   | `9` |      |   |   |   |   |   |   |   |
+   | `9` | 1001 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
    | `A` |      |   |   |   |   |   |   |   |
    | `b` |      |   |   |   |   |   |   |   |
    | `C` |      |   |   |   |   |   |   |   |
@@ -78,13 +78,15 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
        case (bin)
            4'h0: seg = 7'b000_0001;  // 0
            4'h1: seg = 7'b100_1111;  // 1
+           4'h2: seg = 7'b001_0010;  // 2
 
-           // TODO: Complete settings for 2, 3, 4, 5, 6
+           // TODO: Complete settings for 3, 4, 5, 6
 
            4'h7: seg = 7'b000_1111;  // 7
            4'h8: seg = 7'b000_0000;  // 8
+           4'h9: seg = 7'b000_0100;  // 9
 
-           // TODO: Complete settings for 9, A, b, C, d
+           // TODO: Complete settings for A, b, C, d
 
            4'hE: seg = 7'b011_0000;  // E
            4'hF: seg = 7'b011_1000;  // F
@@ -105,7 +107,7 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
    >       * `'b` = binary base
    >       * `000_0001` = binary pattern (underscore is just for readability)
 
-4. Create a Verilog simulation file named `bin2seg_tb`, complete the provided template, and verify the functionality of your decoder.
+4. Create a Verilog simulation file named `bin2seg_tb`, complete the provided template using `$display` and `$monitor` tasks, and verify the functionality of your decoder.
 
    ```verilog
    `timescale 1ns/1ps
@@ -205,7 +207,7 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `sw`  | input | `wire [3:0]` | Slide switches SW3..SW0 |
+   | `sw` | input | `wire [3:0]` | Slide switches SW3..SW0 |
    | `seg` | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
    | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
    | `an` | output | `wire` | Seven-segment anodes AN7..AN0 (active-low) |
@@ -214,7 +216,9 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    ![Top level, 1-digit](images/top-level_1-digit.png)
 
+   <!--
    > **Note:** In Vivado, individual templates can be found in **Flow Navigator** or in the menu **Tools > Language Templates**. Search for `component instantiation`.
+   -->
 
    ```verilog
    module segment_top (
@@ -340,10 +344,14 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
 1. What is the difference between a common anode and a common cathode 7-segment display?
 
+2. What is the purpose of the `always` block in Verilog? How does it differ from an `initial` block?
 
+3. Why is `always @(*)` preferred over manually writing sensitivity lists in combinational logic?
 
-4. What is the purpose of a top-level entity in an FPGA design?
+4. What is the purpose of the `default` branch in the `case` statement?
 
+5. What is the purpose of a top-level entity in an FPGA design?
 
+5. What is module instantiation in Verilog? Why is it necessary in hierarchical design?
 
 6. Why must only one digit (`an`) be enabled at a time on the Nexys A7 display?
