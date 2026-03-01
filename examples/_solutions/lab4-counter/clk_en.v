@@ -27,8 +27,8 @@ module clk_en #(
     // $clog2(MAX) -- Ceiling of log2(x) returns the minimum
     // number of bits required
 
-    // Clocked, sequential process, triggerd when clk rises
-    // from 0 to 1 (positive edge of a signal)
+    //! Clocked, sequential process, triggered when clk rises
+    //! from 0 to 1 (positive edge of a signal)
     always @(posedge clk) begin
         if (rst) begin
             ce      <= 1'b0;     // Reset output
@@ -40,7 +40,7 @@ module clk_en #(
         end
         else begin
             ce      <= 1'b0;     // Clear output
-            sig_cnt <= sig_cnt + 1;  // Increment internal counter
+            sig_cnt <= sig_cnt + 1'b1;  // Increment internal counter
         end
     end
 

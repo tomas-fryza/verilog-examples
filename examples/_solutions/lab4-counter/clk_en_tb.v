@@ -11,7 +11,7 @@ module clk_en_tb ();
     // Testbench internal signals and parameter
     // Must be `reg`, so we can assign values
     // ---------------------------------------------
-    parameter MAX = 12;  // Change only this value to modify counting
+    localparam MAX = 12;  // Change only this value to modify counting
     reg  clk;
     reg  rst;
     wire ce;
@@ -32,7 +32,8 @@ module clk_en_tb ();
         .ce  (ce)
     );
 
-    // Clock generation: 10 ns period
+    // Clock generation: 10ns period (100MHz)
+    initial clk = 0;
     always #5 clk = ~clk;
     // `always` defines a process that runs indefinitely during
     // simulation. This block repeats forever.
@@ -52,9 +53,7 @@ module clk_en_tb ();
             clk_en_tb.dut.sig_cnt);  // <--- hierarchical path
         
         // Initialize signals
-        clk = 0;
         rst = 1;
-
         // Hold reset for a few clock cycles
         #20;
         rst = 0;

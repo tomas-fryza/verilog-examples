@@ -11,7 +11,7 @@ GTKWAVE  = gtkwave
 TOP      = clk_en_tb
 # TOP      = counter_tb
 VCD      = counter.vcd
-SRCS     = clk_en.v clk_en_tb.v  # counter.v counter_tb.v 
+SRCS     = clk_en.v clk_en_tb.v # counter.v counter_tb.v
 
 # Default target
 all: sim
