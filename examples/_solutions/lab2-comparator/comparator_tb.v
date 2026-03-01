@@ -50,7 +50,7 @@ module comparator_tb ();
         $display("------------+------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor("%3d   %b %b |  %b   %b   %b",
+        $monitor("[%3d]  %b %b |  %b   %b   %b",
             $time, b, a,
             b_gt, b_a_eq, a_gt);
 

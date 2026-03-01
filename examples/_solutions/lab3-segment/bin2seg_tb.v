@@ -5,7 +5,7 @@
 // Testbench for 4-bit to 7-segment decoder
 // =================================================
 
-module bin2seg_tb;
+module bin2seg_tb ();
 
     // ---------------------------------------------
     // Testbench internal signals
@@ -38,7 +38,7 @@ module bin2seg_tb;
         $display("---------+--------------------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor(" %3d  %h  | %b", $time, bin, seg);
+        $monitor("[%3d] %h  | %b", $time, bin, seg);
 
         // -----------------------------------------
         // Enable display and test 0..F
