@@ -38,7 +38,6 @@ module bin2seg (
             4'h7: seg = 7'b000_1111;  // 7
             4'h8: seg = 7'b000_0000;  // 8
             4'h9: seg = 7'b000_0100;  // 9
-
             4'hA: seg = 7'b000_1000;  // A
             4'hB: seg = 7'b110_0000;  // b (lowercase style)
             4'hC: seg = 7'b011_0001;  // C
