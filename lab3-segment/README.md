@@ -66,7 +66,14 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
    > **Note:** Because `seg` will be assigned inside an always block (see below), it must be declared as reg in Verilog. This does NOT mean it becomes a flip-flop or register in hardware.
 
-3. Use a Verilog **combinational procedural block** `always @(*) begin ... end` to describe the inner module structure. The `always` block executes whenever a signal in its sensitivity list (ie. signal after the `@` symbol) changes. Here, `(*)` means all signals used inside the block and the simulator automatically creates a complete sensitivity list.
+3. Use a Verilog **combinational procedural block** `always @(*) begin ... end` to describe the inner module structure. **Always block** is a procedural block. It describes sequential circuits (latches, flip-flops) or combinational circuits. All always blocks are executed in parallel. **Signals assigned inside always block must be of type reg.**
+
+   The always block **sensitivity list**:
+
+      * It contains signals that affect outputs.
+      * In case of any change to the values of the signals in the sensitivity list, output(s) must be reevaluated.
+      * It is specified by adding the `@` symbol before the round brackets.
+      * The `*` symbol means adding all inputs to the sensitivity list. (If the sensitivity list is not specified, it means that the always block will remain in execution.)
 
    ```verilog
    module bin2seg (
@@ -74,26 +81,27 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
        output reg  [6:0] seg   //! {a,b,c,d,e,f,g} active-low
    );
 
-   always @(*) begin
-       case (bin)
-           4'h0: seg = 7'b000_0001;  // 0
-           4'h1: seg = 7'b100_1111;  // 1
-           4'h2: seg = 7'b001_0010;  // 2
+       always @(*) begin
+           case (bin)
+               4'h0: seg = 7'b000_0001;  // 0
+               4'h1: seg = 7'b100_1111;  // 1
+               4'h2: seg = 7'b001_0010;  // 2
 
-           // TODO: Complete settings for 3, 4, 5, 6
+               // TODO: Complete settings for 3, 4, 5, 6
 
-           4'h7: seg = 7'b000_1111;  // 7
-           4'h8: seg = 7'b000_0000;  // 8
-           4'h9: seg = 7'b000_0100;  // 9
+               4'h7: seg = 7'b000_1111;  // 7
+               4'h8: seg = 7'b000_0000;  // 8
+               4'h9: seg = 7'b000_0100;  // 9
 
-           // TODO: Complete settings for A, b, C, d
+               // TODO: Complete settings for A, b, C, d
 
-           4'hE: seg = 7'b011_0000;  // E
-           4'hF: seg = 7'b011_1000;  // F
+               4'hE: seg = 7'b011_0000;  // E
+               4'hF: seg = 7'b011_1000;  // F
 
-           default: seg = 7'b111_1111;  // Blank for safety
-       endcase
-   end
+               default: seg = 7'b111_1111;  // Blank for safety
+           endcase
+       end
+   endmodule
    ```
 
    > **Note:** The notation `4'h0: seg = 7'b000_0001;` means
