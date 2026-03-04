@@ -62,7 +62,7 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
    | `bin` | input | `wire [3:0]` | 4-bit hexadecimal input |
-   | `seg` | output | `reg wire [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
+   | `seg` | output | `reg [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
 
    > **Note:** Because `seg` will be assigned inside an always block (see below), it must be declared as reg in Verilog. This does NOT mean it becomes a flip-flop or register in hardware.
 
@@ -77,8 +77,8 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
    ```verilog
    module bin2seg (
-       input  wire [3:0] bin,  //! 4-bit input
-       output reg  [6:0] seg   //! {a,b,c,d,e,f,g} active-low
+       input  wire [3:0] bin,  // 4-bit input
+       output reg  [6:0] seg   // {a,b,c,d,e,f,g} active-low
    );
 
        always @(*) begin
@@ -177,9 +177,7 @@ The following example shows a simple structural design consisting of two 2-input
 
    ```verilog
    module top_level (
-       input  a,
-       input  b,
-       input  c,
+       input  a, b, c,
        output y
    );
 
@@ -230,11 +228,11 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    ```verilog
    module segment_top (
-      input  wire [3:0] sw,   //! Slide switches SW3..SW0
+      input  wire [3:0] sw,   // Slide switches SW3..SW0
 
       // TODO: Complete input/output ports
 
-      output wire [7:0] an    //! Seven-segment anodes AN7..AN0 (active-low)
+      output wire [7:0] an    // Seven-segment anodes AN7..AN0 (active-low)
    );
 
       // ---------------------------------------------
@@ -320,7 +318,7 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    ```verilog
    module segment_top (
-       input  wire [3:0] sw_l,
+       input  wire [3:0] sw_r,
 
        // TODO: Complete input/output ports
 
