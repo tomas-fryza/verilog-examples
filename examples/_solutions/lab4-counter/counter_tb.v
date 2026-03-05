@@ -3,17 +3,17 @@
 module counter_tb ();
 
     // Local parameter value is fixed inside the module
-    localparam BITS = 5;  // Change only this value to scale the counter
+    localparam N = 5;  // Change only this value to scale the counter
 
     // Testbench signals
-    reg             clk;
-    reg             rst;
-    reg             en;
-    wire [BITS-1:0] cnt;
+    reg          clk;
+    reg          rst;
+    reg          en;
+    wire [N-1:0] cnt;
 
     // Instantiate the counter
     counter #(
-        .BITS (BITS)
+        .N (N)
     ) uut (
         .clk (clk),
         .rst (rst),

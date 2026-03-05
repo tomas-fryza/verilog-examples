@@ -16,31 +16,31 @@ module counter_top (
     // Clock enable for 250 ms
     // ---------------------------------------------------------
     clk_en #(
-        .MAX(25_000_000)
+        .MAX (25_000_000)
     ) clk_en0 (
-        .clk(clk),
-        .rst(btnu),
-        .ce(sig_en_250ms)
+        .clk (clk),
+        .rst (btnu),
+        .ce  (sig_en_250ms)
     );
 
     // ---------------------------------------------------------
     // 4-bit binary counter
     // ---------------------------------------------------------
     counter #(
-        .BITS(4)
+        .N (4)
     ) counter0 (
-        .clk(clk),
-        .rst(btnu),
-        .en(sig_en_250ms),
-        .cnt(sig_cnt_4bit)
+        .clk (clk),
+        .rst (btnu),
+        .en  (sig_en_250ms),
+        .cnt (sig_cnt_4bit)
     );
 
     // ---------------------------------------------------------
     // Binary to 7-segment decoder
     // ---------------------------------------------------------
     bin2seg display (
-        .bin(sig_cnt_4bit),
-        .seg(seg)
+        .bin (sig_cnt_4bit),
+        .seg (seg)
     );
 
     // Turn off decimal point (active-low → 1 = off)
@@ -53,23 +53,23 @@ module counter_top (
     // Clock enable for 2 ms
     // ---------------------------------------------------------
     clk_en #(
-        .MAX(200_000)
+        .MAX (200_000)
     ) clk_en1 (
-        .clk(clk),
-        .rst(btnu),
-        .ce(sig_en_2ms)
+        .clk (clk),
+        .rst (btnu),
+        .ce  (sig_en_2ms)
     );
 
     // ---------------------------------------------------------
     // 16-bit binary counter
     // ---------------------------------------------------------
     counter #(
-        .BITS(16)
+        .N (16)
     ) counter1 (
-        .clk(clk),
-        .rst(btnu),
-        .en(sig_en_2ms),
-        .cnt(led)
+        .clk (clk),
+        .rst (btnu),
+        .en  (sig_en_2ms),
+        .cnt (led)
     );
 
 endmodule
