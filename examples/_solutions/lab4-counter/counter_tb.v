@@ -14,11 +14,11 @@ module counter_tb ();
     // Instantiate the counter
     counter #(
         .N (N)
-    ) uut (
-        .clk (clk),
-        .rst (rst),
-        .en  (en),
-        .cnt (cnt)
+    ) dut (
+        .i_clk (clk),
+        .i_rst (rst),
+        .i_en  (en),
+        .o_cnt (cnt)
     );
 
     // Clock generation: 10ns period (100 MHz)

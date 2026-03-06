@@ -1,26 +1,26 @@
 module counter_top (
-    input  wire        clk,        // Main clock
-    input  wire        btnu,       // Synchronous reset
-    output wire [15:0] led,        // 16-bit counter value
-    output wire [6:0]  seg,        // Seven-segment cathodes CA..CG (active-low)
-    output wire        dp,         // Decimal point
-    output wire [7:0]  an          // Seven-segment anodes AN7..AN0 (active-low)
+    input  wire        clk,   // Main clock
+    input  wire        btnu,  // Synchronous reset
+    output wire [15:0] led,   // 16-bit counter value
+    output wire [6:0]  seg,   // Seven-segment cathodes CA..CG (active-low)
+    output wire        dp,    // Decimal point
+    output wire [7:0]  an     // Seven-segment anodes AN7..AN0 (active-low)
 );
 
     // Internal signals
-    wire        sig_en_250ms;   // Clock enable for 4-bit counter
-    wire [3:0]  sig_cnt_4bit;   // 4-bit counter value
-    wire        sig_en_2ms;     // Clock enable for 16-bit counter
+    wire       w_en_250ms;  // Clock enable for 4-bit counter
+    wire [3:0] w_cnt_4bit;  // 4-bit counter value
+    wire       w_en_2ms;    // Clock enable for 16-bit counter
 
     // ---------------------------------------------------------
     // Clock enable for 250 ms
     // ---------------------------------------------------------
     clk_en #(
         .MAX (25_000_000)
-    ) clk_en0 (
-        .clk (clk),
-        .rst (btnu),
-        .ce  (sig_en_250ms)
+    ) u_enable0 (
+        .i_clk (clk),
+        .i_rst (btnu),
+        .o_ce  (w_en_250ms)
     );
 
     // ---------------------------------------------------------
@@ -28,19 +28,19 @@ module counter_top (
     // ---------------------------------------------------------
     counter #(
         .N (4)
-    ) counter0 (
-        .clk (clk),
-        .rst (btnu),
-        .en  (sig_en_250ms),
-        .cnt (sig_cnt_4bit)
+    ) u_counter0 (
+        .i_clk (clk),
+        .i_rst (btnu),
+        .i_en  (w_en_250ms),
+        .o_cnt (w_cnt_4bit)
     );
 
     // ---------------------------------------------------------
     // Binary to 7-segment decoder
     // ---------------------------------------------------------
-    bin2seg display (
-        .bin (sig_cnt_4bit),
-        .seg (seg)
+    bin2seg u_segment (
+        .i_bin (w_cnt_4bit),
+        .o_seg (seg)
     );
 
     // Turn off decimal point (active-low → 1 = off)
@@ -54,10 +54,10 @@ module counter_top (
     // ---------------------------------------------------------
     clk_en #(
         .MAX (200_000)
-    ) clk_en1 (
-        .clk (clk),
-        .rst (btnu),
-        .ce  (sig_en_2ms)
+    ) u_enable1 (
+        .i_clk (clk),
+        .i_rst (btnu),
+        .o_ce  (w_en_2ms)
     );
 
     // ---------------------------------------------------------
@@ -65,11 +65,11 @@ module counter_top (
     // ---------------------------------------------------------
     counter #(
         .N (16)
-    ) counter1 (
-        .clk (clk),
-        .rst (btnu),
-        .en  (sig_en_2ms),
-        .cnt (led)
+    ) u_counter1 (
+        .i_clk (clk),
+        .i_rst (btnu),
+        .i_en  (w_en_2ms),
+        .o_cnt (led)
     );
 
 endmodule

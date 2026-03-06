@@ -20,20 +20,20 @@ module counter #(
     // #() after a module name introduces a parameter list
     parameter N = 3  //! Number of bits for the counter
 )(
-    input  wire           clk,  //! Main clock
-    input  wire           rst,  //! High-active synchronous reset
-    input  wire           en,   //! Clock enable
-    output reg [N-1:0] cnt   //! Counter value
+    input  wire        i_clk,  //! Main clock
+    input  wire        i_rst,  //! High-active synchronous reset
+    input  wire        i_en,   //! Clock enable
+    output reg [N-1:0] o_cnt   //! Counter value
 );
 
     //! Clocked, sequential process, triggered when clk rises
     //! from 0 to 1 (positive edge of a signal)
-    always @(posedge clk) begin
-        if (rst) begin
-            cnt <= 0;           // Reset counter; non-blocking assignment (<=)
+    always @(posedge i_clk) begin
+        if (i_rst) begin
+            o_cnt <= 0;             // Reset counter
         end
-        else if (en) begin
-            cnt <= cnt + 1'b1;  // Increment counter when enabled
+        else if (i_en) begin
+            o_cnt <= o_cnt + 1'b1;  // Increment counter when enabled
         end
     end
 

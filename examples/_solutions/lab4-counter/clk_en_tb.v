@@ -23,13 +23,14 @@ module clk_en_tb ();
     // #() -- parameter override block
     // .MAX (MAX) -- named parameter mapping
     // dut -- instance name of this module
-    // .clk (clk) -- connect/map module port clk to testbench signal clk
+    // .i_clk (clk) -- connect/map module port i_clk to testbench signal clk
+    // etc.
     clk_en #(
         .MAX (MAX)
     ) dut (
-        .clk (clk),
-        .rst (rst),
-        .ce  (ce)
+        .i_clk (clk),
+        .i_rst (rst),
+        .o_ce  (ce)
     );
 
     // Clock generation: 10ns period (100MHz)
@@ -50,7 +51,7 @@ module clk_en_tb ();
         // Use the monitor task to automaticaly display any change
         $monitor("[%3d] clk=%b rst=%b ce=%b  cnt=%d",
             $time, clk, rst, ce,
-            clk_en_tb.dut.sig_cnt);  // <--- hierarchical path
+            clk_en_tb.dut.r_cnt);  // <--- hierarchical path
         
         // Initialize signals
         rst = 1;
