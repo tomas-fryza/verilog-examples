@@ -23,7 +23,7 @@ module clk_en #(
 );
 
     // Internal counter
-    reg [$clog2(MAX)-1:0] r_cnt;
+    reg [$clog2(MAX)-1:0] cnt;
     // $clog2(MAX) -- Ceiling of log2(x) returns the minimum
     // number of bits required
 
@@ -31,16 +31,16 @@ module clk_en #(
     //! rises from 0 to 1 (positive edge of a signal)
     always @(posedge i_clk) begin
         if (i_rst) begin
-            o_ce  <= 1'b0;  // Reset output
-            r_cnt <= 0;     // Reset internal counter
+            o_ce <= 1'b0;  // Reset output
+            cnt  <= 0;     // Reset internal counter
         end
-        else if (r_cnt == MAX-1) begin
-            o_ce  <= 1'b1;  // Generate one-cycle pulse
-            r_cnt <= 0;     // Reset internal counter
+        else if (cnt == MAX-1) begin
+            o_ce <= 1'b1;  // Generate one-cycle pulse
+            cnt  <= 0;     // Reset internal counter
         end
         else begin
-            o_ce  <= 1'b0;  // Clear output
-            r_cnt <= r_cnt + 1'b1;  // Increment internal counter
+            o_ce <= 1'b0;  // Clear output
+            cnt  <= cnt + 1'b1;  // Increment internal counter
         end
     end
 

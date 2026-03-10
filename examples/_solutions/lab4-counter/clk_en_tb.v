@@ -51,7 +51,7 @@ module clk_en_tb ();
         // Use the monitor task to automaticaly display any change
         $monitor("[%3d] clk=%b rst=%b ce=%b  cnt=%d",
             $time, clk, rst, ce,
-            clk_en_tb.dut.r_cnt);  // <--- hierarchical path
+            clk_en_tb.dut.cnt);  // <--- hierarchical path
         
         // Initialize signals
         rst = 1;
