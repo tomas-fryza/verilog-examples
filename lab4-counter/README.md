@@ -10,10 +10,10 @@
 
 After completing this laboratory, students will be able to:
 
-* Understand the operation of binary counters and how N-bit outputs represent sequential counts
 * Use a clock enable signal to drive slower logic without creating new clock domains
-* Use XXXXX to make designs flexible and reusable
+* Use Verilog parameters to make designs flexible and reusable
 * Implement synchronous processes with a clock and reset signals
+* Understand the operation of binary counters and how N-bit outputs represent sequential counts
 
 ### Background
 
@@ -43,17 +43,17 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
       * It cannot be changed during simulation.
       * It is typically used to define sizes, limits, or timing parameters.
 
-   In this example, the parameter `N` defines the width of binary counter is generated. The module can be extended with such a parameter as follows:
+   In the following example, the parameter `N` defines the width of the generated binary counter. The module can be extended with such a parameter as follows:
 
    ```verilog
    module counter #(
        // #() after a module name introduces a parameter list
        parameter N = 4  // Number of bits for the counter
    )(
-       input  wire           clk,  // Main clock
-       input  wire           rst,  // High-active synchronous reset
-       input  wire           en,   // Clock enable
-       output reg [N-1:0] cnt   // Counter value
+       input  wire          clk,  // Main clock
+       input  wire          rst,  // High-active synchronous reset
+       input  wire          en,   // Clock enable
+       output reg   [N-1:0] cnt   // Counter value
    );
    ```
 
@@ -73,9 +73,9 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
    endmodule
    ```
 
-   > **Note:** There are blocking and non-blocking assignments in Verilog. Blocking assignments (`=`) execute immediately and in order, while non-blocking assignments (`<=`) update at the end of the time step, which correctly models how flip-flops update simultaneously in hardware.
+   > **Note:** Verilog suppors **blocking** and **non-blocking** assignments. Blocking assignments (`=`) execute immediately and in order, while non-blocking assignments (`<=`) update at the end of the time step, which correctly models how flip-flops update simultaneously in hardware.
 
-4. Create a Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `rst` and `en` signals, and try several `N` values.
+4. Create a Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `rst` and `en` signals, and try several values of `N`.
 
    A module parameter allows the designer to **configure the internal properties of a module during instantiation**. When a module is instantiated, its parameters can be overridden using the `#(...)` syntax placed between the module name and the instance name.
 
@@ -96,7 +96,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
        // Instantiate the counter
        counter #(
            .N (N)
-       ) uut (
+       ) dut (
            .clk (clk),
            .rst (rst),
            .en  (en),
@@ -126,7 +126,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
    endmodule
    ```
 
-   > **Note:** For any vector, you can change the numeric display format in the simulation. To do this, right-click the vector name and select **Radix > Unsigned Decimal** from the context menu. You can also change the vector color using **Signal Color**.
+   > **Note:** For any vector, you can change the numeric display format in the simulation viewer. To do this, right-click the vector name and select **Radix > Unsigned Decimal** from the context menu. You can also change the vector color using **Signal Color**.
    > 
    > ![Change radix](images/vivado_radix.png)
 
@@ -154,7 +154,7 @@ To drive other logic in the design that requires a slower operation, it is bette
    | 500&nbsp;ms |  |  |  |
    | 1&nbsp;sec | 100_000_000 | `b"101_1111_0101_1110_0001_0000_0000"` | `x"5F5_E100"` | 27 |
 
-2. In your project, create a new Verilog design source file named `clk_en`, and implement a clock enable circuit which generates one-clock-cycle positive pulse every `MAX` clock periods. 
+2. In your project, create a new Verilog design source file named `clk_en`, and implement a clock enable circuit which generates one-clock-cycle positive pulse every `MAX` clock periods.
 
 3. Copy the [design](https://raw.githubusercontent.com/tomas-fryza/verilog-examples/refs/heads/main/examples/_solutions/lab4-counter/clk_en.v) into your `clk_en.v` file.
 
