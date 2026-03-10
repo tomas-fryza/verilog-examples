@@ -185,7 +185,33 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 2. Use module instantiation of `clk_en` and `counter`, and define the top-level structure as follows.
 
    ```verilog
-   TBD
+   ...
+       // Internal signal(s)
+      wire w_en_10ms;  // Clock enable for 8-bit counter
+
+      // ---------------------------------------------------------
+      // Clock enable for 10 ms
+      // ---------------------------------------------------------
+      clk_en #(
+         .MAX (1_000_000)
+      ) u_enable0 (
+         .i_clk (clk),
+         .i_rst (btnu),
+         .o_ce  (w_en_10ms)
+      );
+
+      // ---------------------------------------------------------
+      // 8-bit binary counter
+      // ---------------------------------------------------------
+      counter #(
+         .N (8)
+      ) u_counter0 (
+
+         // TODO: Complete the instantiation
+
+      );
+
+   endmodule
    ```
 
 3. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/_solutions/nexys.xdc) constraint file or use the following minimal constrains:
@@ -194,7 +220,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    # -----------------------------------------------
    # Clock signal
    # -----------------------------------------------
-   set_property -dict { PACKAGE_PIN E3 IOSTANDARD LVCMOS33 } [get_ports { clk }]; 
+   set_property -dict { PACKAGE_PIN E3 IOSTANDARD LVCMOS33 } [get_ports {clk}]; 
    create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {clk}];
 
    # -----------------------------------------------
@@ -206,14 +232,14 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    # -----------------------------------------------
    # LEDs
    # -----------------------------------------------
-   set_property PACKAGE_PIN H17 [get_ports { led[0] }] ;
-   set_property PACKAGE_PIN K15 [get_ports { led[1] }] ;
-   set_property PACKAGE_PIN J13 [get_ports { led[2] }] ;
-   set_property PACKAGE_PIN N14 [get_ports { led[3] }] ;
-   set_property PACKAGE_PIN R18 [get_ports { led[4] }] ;
-   set_property PACKAGE_PIN V17 [get_ports { led[5] }] ;
-   set_property PACKAGE_PIN U17 [get_ports { led[6] }] ;
-   set_property PACKAGE_PIN U16 [get_ports { led[7] }] ;
+   set_property PACKAGE_PIN H17 [get_ports {led[0]}] ;
+   set_property PACKAGE_PIN K15 [get_ports {led[1]}] ;
+   set_property PACKAGE_PIN J13 [get_ports {led[2]}] ;
+   set_property PACKAGE_PIN N14 [get_ports {led[3]}] ;
+   set_property PACKAGE_PIN R18 [get_ports {led[4]}] ;
+   set_property PACKAGE_PIN V17 [get_ports {led[5]}] ;
+   set_property PACKAGE_PIN U17 [get_ports {led[6]}] ;
+   set_property PACKAGE_PIN U16 [get_ports {led[7]}] ;
    set_property IOSTANDARD LVCMOS33 [get_ports {led[*]}]
    ```
 
@@ -225,6 +251,18 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    4. Click **Program device** and select the generated file `YOUR-PROJECT-FOLDER/counter.runs/impl_1/counter_top.bit`.
 
 5. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Variant 2: Counter and 7-segment display
 
@@ -247,7 +285,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 3. Use instantiation of modules `clk_en`, `counter`, and `bin2seg`, and define the top-level architecture as follows.
 
    ```verilog
-   TBD
+   tbd
    ```
 
 4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/_solutions/nexys.xdc) constraint file or use the following minimal constrains:
