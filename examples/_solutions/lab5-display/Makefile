@@ -10,17 +10,23 @@ GTKWAVE  = gtkwave
 # Files
 TOP      = display_driver_tb
 VCD      = display_driver.vcd
-SRCS     = display_driver.v display_driver_tb.v clk_en.v counter.v bin2seg.v
+
+SRCS = \
+	display_driver.v \
+	display_driver_tb.v \
+	clk_en.v \
+	counter.v \
+	bin2seg.v
 
 # Default target
 all: sim
 
 # Compile and run simulation
 sim: $(SRCS)
-	$(IVERILOG) -g2012 -o sim $(SRCS)
+	$(IVERILOG) -g2012 -s $(TOP) -o sim $(SRCS)
 	$(VVP) sim
 
-# Open waveform
+# Open waveform viewer
 wave: sim
 	$(GTKWAVE) $(VCD)
 
@@ -30,7 +36,6 @@ clean:
 
 # Help
 help:
-	@echo "make        - compile, run, and open GTKWave"
-	@echo "make sim    - compile and run"
-	@echo "make wave   - compile, run, and view waves"
+	@echo "make        - compile and run simulation"
+	@echo "make wave   - open GTKWave"
 	@echo "make clean  - remove generated files"

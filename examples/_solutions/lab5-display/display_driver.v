@@ -3,7 +3,7 @@ module display_driver (
     input  wire       i_rst,   //! High-active synchronous reset
     input  wire [7:0] i_data,  //! Two hexadecimal digits
     output wire [6:0] o_seg,   //! {a,b,c,d,e,f,g} active-low
-    output wire [1:0] o_anode  //! Seven-segment anodes AN1..AN0 (active-low)
+    output reg  [1:0] o_anode  //! Seven-segment anodes AN1..AN0 (active-low)
 );
 
     // Internal signals
@@ -53,6 +53,9 @@ module display_driver (
     // ---------------------------------------------------------
     // Anode select (active-low)
     // ---------------------------------------------------------
-    assign o_anode = (w_digit) ? 2'b01 : 2'b10;
+    always @(*) begin
+        o_anode = 2'b11;          // All digits off (active-low)
+        o_anode[w_digit] = 1'b0;  // Enable selected digit
+    end
 
 endmodule

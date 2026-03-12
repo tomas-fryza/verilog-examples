@@ -31,6 +31,7 @@ module gates (
     // ---------------------------------------------
     assign y_and = a & b;  // AND operation
     assign y_or  = a | b;  // OR operation
-    assign y_xor = a ^ b;  // XOR operation
+    // assign y_xor = a ^ b;  // XOR operation
+    assign y_xor = (~a & b) | (a & ~b);
 
 endmodule

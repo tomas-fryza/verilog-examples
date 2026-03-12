@@ -31,13 +31,9 @@ module display_driver_tb ();
     end
 
     // ---------------------------------------------------------
-    // Stimulus process
+    // Stimulus
     // ---------------------------------------------------------
     initial begin
-        // Waveform dump for GTKWave
-        $dumpfile("display_driver.vcd");
-        $dumpvars(0, display_driver_tb);
-
         // Initialize signals
         rst  = 1;
         data = 8'h00;
@@ -46,21 +42,15 @@ module display_driver_tb ();
         #50;
         rst = 0;
 
-        // -------------------------------------------------
-        // Test value 0x18
-        // -------------------------------------------------
+        // Apply test value 0x18
         data = 8'h18;
         #2000;
 
-        // -------------------------------------------------
-        // Test value 0x19
-        // -------------------------------------------------
+        // Apply test value 0x19
         data = 8'h19;
         #2000;
 
-        // -------------------------------------------------
-        // Test value 0x20
-        // -------------------------------------------------
+        // Apply test value 0x20
         data = 8'h20;
         #2000;
 
@@ -69,11 +59,19 @@ module display_driver_tb ();
     end
 
     // ---------------------------------------------------------
+    // VCD waveform dump for GTKWave
+    // ---------------------------------------------------------
+    initial begin
+        $dumpfile("display_driver.vcd");
+        $dumpvars(0, display_driver_tb);
+    end
+
+    // ---------------------------------------------------------
     // Monitor signals
     // ---------------------------------------------------------
     initial begin
-        $display("   Time   rst data anode seg");
-        $monitor("%8t   %b   %h   %b   %b",
+        $display("   Time  rst data anode seg");
+        $monitor("%7t   %b   %h   %b   %b",
                   $time, rst, data, anode, seg);
     end
 

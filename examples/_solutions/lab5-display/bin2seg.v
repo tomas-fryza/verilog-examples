@@ -38,6 +38,7 @@ module bin2seg (
             4'h7: o_seg = 7'b000_1111;
             4'h8: o_seg = 7'b000_0000;
             4'h9: o_seg = 7'b000_0100;
+
             4'hA: o_seg = 7'b000_1000;
             4'hB: o_seg = 7'b110_0000;
             4'hC: o_seg = 7'b011_0001;
