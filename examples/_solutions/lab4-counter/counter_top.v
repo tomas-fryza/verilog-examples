@@ -8,9 +8,9 @@ module counter_top (
 );
 
     // Internal signals
-    wire       en_250ms;  // Clock enable for 4-bit counter
-    wire [3:0] cnt_4bit;  // 4-bit counter value
-    wire       en_2ms;    // Clock enable for 16-bit counter
+    wire       w_en_0;  // Clock enable for 4-bit counter
+    wire [3:0] w_cnt;   // 4-bit counter value
+    wire       w_en_1;  // Clock enable for 16-bit counter
 
     // ---------------------------------------------------------
     // Clock enable for 250 ms
@@ -20,7 +20,7 @@ module counter_top (
     ) u_enable0 (
         .i_clk (clk),
         .i_rst (btnu),
-        .o_ce  (en_250ms)
+        .o_ce  (w_en_0)
     );
 
     // ---------------------------------------------------------
@@ -31,15 +31,15 @@ module counter_top (
     ) u_counter0 (
         .i_clk (clk),
         .i_rst (btnu),
-        .i_en  (en_250ms),
-        .o_cnt (cnt_4bit)
+        .i_en  (w_en_0),
+        .o_cnt (w_cnt)
     );
 
     // ---------------------------------------------------------
     // Binary to 7-segment decoder
     // ---------------------------------------------------------
     bin2seg u_segment (
-        .i_bin (cnt_4bit),
+        .i_bin (w_cnt),
         .o_seg (seg)
     );
 
@@ -57,7 +57,7 @@ module counter_top (
     ) u_enable1 (
         .i_clk (clk),
         .i_rst (btnu),
-        .o_ce  (en_2ms)
+        .o_ce  (w_en_1)
     );
 
     // ---------------------------------------------------------
@@ -68,7 +68,7 @@ module counter_top (
     ) u_counter1 (
         .i_clk (clk),
         .i_rst (btnu),
-        .i_en  (en_2ms),
+        .i_en  (w_en_1),
         .o_cnt (led)
     );
 
