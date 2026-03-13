@@ -15,9 +15,9 @@ module display_driver (
     // Clock enable generator for refresh timing
     // ---------------------------------------------------------
     clk_en #(
-        .MAX (32)  // Adjust for flicker-free multiplexing
-                   // For simulation: 32
-    ) clock_0 (    // For implementation: 3_200_000
+        .MAX (8)  // Adjust for flicker-free multiplexing
+                  // For simulation: 8
+    ) clock_0 (   // For implementation: 80_000_000
         .i_clk (i_clk),
         .i_rst (i_rst),
         .o_ce  (w_en)
