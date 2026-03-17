@@ -3,8 +3,8 @@ module display_top (
     input  wire        btnu,  // Synchronous reset
     input  wire [7:0]  sw,    // Input data
     output wire [6:0]  seg,   // Seven-segment cathodes CA..CG (active-low)
-    output wire        dp,    // Decimal point
     output wire [7:0]  an     // Seven-segment anodes AN7..AN0 (active-low)
+    output wire        dp,    // Decimal point
 );
 
     // ---------------------------------------------------------

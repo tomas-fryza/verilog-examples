@@ -185,7 +185,6 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    ![top level ver1](images/top-level_ver1.png)
 
    ```verilog
-   ...
        // Internal signal
        wire en_10ms;  // Clock enable for 8-bit counter
 
@@ -214,7 +213,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    endmodule
    ```
 
-3. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/_solutions/nexys.xdc) constraint file or use the following minimal constrains:
+3. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
 
    ```xdc
    # -----------------------------------------------
@@ -316,7 +315,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    endmodule
    ```
 
-4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/_solutions/nexys.xdc) constraint file or use the following minimal constrains:
+4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
 
    ```xdc
    # -----------------------------------------------

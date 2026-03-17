@@ -265,7 +265,7 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
 5. Create a new constraints file `nexys` (XDC file).
 
-6. Copy relevant pin assignments from the [Nexys A7-50T](../examples/_solutions/nexys.xdc) constraint file or use the following minimal constrains:
+6. Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
 
    ```xdc
    set_property PACKAGE_PIN J15 [get_ports {sw[0]}]

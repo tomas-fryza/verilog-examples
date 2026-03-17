@@ -7,6 +7,8 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 1. [Basic logic gates](lab1-gates)
 2. [Binary comparator](lab2-comparator)
 3. [Seven-segment display decoder](lab3-segment)
+4. [Binary counter](lab4-counter)
+5. [Multiple seven-segment displays](lab5-display)
 
    ![vhdl_course](lab1-gates/images/nexys-lab.jpg)
 
