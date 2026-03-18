@@ -59,7 +59,7 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
        clk_en #(
            .MAX (8)  // Adjust for flicker-free multiplexing
                      // For simulation: 8
-       ) clock_0 (   // For implementation: 80_000_000
+       ) clock_0 (   // For implementation: 8_000_000
            .i_clk (i_clk),
            .i_rst (i_rst),
            .o_ce  (w_en)
@@ -190,7 +190,7 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 ### Variant 1: Switches
 
-**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `80_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
 1. In your project, create a new Verilog design source file named `display_top`. Define I/O ports as follows.
 
@@ -241,7 +241,7 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 ### Variant 2: Counter
 
-**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `80_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
 1. In your project, create a new VHDL design source file named `display_top`. Define I/O ports as follows.
 
