@@ -33,11 +33,11 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `rst` | input | `wire` | High-active synchronous reset |
-   | `data` | input | `wire [7:0]` | Vector of input bits, 4 per digit |
-   | `seg` | output | `wire [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
-   | `anode` | output | `reg [1:0]` | Anodes AN1..AN0 (active-low) |
+   | `i_clk` | input | `wire` | Main clock |
+   | `i_rst` | input | `wire` | High-active synchronous reset |
+   | `i_data` | input | `wire [7:0]` | Vector of input bits, 4 per digit |
+   | `o_seg` | output | `wire [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
+   | `o_anode` | output | `reg [1:0]` | Anodes AN1..AN0 (active-low) |
 
 2. In your project, add the design source files `clk_en.v`, `counter.v`, and `bin2seg.v` from the previous lab(s) and check the **Copy sources into project** option. The selected files will be copied into the corresponding Vivado project folders, ensuring that the project contains local copies of all source files.
 
@@ -140,6 +140,7 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
        // ---------------------------------------------------------
        initial begin
            // Initialize signals
+           clk = 0;
            data = 8'h00;
 
            // Hold reset for a few cycles
