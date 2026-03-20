@@ -12,23 +12,20 @@ module display_driver (
     wire [3:0] w_bin;
 
     // ---------------------------------------------------------
-    // Clock enable generator for refresh timing
+    // Refresh timing
     // ---------------------------------------------------------
     clk_en #(
         .MAX (8)  // Adjust for flicker-free multiplexing
                   // For simulation: 8
-    ) clock_0 (   // For implementation: 80_000_000
+    ) clock_inst (   // For implementation: 80_000_000
         .i_clk (i_clk),
         .i_rst (i_rst),
         .o_ce  (w_en)
     );
 
-    // ---------------------------------------------------------
-    // N-bit counter for digit selection
-    // ---------------------------------------------------------
     counter #(
         .N (1)
-    ) counter_0 (
+    ) counter_inst (
         .i_clk (i_clk),
         .i_rst (i_rst),
         .i_en  (w_en),
@@ -45,7 +42,7 @@ module display_driver (
     // ---------------------------------------------------------
     // 7-segment decoder
     // ---------------------------------------------------------
-    bin2seg decoder_0 (
+    bin2seg decoder_inst (
         .i_bin (w_bin),
         .o_seg (o_seg)
     );
