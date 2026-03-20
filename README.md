@@ -9,6 +9,7 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 3. [Seven-segment display decoder](lab3-segment)
 4. [Binary counter](lab4-counter)
 5. [Multiple seven-segment displays](lab5-display)
+6. [Button debounce](lab6-debounce)
 
    ![vhdl_course](lab1-gates/images/nexys-lab.jpg)
 
