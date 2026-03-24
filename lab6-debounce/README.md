@@ -70,8 +70,10 @@ The main methods to eliminate switch bounce are:
        //------------------------------------------------------------
        // Constants (internal)
        //------------------------------------------------------------
-       localparam C_SHIFT_LEN = 4;
-       localparam C_MAX       = 2;  // 2 for simulation, ~200_000 for HW
+       localparam C_SHIFT_LEN = 4;  // Debounce history
+       localparam C_MAX       = 2;  // Sampling period
+                                    // 2 for simulation
+                                    // 200_000 (2 ms) for implementation !!!
 
        //------------------------------------------------------------
        // Internal signals
@@ -104,21 +106,25 @@ The main methods to eliminate switch bounce are:
                debounced <= 0;
                delayed   <= 0;
            end else begin
-               // Synchronizer
-               sync0 <= btn_in;
+               // Input synchronizer
                sync1 <= sync0;
+               sync0 <= btn_in;
 
-               // Sampling
+               // Sample only when enable pulse occurs
                if (ce_sample) begin
+
+                   // Shift values to the left and load a new sample as LSB
                    shift_reg <= {shift_reg[C_SHIFT_LEN-2:0], sync1};
 
+                   // Check if all bits are '1'
                    if (&shift_reg)
                        debounced <= 1;
+                   // Check if all bits are '0'
                    else if (~|shift_reg)
                        debounced <= 0;
                end
 
-               // Delay for edge detection
+               // One clock delayed output for edge detector
                delayed <= debounced;
            end
        end
@@ -127,20 +133,21 @@ The main methods to eliminate switch bounce are:
        // Outputs
        //------------------------------------------------------------
        assign btn_state = debounced;
+
+       // One-clock pulse when button pressed
        assign btn_press = debounced & ~delayed;
 
    endmodule
    ```
 
-   > **Note:** The `{}` operator is used to **join (concatenate)** two or more signals into a single, wider vector.
+   > **Note:** The `{}` operator is used to **join (concatenate)** two or more signals into a single, wider vector. Operands are combined from left to right, and the result is a new vector whose width is the sum of the operand widths.
    >
-   > **Example:** Operands are combined from left to right, and the result is a new vector whose width is the sum of the operand widths.
-   >
+   > **Example:** 
    > ```verilog
-   > wire [3:0] vect   = 4'b1010;
-   > wire [4:0] result;
+   >    wire [3:0] vect   = 4'b1010;
+   >    wire [4:0] result;
    >
-   > assign result = {1'b1, vect};  // result = 5'b1_1010
+   >    assign result = {1'b1, vect};  // result = 5'b1_1010
    > ```
 
 4. Create a Verilog simulation file named `debounce_tb` and verify the functionality of the debouncer.
@@ -153,9 +160,9 @@ The main methods to eliminate switch bounce are:
        //------------------------------------------------------------
        // Testbench signals
        //------------------------------------------------------------
-       reg clk;
-       reg rst;
-       reg btn_in;
+       reg  clk;
+       reg  rst;
+       reg  btn_in;
        wire btn_state;
        wire btn_press;
 
@@ -256,13 +263,9 @@ Choose one of the following variants and implement a button-triggered binary cou
 
    ```verilog
        //------------------------------------------------------------
-       // Internal signal(s)
-       //------------------------------------------------------------
-       wire w_cnt_en;
-
-       //------------------------------------------------------------
        // Debounce instance
        //------------------------------------------------------------
+       wire w_cnt_en;
        debounce debounce_inst (
            .clk       (clk),
            .rst       (btnu),
@@ -322,15 +325,9 @@ Choose one of the following variants and implement a button-triggered binary cou
 
    ```verilog
        //------------------------------------------------------------
-       // Internal signal(s)
-       //------------------------------------------------------------
-       wire w_cnt_en;
-
-       // TODO: Add other needed signal(s)
-
-       //------------------------------------------------------------
        // Debounce instance
        //------------------------------------------------------------
+       wire w_cnt_en;
        debounce debounce_inst (
            .clk       (clk),
            .rst       (btnu),
@@ -342,6 +339,7 @@ Choose one of the following variants and implement a button-triggered binary cou
        //------------------------------------------------------------
        // Counter instance
        //------------------------------------------------------------
+       wire [7:0] w_cnt_val;
        counter #(
            .N(8)
        ) counter_inst (
