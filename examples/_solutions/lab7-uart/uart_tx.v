@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module uart_tx (
     input  wire        clk,
     input  wire        rst,
@@ -22,13 +24,14 @@ module uart_tx (
     //-------------------------------------------------
     localparam integer CLK_FREQ = 100_000_000; // 100 MHz
     localparam integer BAUDRATE = 9600;
-    localparam integer N_PERIODS = CLK_FREQ / BAUDRATE;
-    // localparam integer N_PERIODS = 2;  // For simulation
+    localparam integer MAX = 2;  // For simulation
+    // localparam integer MAX = CLK_FREQ / BAUDRATE;
+    localparam integer CNT_WIDTH = $clog2(MAX);
 
     //-------------------------------------------------
     // Internal registers
     //-------------------------------------------------
-    reg [$clog2(N_PERIODS)-1:0] baud_count;
+    reg [CNT_WIDTH-1:0] baud_count;
     reg [7:0] shift_reg;
     reg [2:0] current_bit_index;
 
@@ -37,22 +40,24 @@ module uart_tx (
     //-------------------------------------------------
     always @(posedge clk) begin
         if (rst) begin
+            current_state     <= IDLE;
             tx                <= 1'b1;
             tx_complete       <= 1'b0;
-            current_state     <= IDLE;
             shift_reg         <= 8'd0;
             current_bit_index <= 3'd0;
             baud_count        <= 0;
 
         end else begin
+            // Default assignments
+            tx_complete <= 1'b0;
+
             case (current_state)
 
                 //-------------------------------------------------
                 // IDLE
                 //-------------------------------------------------
                 IDLE: begin
-                    tx          <= 1'b1;
-                    tx_complete <= 1'b0;
+                    tx <= 1'b1;
 
                     if (tx_start) begin
                         shift_reg         <= data;
@@ -68,7 +73,7 @@ module uart_tx (
                 TRANSMIT_START_BIT: begin
                     tx <= 1'b0;
 
-                    if (baud_count == N_PERIODS - 1) begin
+                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
                         baud_count    <= 0;
                         current_state <= TRANSMIT_DATA;
                     end else begin
@@ -82,8 +87,9 @@ module uart_tx (
                 TRANSMIT_DATA: begin
                     tx <= shift_reg[0];
 
-                    if (baud_count == N_PERIODS - 1) begin
-                        shift_reg <= {1'b0, shift_reg[7:1]};
+                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
+                        // shift_reg <= {1'b0, shift_reg[7:1]};
+                        shift_reg <= shift_reg >> 1;
 
                         if (current_bit_index == 3'd7) begin
                             current_state <= TRANSMIT_STOP_BIT;
@@ -101,11 +107,12 @@ module uart_tx (
                 // STOP BIT
                 //-------------------------------------------------
                 TRANSMIT_STOP_BIT: begin
-                    tx          <= 1'b1;
-                    tx_complete <= 1'b1;
+                    tx <= 1'b1;
 
-                    if (baud_count == N_PERIODS - 1) begin
+                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
                         current_state <= IDLE;
+                        baud_count    <= 0;
+                        tx_complete   <= 1'b1;  // 1-cycle pulse
                     end else begin
                         baud_count <= baud_count + 1;
                     end

@@ -1,38 +1,60 @@
 # ===============================================
-# Simple Makefile for Icarus Verilog + GTKWave
+# Makefile for Verilog (Verilator + Icarus + GTKWave)
 # ===============================================
 
-# Simulator and tools
-IVERILOG = iverilog
-VVP      = vvp
-GTKWAVE  = gtkwave
+# Tools
+IVERILOG  = iverilog
+VVP       = vvp
+VERILATOR = verilator
+GTKWAVE   = gtkwave
 
-# Files
-TOP      = uart_tx_tb
-VCD      = uart_tx.vcd
+# Top test
+TOP = uart_tx_tb
 
+# Output files
+SIM_OUT = sim.vvp
+PASS    = test.pass
+VCD     = dump.vcd
+
+# Sources
 SRCS = \
 	uart_tx.v \
 	uart_tx_tb.v
 
+# ===============================================
 # Default target
-all: sim
+# ===============================================
+all: $(PASS)
 
-# Compile and run simulation
-sim: $(SRCS)
-	$(IVERILOG) -g2012 -s $(TOP) -o sim $(SRCS)
-	$(VVP) sim
+# ===============================================
+# Lint + Compile + Simulate
+# ===============================================
+$(PASS): $(SRCS)
+	@echo "== Linting with Verilator =="
+	$(VERILATOR) --lint-only -Wno-fatal $^
 
-# Open waveform viewer
-wave: sim
+	@echo "== Compiling with Icarus =="
+	$(IVERILOG) -Wall -g2012 -o $(SIM_OUT) $^
+
+	@echo "== Running simulation =="
+	($(VVP) $(SIM_OUT) -fst > $@.log && touch $@) || (cat $@.log && false)
+
+# ===============================================
+# Waveform viewer
+# ===============================================
+wave: $(PASS)
 	$(GTKWAVE) $(VCD)
 
-# Clean generated files
+# ===============================================
+# Clean
+# ===============================================
 clean:
-	rm -f sim $(VCD)
+	rm -f *.vvp *.vcd *.fst *.pass *.log
 
+# ===============================================
 # Help
+# ===============================================
 help:
-	@echo "make        - compile and run simulation"
-	@echo "make wave   - open GTKWave"
+	@echo "make        - run lint + simulation"
+	@echo "make wave   - open waveform viewer"
 	@echo "make clean  - remove generated files"
