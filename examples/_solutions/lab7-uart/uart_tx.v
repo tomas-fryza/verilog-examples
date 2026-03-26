@@ -20,12 +20,12 @@ module uart_tx (
     reg [1:0] current_state = IDLE;
 
     //-------------------------------------------------
-    // Internal constants (like VHDL constants)
+    // Internal constants
     //-------------------------------------------------
-    localparam integer CLK_FREQ = 100_000_000; // 100 MHz
+    localparam integer CLK_FREQ = 100_000_000;  // 100 MHz
     localparam integer BAUDRATE = 9600;
-    localparam integer MAX = 2;  // For simulation
-    // localparam integer MAX = CLK_FREQ / BAUDRATE;
+    localparam integer MAX = 2;  // 2 for simulation
+                                 // CLK_FREQ / BAUDRATE for implementation
     localparam integer CNT_WIDTH = $clog2(MAX);
 
     //-------------------------------------------------

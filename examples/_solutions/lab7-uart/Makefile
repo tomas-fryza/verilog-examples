@@ -1,12 +1,11 @@
 # ===============================================
-# Makefile for Verilog (Verilator + Icarus + GTKWave)
+# Makefile for Verilog (Verilator + Icarus)
 # ===============================================
 
 # Tools
 IVERILOG  = iverilog
 VVP       = vvp
 VERILATOR = verilator
-GTKWAVE   = gtkwave
 
 # Top test
 TOP = uart_tx_tb
@@ -40,12 +39,6 @@ $(PASS): $(SRCS)
 	($(VVP) $(SIM_OUT) -fst > $@.log && touch $@) || (cat $@.log && false)
 
 # ===============================================
-# Waveform viewer
-# ===============================================
-wave: $(PASS)
-	$(GTKWAVE) $(VCD)
-
-# ===============================================
 # Clean
 # ===============================================
 clean:
@@ -56,5 +49,4 @@ clean:
 # ===============================================
 help:
 	@echo "make        - run lint + simulation"
-	@echo "make wave   - open waveform viewer"
 	@echo "make clean  - remove generated files"

@@ -44,14 +44,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports {led[*]}]
 # -----------------------------------------------
 # RGB LEDs
 # -----------------------------------------------
-set_property -dict { PACKAGE_PIN R12 IOSTANDARD LVCMOS33 } [get_ports {led16_b}];
-
 set_property -dict { PACKAGE_PIN R11 IOSTANDARD LVCMOS33 } [get_ports {led17_g}];
 
 # -----------------------------------------------
 # USB-RS232 Interface
 # -----------------------------------------------
-set_property -dict { PACKAGE_PIN D4 IOSTANDARD LVCMOS33 } [get_ports {uart_rxd_out}];
+set_property -dict { PACKAGE_PIN D4 IOSTANDARD LVCMOS33 } [get_ports {uart_txd}];
 
 # -----------------------------------------------
 # Pmod Header JA
