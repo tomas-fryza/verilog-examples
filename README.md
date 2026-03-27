@@ -12,8 +12,8 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 6. [Button debounce](lab6-debounce)
 7. UART transmitter
 8. Project
-
-   ![vhdl_course](lab1-gates/images/nexys-lab.jpg)
+   * [Verilog projects 2026](lab8-project/README_2026.md)
+9. [Verilog basic syntax reference](docs/README.md)
 
 ## Installation(s)
 
@@ -48,3 +48,5 @@ This repository contains Verilog examples for the bachelor-level course [Digital
    # open waveform in GTKWave
    $ gtkwave gates.vcd
    ```
+
+   ![vhdl_course](lab1-gates/images/nexys-lab.jpg)
