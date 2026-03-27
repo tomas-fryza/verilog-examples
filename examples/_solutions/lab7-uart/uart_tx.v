@@ -26,11 +26,11 @@ module uart_tx (
     localparam integer BAUDRATE = 9600;
     localparam integer MAX = 2;  // 2 for simulation
                                  // CLK_FREQ / BAUDRATE for implementation
-    localparam integer CNT_WIDTH = $clog2(MAX);
 
     //-------------------------------------------------
     // Internal registers
     //-------------------------------------------------
+    localparam integer CNT_WIDTH = $clog2(MAX);
     reg [CNT_WIDTH-1:0] baud_count;
     reg [7:0] shift_reg;
     reg [2:0] current_bit_index;
@@ -73,7 +73,7 @@ module uart_tx (
                 TRANSMIT_START_BIT: begin
                     tx <= 1'b0;
 
-                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
+                    if (baud_count == (MAX - 1)) begin
                         baud_count    <= 0;
                         current_state <= TRANSMIT_DATA;
                     end else begin
@@ -87,7 +87,7 @@ module uart_tx (
                 TRANSMIT_DATA: begin
                     tx <= shift_reg[0];
 
-                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
+                    if (baud_count == (MAX - 1)) begin
                         // shift_reg <= {1'b0, shift_reg[7:1]};
                         shift_reg <= shift_reg >> 1;
 
@@ -109,7 +109,7 @@ module uart_tx (
                 TRANSMIT_STOP_BIT: begin
                     tx <= 1'b1;
 
-                    if (baud_count == CNT_WIDTH'(MAX - 1)) begin
+                    if (baud_count == (MAX - 1)) begin
                         current_state <= IDLE;
                         baud_count    <= 0;
                         tx_complete   <= 1'b1;  // 1-cycle pulse
