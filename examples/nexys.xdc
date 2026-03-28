@@ -100,10 +100,10 @@ set_property -dict { PACKAGE_PIN G14 IOSTANDARD LVCMOS33 } [get_ports {led17_b}]
 # -----------------------------------------------
 # USB-RS232 Interface
 # -----------------------------------------------
-set_property -dict { PACKAGE_PIN C4 IOSTANDARD LVCMOS33 } [get_ports {uart_rxd}];
-set_property -dict { PACKAGE_PIN D4 IOSTANDARD LVCMOS33 } [get_ports {uart_txd}];
-set_property -dict { PACKAGE_PIN D3 IOSTANDARD LVCMOS33 } [get_ports {uart_cts}];
-set_property -dict { PACKAGE_PIN E5 IOSTANDARD LVCMOS33 } [get_ports {uart_rts}];
+set_property -dict { PACKAGE_PIN C4 IOSTANDARD LVCMOS33 } [get_ports {rx}];
+set_property -dict { PACKAGE_PIN D4 IOSTANDARD LVCMOS33 } [get_ports {tx}];
+set_property -dict { PACKAGE_PIN D3 IOSTANDARD LVCMOS33 } [get_ports {cts}];
+set_property -dict { PACKAGE_PIN E5 IOSTANDARD LVCMOS33 } [get_ports {rts}];
 
 # -----------------------------------------------
 # Pmod Header JA

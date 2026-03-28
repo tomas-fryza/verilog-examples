@@ -1,6 +1,6 @@
 // -----------------------------------------------------------
 //! @brief UART transmitter (8N1, FSM-based)
-//! @version 1.2
+//! @version 1.3
 //! @copyright (c) 2025-2026 Tomas Fryza, MIT license
 //!
 //! This module implements a UART (Universal Asynchronous Receiver/
@@ -13,8 +13,6 @@
 // - Synchronous design (rising edge of clk)
 // - High-active synchronous reset
 // - Baud rate generated using clock counter
-// - Transmission controlled by tx_start signal
-// - tx_complete indicates end of frame
 //
 // See also:
 //   https://nandland.com/uart-serial-port-module/
@@ -23,12 +21,12 @@
 `timescale 1ns/1ps
 
 module uart_tx (
-    input  wire        clk,
-    input  wire        rst,
-    input  wire [7:0]  data,
-    input  wire        tx_start,
-    output reg         tx,
-    output reg         tx_complete
+    input  wire clk,            //! System clock
+    input  wire rst,            //! Active-high reset
+    input  wire tx_start,       //! Start transmission
+    input  wire [7:0] tx_data,  //! Data to transmit
+    output reg  tx,             //! UART Tx line
+    output reg  tx_busy         //! Transmission in progress
 );
 
     //-------------------------------------------------
@@ -44,15 +42,15 @@ module uart_tx (
     //-------------------------------------------------
     // Internal constants
     //-------------------------------------------------
-    localparam integer CLK_FREQ = 100_000_000;  // 100 MHz
-    localparam integer BAUDRATE = 9600;
-    localparam integer MAX = 2;  // 2 for simulation
+    localparam CLK_FREQ = 100_000_000;  // 100 MHz
+    localparam BAUDRATE = 9600;
+    localparam MAX = 2;  // 2 for simulation
                                  // CLK_FREQ / BAUDRATE for implementation
 
     //-------------------------------------------------
     // Internal registers
     //-------------------------------------------------
-    localparam integer CNT_WIDTH = $clog2(MAX);
+    localparam CNT_WIDTH = $clog2(MAX);
     reg [CNT_WIDTH-1:0] baud_count;
     reg [7:0] shift_reg;
     reg [2:0] current_bit_index;
@@ -64,14 +62,12 @@ module uart_tx (
         if (rst) begin
             current_state     <= IDLE;
             tx                <= 1'b1;
-            tx_complete       <= 1'b0;
+            tx_busy           <= 1'b0;
             shift_reg         <= 8'd0;
             current_bit_index <= 3'd0;
             baud_count        <= 0;
 
         end else begin
-            // Default assignments
-            tx_complete <= 1'b0;
 
             case (current_state)
 
@@ -79,10 +75,11 @@ module uart_tx (
                 // IDLE
                 //-------------------------------------------------
                 IDLE: begin
-                    tx <= 1'b1;
+                    tx      <= 1'b1;
+                    tx_busy <= 1'b0;
 
                     if (tx_start) begin
-                        shift_reg         <= data;
+                        shift_reg          <= tx_data;
                         current_bit_index  <= 3'd0;
                         baud_count         <= 0;
                         current_state      <= TRANSMIT_START_BIT;
@@ -93,7 +90,8 @@ module uart_tx (
                 // START BIT
                 //-------------------------------------------------
                 TRANSMIT_START_BIT: begin
-                    tx <= 1'b0;
+                    tx      <= 1'b0;
+                    tx_busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         baud_count    <= 0;
@@ -107,7 +105,8 @@ module uart_tx (
                 // DATA BITS
                 //-------------------------------------------------
                 TRANSMIT_DATA: begin
-                    tx <= shift_reg[0];
+                    tx      <= shift_reg[0];
+                    tx_busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         // shift_reg <= {1'b0, shift_reg[7:1]};
@@ -129,12 +128,12 @@ module uart_tx (
                 // STOP BIT
                 //-------------------------------------------------
                 TRANSMIT_STOP_BIT: begin
-                    tx <= 1'b1;
+                    tx      <= 1'b1;
+                    tx_busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         current_state <= IDLE;
                         baud_count    <= 0;
-                        tx_complete   <= 1'b1;  // 1-cycle pulse
                     end else begin
                         baud_count <= baud_count + 1;
                     end
