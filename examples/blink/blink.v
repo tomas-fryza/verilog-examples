@@ -1,34 +1,40 @@
-// http://www.fabienm.eu/flf/tag/yosys/
-// https://github.com/YosysHQ/oss-cad-suite-build
-// https://github.com/ghdl/ghdl-yosys-plugin
+// -----------------------------------------------------------
+//! @brief Simple RGB LED blinker
+//! @version 1.1
+//! @copyright (c) 2026 Tomas Fryza, MIT license
+//!
+//! A 25-bit counter divides the input clock to generate
+//! visible blinking on the onboard RGB LED.
+//
+//  See also:
+//    https://github.com/damdoy/ice40_ultraplus_examples/blob/master/leds/leds.v
+//    https://www.youtube.com/watch?v=FcFbFTbngrw
+//
+//  Usage:
+//    Simulation                : make sim
+//    Synthesis + Place & Route : make compile
+//    Program FPGA              : make download
+//    Generate PDF schematics   : make schematic
+//    Clean build files         : make clean
+// -----------------------------------------------------------
+
+`timescale 1 ns/1 ps
 
 module blink (
-    // Horloge
-    input clock,
-    output led
-);
+    input wire clk,  // 12 MHz input clock (iCEBreaker onboard oscillator)
+    output wire ledr,
+    output wire ledg,
+    output wire rgb_b);
 
-// Icestick clock : 12Mhz
-parameter clock_freq = 12_000_000; // clock frequency
-localparam MAX_COUNT = clock_freq;
-localparam MAX_COUNT_UPPER = $clog2(MAX_COUNT) - 1;
+    reg [24:0] counter = 0;
 
-reg [MAX_COUNT_UPPER:0] counter;
-reg led_reg;
+    always @ (posedge clk)
+    begin
+        counter <= counter + 1'b1;
+    end
 
-assign led = led_reg;
+    assign ledr = counter[24];
+    assign ledg = counter[23];
+    assign rgb_b = counter[22];
 
-always@(posedge clock)
-begin
-    if(counter < MAX_COUNT/2)
-        led_reg <= 1;
-    else
-        led_reg <= 0;
-
-    if(counter >= MAX_COUNT)
-        counter <= 0;
-    else
-        counter <= counter + 1;
-end
-
-endmodule
+endmodule  // blink

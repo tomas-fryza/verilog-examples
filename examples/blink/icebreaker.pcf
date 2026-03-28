@@ -1,0 +1,65 @@
+# ======================================================
+# PCF (Physical Constraints File) is a simple text file
+# that maps your Verilog ports to physical FPGA pins.
+#
+# set_io <signal_name> <pin_name>
+#
+# iCEBreaker v1.1a 
+# FPGA: iCE40UP5K-SG48
+# ======================================================
+
+# -------- Clock --------
+# 12 MHz onboard oscillator (connected to global buffer pin)
+set_io clk 35
+
+# -------- User Button --------
+# set_io btn 10
+
+# -------- LEDs --------
+set_io ledr 11
+set_io ledg 37
+
+# -------- RGB LED (PWM-capable pins) --------
+# set_io rgb_r 39
+# set_io rgb_g 40
+set_io rgb_b 41
+
+# -------- UART (FTDI / USB bridge) --------
+# set_io rx 6
+# set_io tx 9
+
+# -------- SPI Flash --------
+# set_io spi_ss 16
+# set_io spi_sck 15
+# set_io spi_si 17
+# set_io spi_so 14
+
+# -------- Break Off Sections (PMOD2) --------
+# set_io btn_1 20
+# set_io btn_2 19
+# set_io btn_3 18
+# set_io led_u 23
+# set_io led_l 27
+# set_io led_r 25
+# set_io led_d 21
+# set_io led_c 26
+
+# -------- Dual PMOD: left (PMOD1A) --------
+# set_io ja_1 4
+# set_io ja_2 2
+# set_io ja_3 47
+# set_io ja_4 45
+# set_io ja_7 3
+# set_io ja_8 48
+# set_io ja_9 46
+# set_io ja_10 44
+
+# -------- Dual PMOD: right (PMOD1B) --------
+# set_io jb_1 43
+# set_io jb_2 38
+# set_io jb_3 34
+# set_io jb_4 31
+# set_io jb_7 42
+# set_io jb_8 36
+# set_io jb_9 32
+# set_io jb_10 28
