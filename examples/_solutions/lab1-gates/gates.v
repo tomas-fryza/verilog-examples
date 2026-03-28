@@ -1,22 +1,24 @@
-// =================================================
+// -----------------------------------------------------------
 //! @brief Basic logic gates (AND, OR, XOR)
-//! @version 2.0
+//! @version 2.1
 //! @copyright (c) 2019-2026 Tomas Fryza, MIT license
 //!
-//! This module implements three basic combinational
-//! logic functions for two single-bit input signals
-//! A and B.
+//! This module implements three basic combinational logic
+//! functions for two single-bit input signals A and B.
 //
 // Outputs:
 //   y_and = A AND B
 //   y_or  = A OR  B
 //   y_xor = A XOR B
-// =================================================
+// -----------------------------------------------------------
+
+// Time unit = 1 ns / Time precision = 1 ps
+`timescale 1ns/1ps
 
 module gates (
     // Inputs: two single-bit logic signals
-    input  wire a,  //! First input (1-bit)
-    input  wire b,  //! Second input (1-bit)
+    input wire a,  //! First input (1-bit)
+    input wire b,  //! Second input (1-bit)
 
     // Outputs: one-bit signals representing each gate
     output wire y_and,  //! Output of 2-input AND gate

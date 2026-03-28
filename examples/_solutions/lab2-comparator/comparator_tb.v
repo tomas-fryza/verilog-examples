@@ -46,8 +46,8 @@ module comparator_tb ();
 
         // Console header
         $display("\nStarting simulation...\n");
-        $display("Time   b  a | b>a b=a b<a");
-        $display("------------+------------");
+        $display(" Time   b  a | b>a b=a b<a");
+        $display("-------------+------------");
 
         // Use the monitor task to automaticaly display any change
         $monitor("[%3d]  %b %b |  %b   %b   %b",

@@ -1,17 +1,19 @@
-// =================================================
+// -----------------------------------------------------------
 //! @brief Clock enable generator (single-cycle pulse)
-//! @version 2.0
+//! @version 2.1
 //! @copyright (c) 2019-2026 Tomas Fryza, MIT license
 //!
-//! This design generates a single-clock-cycle enable
-//! pulse every MAX clock cycles.
+//! This design generates a single-clock-cycle enable pulse
+//! every MAX clock cycles.
 //
 // Notes:
 // - Synchronous design (positive edge of clk)
 // - High-active synchronous reset
 // - Output pulse width = one clock period
 // - MAX must be greater than 0
-// =================================================
+// -----------------------------------------------------------
+
+`timescale 1ns/1ps
 
 module clk_en #(
     // #() after a module name introduces a parameter list

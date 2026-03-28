@@ -1,17 +1,20 @@
-// =================================================
+// -----------------------------------------------------------
 //! @brief 2-bit binary comparator
 //! @version 2.1
 //! @copyright (c) 2020-2026 Tomas Fryza, MIT license
 //!
-//! A digital or binary comparator compares digital
-//! signals A and B and produces outputs depending
-//! on the condition of those inputs.
+//! A digital or binary comparator compares digital signals A
+//! and B and produces outputs depending on the condition of
+//! those inputs.
 //
 // Outputs:
 //   b_gt   = 1 when b > a
 //   b_a_eq = 1 when b == a
 //   a_gt   = 1 when b < a
-// =================================================
+// -----------------------------------------------------------
+
+// Time unit = 1 ns / Time precision = 1 ps
+`timescale 1ns/1ps
 
 module comparator (
     input  wire [1:0] b,       //! Input bus b[1:0]

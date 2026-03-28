@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module display_top (
     input  wire        clk,   // Main clock
     input  wire        btnu,  // Synchronous reset

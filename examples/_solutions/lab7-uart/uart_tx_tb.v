@@ -39,6 +39,7 @@ module uart_tx_tb ();
         data      = 8'd0;
         tx_start  = 1'b0;
 
+        $display("\nStarting simulation...\n");
         $display("Reset generation");
         #50;
         rst = 1'b0;
@@ -75,7 +76,7 @@ module uart_tx_tb ();
         #100;
 
         //-------------------------------------------------
-        $display("Stopping simulation");
+        $display("\nSimulation finished\n");
         $finish;
     end
 

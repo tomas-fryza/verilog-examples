@@ -1,20 +1,21 @@
-// =================================================
+// -----------------------------------------------------------
 //! @brief N-bit synchronous up counter with enable
-//! @version 2.0
+//! @version 2.1
 //! @copyright (c) 2019-2026 Tomas Fryza, MIT license
 //!
-//! This design implements a parameterizable N-bit
-//! binary up counter with synchronous, high-active
-//! reset and clock enable input. The counter wraps
-//! around to zero after reaching its maximum value
-//! (2^N − 1).
+//! This design implements a parameterizable N-bit binary up
+//! counter with synchronous, high-active reset and clock
+//! enable input. The counter wraps around to zero after
+//! reaching its maximum value (2^N − 1).
 //
 // Notes:
 // - Synchronous design (positive edge of clk)
 // - High-active synchronous reset
 // - Enable input controls counting
 // - Modulo 2^N operation (automatic wrap-around)
-// =================================================
+// -----------------------------------------------------------
+
+`timescale 1ns/1ps
 
 module counter #(
     // #() after a module name introduces a parameter list

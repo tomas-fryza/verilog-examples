@@ -1,3 +1,4 @@
+// -----------------------------------------------------------
 // Run in Terminal (Linux, macOS):
 // $ iverilog -o sim gates.v gates_tb.v && vvp sim && gtkwave gates.vcd
 //
@@ -7,6 +8,7 @@
 // 1. Make sure waveform dumping is in the testbench
 // 2. Compile your design + testbench: iverilog ...
 // 3. Run the simulation create the waveform file: vvp sim
+// -----------------------------------------------------------
 
 // Time unit = 1 ns / Time precision = 1 ps
 `timescale 1ns/1ps

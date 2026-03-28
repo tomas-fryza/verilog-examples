@@ -34,11 +34,12 @@ module bin2seg_tb ();
         $dumpvars(0, bin2seg_tb);
 
         // Console header
-        $display("Time bin | seg (abcdefg, active-low)");
-        $display("---------+--------------------------");
+        $display("\nStarting simulation...\n");
+        $display(" Time bin | seg (abcdefg, active-low)");
+        $display("----------+--------------------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor("[%3d] %h  | %b", $time, bin, seg);
+        $monitor("[%3d]  %h  | %b_%b", $time, bin, seg[6:4], seg[3:0]);
 
         // -----------------------------------------
         // Enable display and test 0..F
@@ -48,6 +49,7 @@ module bin2seg_tb ();
             #10;
         end
 
+        $display("\nSimulation finished\n");
         $finish;
     end
 

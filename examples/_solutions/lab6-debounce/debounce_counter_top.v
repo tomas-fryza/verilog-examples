@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module debounce_counter_top (
     input  wire clk,
     input  wire btnu,

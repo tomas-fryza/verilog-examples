@@ -1,4 +1,4 @@
-// =================================================
+// -----------------------------------------------------------
 //! @brief Top-level module for Nexys A7
 //! @version 2.1
 //! @copyright (c) 2018-2026 Tomas Fryza, MIT license
@@ -10,7 +10,9 @@
 //   CA..CG   -> segment outputs (active-low)
 //   DP       -> decimal point (active-low, not used)
 //   AN[0]    -> digit enable (active-low)
-// =================================================
+// -----------------------------------------------------------
+
+`timescale 1ns/1ps
 
 module segment_top (
     input  wire [3:0] sw,   //! Slide switches SW3..SW0

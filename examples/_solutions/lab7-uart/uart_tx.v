@@ -1,3 +1,25 @@
+// -----------------------------------------------------------
+//! @brief UART transmitter (8N1, FSM-based)
+//! @version 1.2
+//! @copyright (c) 2025-2026 Tomas Fryza, MIT license
+//!
+//! This module implements a UART (Universal Asynchronous Receiver/
+//! Transmitter) transmitter using a Finite State Machine (FSM).
+//! The design operates in standard 8N1 mode (8 data bits, no
+//! parity, 1 stop bit) and transmits data asynchronously with
+//! a configurable baud rate.
+//
+// Notes:
+// - Synchronous design (rising edge of clk)
+// - High-active synchronous reset
+// - Baud rate generated using clock counter
+// - Transmission controlled by tx_start signal
+// - tx_complete indicates end of frame
+//
+// See also:
+//   https://nandland.com/uart-serial-port-module/
+// -----------------------------------------------------------
+
 `timescale 1ns/1ps
 
 module uart_tx (

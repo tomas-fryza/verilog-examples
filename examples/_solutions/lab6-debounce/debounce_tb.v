@@ -37,6 +37,7 @@ module debounce_tb ();
         rst    = 1;
         btn_in = 0;
 
+        $display("\nStarting simulation...\n");
         $display("Reset phase");
         #50;
         rst = 0;
@@ -61,6 +62,7 @@ module debounce_tb ();
         //--------------------------------------------------------
         // End simulation
         //--------------------------------------------------------
+        $display("\nSimulation finished\n");
         $finish;
     end
 

@@ -59,6 +59,7 @@ module counter_tb ();
         #60;         // 6 periods
  
         // Finish simulation
+        $display("\nSimulation finished\n");
         $finish;
     end
 

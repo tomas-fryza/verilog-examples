@@ -1,3 +1,24 @@
+// -----------------------------------------------------------
+//! @brief Button debouncer
+//! @version 2.1
+//! @copyright (c) 2023-2026 Tomas Fryza, MIT license
+//!
+//! This module implements a debouncer for mechanical push-buttons
+//! using a sampling technique with a shift register. The circuit
+//! provides a stable debounced output and generates a one-clock-cycle
+//! pulse when a button press is detected.
+//
+// Notes:
+// - Synchronous design (rising edge of clk)
+// - High-active synchronous reset
+// - Input synchronization using two flip-flops
+// - Debouncing via shift register and sampling
+// - Configurable debounce time via clock enable
+// - One-clock pulse output for button press
+// -----------------------------------------------------------
+
+`timescale 1ns/1ps
+
 module debounce (
     input  wire clk,
     input  wire rst,
@@ -12,7 +33,7 @@ module debounce (
     // Constants (internal)
     //------------------------------------------------------------
     localparam C_SHIFT_LEN = 4;
-    localparam C_MAX       = 200_000;  // Sampling period
+    localparam C_MAX       = 2;  // Sampling period
                                  // 2 for simulation
                                  // 200_000 (2 ms) for implementation !!!
 

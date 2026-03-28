@@ -55,6 +55,7 @@ module display_driver_tb ();
         #2000;
 
         // End simulation
+        $display("\nSimulation finished\n");
         $finish;
     end
 

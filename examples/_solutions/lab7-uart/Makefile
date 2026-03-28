@@ -1,52 +1,18 @@
-# ===============================================
-# Makefile for Verilog (Verilator + Icarus)
-# ===============================================
+# ======================================================
+# Makefile for Verilator (lint) + Icarus (simulation)
+# ======================================================
 
-# Tools
-IVERILOG  = iverilog
-VVP       = vvp
-VERILATOR = verilator
-
-# Top test
-TOP = uart_tx_tb
-
-# Output files
-SIM_OUT = sim.vvp
-PASS    = test.pass
-VCD     = dump.vcd
-
-# Sources
+# Files
 SRCS = \
 	uart_tx.v \
 	uart_tx_tb.v
 
-# ===============================================
-# Default target
-# ===============================================
-all: $(PASS)
+# Lint (static code analysis), compile, and run simulation
+all:
+	verilator --lint-only -Wno-fatal $(SRCS)
+	iverilog -Wall -g2012 -o sim.vvp $(SRCS)
+	vvp sim.vvp
 
-# ===============================================
-# Lint + Compile + Simulate
-# ===============================================
-$(PASS): $(SRCS)
-	@echo "== Linting with Verilator =="
-	$(VERILATOR) --lint-only -Wno-fatal $^
-
-	@echo "== Compiling with Icarus =="
-	$(IVERILOG) -Wall -g2012 -o $(SIM_OUT) $^
-
-	@echo "== Running simulation =="
-	($(VVP) $(SIM_OUT) -fst > $@.log && touch $@) || (cat $@.log && false)
-
-# ===============================================
-# Clean
-# ===============================================
+# Clean generated files
 clean:
-	rm -f *.vvp *.vcd *.fst *.pass *.log
-
-# ===============================================
-# Help
-# ===============================================
-help:
-	@echo "make        - run lint + simulation"
-	@echo "make clean  - remove generated files"
+	rm -f *.vvp *.vcd

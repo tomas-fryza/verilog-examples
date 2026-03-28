@@ -67,6 +67,7 @@ module clk_en_tb ();
         rst = 0;
         #200;
 
+        $display("\nSimulation finished\n");
         $finish;
     end
 

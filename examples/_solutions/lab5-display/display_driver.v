@@ -1,3 +1,20 @@
+// -----------------------------------------------------------
+//! @brief Two-digit 7-segment display driver (multiplexed)
+//! @version 2.1
+//! @copyright (c) 2020-2026 Tomas Fryza, MIT license
+//!
+//! This module implements a multiplexed driver for a
+//! two-digit 7-segment display. It alternates between
+//! two hexadecimal digits.
+//
+// Notes:
+// - Active-low segments and anodes
+// - Multiplexing frequency must be high enough to avoid flicker
+// - Uses external modules: clk_en, counter, bin2seg
+// -----------------------------------------------------------
+
+`timescale 1ns/1ps
+
 module display_driver (
     input  wire       i_clk,   //! Main clock
     input  wire       i_rst,   //! High-active synchronous reset

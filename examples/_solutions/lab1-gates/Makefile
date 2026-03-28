@@ -1,36 +1,13 @@
-# ===============================================
-# Simple Makefile for Icarus Verilog + GTKWave
-# ===============================================
+# ======================================================
+# Makefile for Verilator (lint) + Icarus (simulation)
+# ======================================================
 
-# Simulator and tools
-IVERILOG = iverilog
-VVP      = vvp
-GTKWAVE  = gtkwave
-
-# Files
-TOP      = gates_tb
-VCD      = gates.vcd
-SRCS     = gates.v gates_tb.v
-
-# Default target
-all: sim
-
-# Compile and run simulation
-sim: $(SRCS)
-	$(IVERILOG) -g2012 -o sim $(SRCS)
-	$(VVP) sim
-
-# Open waveform
-wave: sim
-	$(GTKWAVE) $(VCD)
+# Lint (static code analysis), compile, and run simulation
+all:
+	verilator --lint-only -Wno-fatal *.v
+	iverilog -Wall -g2012 -o sim.vvp *.v
+	vvp sim.vvp
 
 # Clean generated files
 clean:
-	rm -f sim $(VCD)
-
-# Help
-help:
-	@echo "make        - compile, run, and open GTKWave"
-	@echo "make sim    - compile and run"
-	@echo "make wave   - compile, run, and view waves"
-	@echo "make clean  - remove generated files"
+	rm -f *.vvp *.vcd
