@@ -450,6 +450,8 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 2. Use **Flow > Synthesis > Run Synthesis** and then see the **Schematic** at the gate level.
 
+   ![lut in vivado](images/vivado_lut.png)
+
 3. Use the **Report Utilization** after the **Synthesis** and see the number of LUT (Look-Up Table), FF (Flip-Flop), and IO ports used in the implementation.
 
 4. Use **Implementation > Open Implemented Design > Schematic** to see the generated structure.
@@ -466,9 +468,28 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 2. Extend the design to support parity bits.
 
-3. In the `*.xdc` constraints file, remap the UART outputs to any Pmod port on the Nexys A7 board, and display the UART values on an oscilloscope or logic analyzer.
+3. In the `*.xdc` constraints file, remap the UART outputs to JA Pmod port on the Nexys A7 board, and display the UART values on an oscilloscope or logic analyzer.
 
-   ![pmods](images/pmod_table.png)
+    ### JA Pmod connector (Nexys A7)
+
+   ![pmods](images/pmod_connector.png)
+
+   | Pin | Signal | FPGA Pin | Description        |
+   | :--: | :----- | :-------- | :----------------- |
+   | 1   | JA1    | C17        | Data / IO          |
+   | 2   | JA2    | D18        | Data / IO          |
+   | 3   | JA3    | E18        | Data / IO          |
+   | 4   | JA4    | G17        | Data / IO          |
+   | 5   | GND    | —         | Ground             |
+   | 6   | VCC    | —         | 3.3 V supply       |
+   | 7   | JA7    | D17       | Data / IO          |
+   | 8   | JA8    | E17       | Data / IO          |
+   | 9   | JA9    | F18       | Data / IO          |
+   | 10  | JA10   | G18       | Data / IO          |
+   | 11  | GND    | —         | Ground             |
+   | 12  | VCC    | —         | 3.3 V supply       |
+
+   <span style="color:red">**Warning:** Since the Pmod pins are connected to Artix-7 FPGA pins using a 3.3V logic standard, care should be taken not to drive these pins over 3.4V.</span>
 
    Connect the logic analyzer to your Pmod pins, including GND. Launch the **Logic** analyzer software and start the capture. The Saleae Logic software offers a decoding feature to transform the captured signals into meaningful UART messages. Click the **+ button** in the **Analyzers** section and set up the **Async Serial** decoder.
 
