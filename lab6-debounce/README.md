@@ -257,7 +257,7 @@ Choose one of the following variants and implement a button-triggered binary cou
 
 2. In your project, add the design source file `counter.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
-3. Instantiate the `debounce` and `counter` circuits, and complete the top-level architecture according to the following schematic and template.
+3. Instantiate the `debounce` and `counter` circuits, and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver1.png)
 
@@ -319,7 +319,7 @@ Choose one of the following variants and implement a button-triggered binary cou
 
 2. In your project, add the design source files `display_driver.v`, `counter.v`, and `bin2seg.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
-3. Provide an instantiation of the `debounce`, `counter`, and `display_driver` circuits and complete the top-level architecture according to the following schematic and template.
+3. Provide an instantiation of the `debounce`, `counter`, and `display_driver` circuits and complete the top-level module according to the following schematic and template.
 
    ![top level ver2](images/top-level_ver2.png)
 
@@ -364,7 +364,7 @@ Choose one of the following variants and implement a button-triggered binary cou
    endmodule
    ```
 
-4. Complete all **TODO** items in the architecture.
+4. Complete all **TODO** items in the module.
 
 5. Create a new constraints file named `nexys` (XDC file) and copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) template.
 

@@ -25,27 +25,28 @@ module uart_tx (
     input  wire rst,            //! Active-high reset
     input  wire tx_start,       //! Start transmission
     input  wire [7:0] tx_data,  //! Data to transmit
-    output reg  tx,             //! UART Tx line
+    output reg  tx,             //! UART transmit line
     output reg  tx_busy         //! Transmission in progress
 );
 
     //-------------------------------------------------
     // FSM states
     //-------------------------------------------------
-    localparam IDLE               = 2'd0;
-    localparam TRANSMIT_START_BIT = 2'd1;
-    localparam TRANSMIT_DATA      = 2'd2;
-    localparam TRANSMIT_STOP_BIT  = 2'd3;
+    localparam IDLE               = 2'd0,
+               TRANSMIT_START_BIT = 2'd1,
+               TRANSMIT_DATA      = 2'd2,
+               TRANSMIT_STOP_BIT  = 2'd3;
 
-    reg [1:0] current_state = IDLE;
+    reg [1:0] current_state;
 
     //-------------------------------------------------
     // Internal constants
     //-------------------------------------------------
     localparam CLK_FREQ = 100_000_000;  // 100 MHz
     localparam BAUDRATE = 9600;
-    localparam MAX = 2;  // 2 for simulation
-                                 // CLK_FREQ / BAUDRATE for implementation
+    localparam MAX = 2;  // Bit period
+                         // 2 for simulation
+                         // CLK_FREQ / BAUDRATE for implementation
 
     //-------------------------------------------------
     // Internal registers
