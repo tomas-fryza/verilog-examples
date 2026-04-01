@@ -74,7 +74,7 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
    | `tx_start` | input | `wire` | Start transmission signal |
    | `tx_data` | input | `wire [7:0]` | Data to transmit |
    | `tx` | output | `reg` | UART transmit line |
-   | `tx_busy` | output | `busy` | Transmission in progress |
+   | `tx_busy` | output | `reg` | Transmission in progress |
 
 2. In your module, define local parameters for FSM, internal registers to count a sequence of data bits and clock periods, and complete the code according to the following template.
 
@@ -208,7 +208,7 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
 
 3. Complete all **TODO** items in the module.
 
-4. Create a Verilog simulation file named `uart_tb` and verify the functionality of the transmitter.
+4. Create a Verilog simulation file named `uart_tx_tb` and verify the functionality of the transmitter.
 
    ```verilog
    `timescale 1ns/1ps
@@ -313,7 +313,7 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 **Important:** Change the `MAX` constant in the `uart_tx` architecture to `localparam MAX = CLK_FREQ / BAUDRATE;`.
 
-1. In your project, create a new VHDL design source file named `uart_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `uart_top`. Define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
@@ -373,7 +373,7 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 **Important:** Change the `MAX` constant in the `uart_tx` architecture to `localparam MAX = CLK_FREQ / BAUDRATE;`.
 
-1. In your project, create a new VHDL design source file named `uart_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `uart_top`. Define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
