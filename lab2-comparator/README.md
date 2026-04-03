@@ -77,7 +77,7 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
    1. Project name: `comparator`
    2. Project location: your working folder, such as `Documents`
    3. Project type: **RTL Project**
-   4. Create a new VHDL source file: `comparator`
+   4. Create a new Verilog source file: `comparator`
    5. Do not add any constraints now
    6. Choose a default board: `Nexys A7-50T`
    7. Click **Finish** to create the project
@@ -89,9 +89,11 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
       * `b_a_eq`, `output`
       * `a_gt`, `output`
 
-2. Open a file **`comparator.v`** and complete the following template:
+2. Open a file `comparator.v` and complete the following template:
 
    ```verilog
+   `timescale 1ns / 1ps
+
    // =================================================
    // 2-bit binary comparator
    // =================================================
@@ -101,7 +103,7 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
        // TODO: Complete input/output ports
 
-       output wire       a_gt
+       output wire a_gt
    );
 
        // ---------------------------------------------
@@ -120,7 +122,7 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
    endmodule
    ```
 
-3. Add a new simulation file named **`comparator_tb.v`**, complete the provided template, and verify your design by simulation.
+3. Add a new simulation file named `comparator_tb.v`, complete the provided template, and verify your design by simulation.
 
    ```verilog
    `timescale 1ns/1ps
@@ -131,21 +133,21 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
        // Testbench internal signals
        // Must be `reg`, so we can assign values
        // ---------------------------------------------
-       reg [1:0] b;  // DUT input b
-       reg [1:0] a;  // DUT input a
-       wire      b_gt;
-       wire      b_a_eq;
-       wire      a_gt;
+       reg  [1:0] b;  // DUT input b
+       reg  [1:0] a;  // DUT input a
+       wire b_gt;
+       wire b_a_eq;
+       wire a_gt;
 
        // ---------------------------------------------
        // Instantiate Device Under Test (DUT)
        // ---------------------------------------------
        comparator dut (
-           .b      (b),
-           .a      (a),
-           .b_gt   (b_gt),
-           .b_a_eq (b_a_eq),
-           .a_gt   (a_gt)
+           .b     (b),
+           .a     (a),
+           .b_gt  (b_gt),
+           .b_a_eq(b_a_eq),
+           .a_gt  (a_gt)
        );
 
        integer i, j;  // Integer in Verilog is typically 32-bit signed
@@ -172,9 +174,8 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 4. Use `$display` and `$monitor` to print information to the console. The system task `$display` prints a message once at the moment it is executed. It is typically used to print headers, error messages, intermediate debug information, or a final PASS/FAIL summary. In contrast, `$monitor` continuously observes the listed signals and automatically prints their values whenever any of them change during simulation. This makes `$monitor` useful for tracking signal activity over time without manually inserting multiple print statements.
 
    ```verilog
-   ...
    // ---------------------------------------------
-   // Stimulus process
+   // Testbench stimulus
    // Applies test vectors to DUT inputs over time
    // ---------------------------------------------
    initial begin
@@ -187,7 +188,6 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
            $time, b, a, b_gt, b_a_eq, a_gt);
 
        // Exhaustive testing
-   ...
    ```
 
 5. In `module`, use method 2 and implement `b_gt` using minimized Boolean equation in SoP or PoS logic at gate-level. Simulate it. Compare waveform results with behavioral version.
@@ -213,7 +213,6 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 1. In this task, you will implement a self-checking testbench using **monitors** and **checkers**. The monitor is useful for tracking signal behavior during simulation, but it does not verify correctness. Therefore, your testbench must also include checking logic that compares DUT outputs with expected values and reports mismatches.
 
    ```verilog
-       ...
        integer i, j;  // Integer in Verilog is typically 32-bit signed
        integer errors = 0;
 
@@ -222,7 +221,7 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
        reg exp_a_gt;
 
        // ---------------------------------------------
-       // Stimulus process
+       // Testbench stimulus
        // Applies test vectors to DUT inputs over time
        // ---------------------------------------------
        initial begin
@@ -290,17 +289,18 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 
    ```verilog
    initial begin
-
        // Waveform dump for GTKWave
        $dumpfile("comparator.vcd");
        $dumpvars(0, comparator_tb);
+   end
    ```
 
    and use Icarus Verilog and GTKWave tools from command line to simulate your desing.
    
    ```bash
-   $ iverilog -g2012 -o sim comparator.v comparator_tb.v
-   $ vvp sim
+   $ verilator --lint-only -Wno-fatal comparator.v comparator_tb.v
+   $ iverilog -g2012 -o sim.vvp comparator.v comparator_tb.v
+   $ vvp sim.vvp
    $ gtkwave comparator.vcd
    ```
 

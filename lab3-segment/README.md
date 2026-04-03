@@ -38,37 +38,37 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
    ![https://lastminuteengineers.com/seven-segment-arduino-tutorial/](images/7-Segment-Display-Number-Formation-Segment-Contol.png)
 
-   | **Symbol** | **bin** | **a** | **b** | **c** | **d** | **e** | **f** | **g** |
-   | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-   | `0` | 0000 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-   | `1` | 0001 | 1 | 0 | 0 | 1 | 1 | 1 | 1 |
-   | `2` | 0010 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |
-   | `3` |      |   |   |   |   |   |   |   |
-   | `4` |      |   |   |   |   |   |   |   |
-   | `5` |      |   |   |   |   |   |   |   |
-   | `6` |      |   |   |   |   |   |   |   |
-   | `7` | 0111 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
-   | `8` | 1000 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-   | `9` | 1001 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-   | `A` |      |   |   |   |   |   |   |   |
-   | `b` |      |   |   |   |   |   |   |   |
-   | `C` |      |   |   |   |   |   |   |   |
-   | `d` |      |   |   |   |   |   |   |   |
-   | `E` | 1110 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
-   | `F` | 1111 | 0 | 1 | 1 | 1 | 0 | 0 | 0 |
+   | **hex** | **a** | **b** | **c** | **d** | **e** | **f** | **g** |
+   | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+   | `0` | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+   | `1` | 1 | 0 | 0 | 1 | 1 | 1 | 1 |
+   | `2` | 0 | 0 | 1 | 0 | 0 | 1 | 0 |
+   | `3` | 0 | 0 | 0 | 0 | 1 | 1 | 0 |
+   | `4` |   |   |   |   |   |   |   |
+   | `5` |   |   |   |   |   |   |   |
+   | `6` |   |   |   |   |   |   |   |
+   | `7` | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+   | `8` | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+   | `9` | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
+   | `A` |   |   |   |   |   |   |   |
+   | `b` |   |   |   |   |   |   |   |
+   | `C` |   |   |   |   |   |   |   |
+   | `d` | 1 | 0 | 0 | 0 | 0 | 1 | 0 |
+   | `E` | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+   | `F` | 0 | 1 | 1 | 1 | 0 | 0 | 0 |
 
-2. Run Vivado, create a new RTL project named `segment` with a Verilog source file `bin2seg`. Use the following I/O ports:
+2. Run Vivado, create a new RTL project named `segment`, and create a Verilog design source file named `bin2seg` for Nexys A7-50T FPGA board. Use the following I/O ports and implement a 7-segment decoder:
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
    | `bin` | input | `wire [3:0]` | 4-bit hexadecimal input |
    | `seg` | output | `reg [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
 
-   > **Note:** Because `seg` will be assigned inside an always block (see below), it must be declared as reg in Verilog. This does NOT mean it becomes a flip-flop or register in hardware.
+   > **Note:** Because `seg` will be assigned inside an `always` block (see below), it must be declared as `reg` in Verilog. This does NOT mean it becomes a flip-flop or register in hardware.
 
 3. Use a Verilog **combinational procedural block** `always @(*) begin ... end` to describe the inner module structure. **Always block** is a procedural block. It describes sequential circuits (latches, flip-flops) or combinational circuits. All always blocks are executed in parallel. **Signals assigned inside always block must be of type reg.**
 
-   The always block **sensitivity list**:
+   The **sensitivity list** of always block:
 
       * It contains signals that affect outputs.
       * In case of any change to the values of the signals in the sensitivity list, output(s) must be reevaluated.
@@ -76,6 +76,8 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
       * The `*` symbol means adding all inputs to the sensitivity list. (If the sensitivity list is not specified, it means that the always block will remain in execution.)
 
    ```verilog
+   `timescale 1ns/1ps
+
    module bin2seg (
        input  wire [3:0] bin,  // 4-bit input
        output reg  [6:0] seg   // {a,b,c,d,e,f,g} active-low
@@ -86,15 +88,17 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
                4'h0: seg = 7'b000_0001;  // 0
                4'h1: seg = 7'b100_1111;  // 1
                4'h2: seg = 7'b001_0010;  // 2
+               4'h3: seg = 7'b000_0110;  // 3
 
-               // TODO: Complete settings for 3, 4, 5, 6
+               // TODO: Complete settings for 4, 5, 6
 
                4'h7: seg = 7'b000_1111;  // 7
                4'h8: seg = 7'b000_0000;  // 8
                4'h9: seg = 7'b000_0100;  // 9
 
-               // TODO: Complete settings for A, b, C, d
+               // TODO: Complete settings for A, b, C
 
+               4'hd: seg = 7'b100_0010;  // d
                4'hE: seg = 7'b011_0000;  // E
                4'hF: seg = 7'b011_1000;  // F
 
@@ -126,8 +130,8 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
        wire [6:0] seg;  // DUT output: {a,b,c,d,e,f,g}, active-low
 
        bin2seg dut (
-           .bin (bin),
-           .seg (seg)
+           .bin(bin),
+           .seg(seg)
        );
 
        integer i;  // Loop variable
@@ -185,16 +189,16 @@ The following example shows a simple structural design consisting of two 2-input
 
        // First XOR instance
        xor2 U1 (
-           .in1  (a),
-           .in2  (b),
-           .out1 (sig_tmp)
+           .in1 (a),
+           .in2 (b),
+           .out1(sig_tmp)
        );
 
        // Second XOR instance
        xor2 U2 (
-           .in1  (sig_tmp),
-           .in2  (c),
-           .out1 (y)
+           .in1 (sig_tmp),
+           .in2 (c),
+           .out1(y)
        );
 
    endmodule
@@ -227,35 +231,33 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
    -->
 
    ```verilog
+   `timescale 1ns/1ps
+
    module segment_top (
-      input  wire [3:0] sw,   // Slide switches SW3..SW0
+       input  wire [3:0] sw,   // Slide switches SW3..SW0
 
-      // TODO: Complete input/output ports
+       // TODO: Complete input/output ports
 
-      output wire [7:0] an    // Seven-segment anodes AN7..AN0 (active-low)
+       output wire [7:0] an    // Seven-segment anodes AN7..AN0 (active-low)
    );
 
-      // ---------------------------------------------
-      //! Instantiate 7-segment decoder
-      //! (Prefix `u_` means unit or instance.)
-      // ---------------------------------------------
-      bin2seg u_bin2seg (
-         .bin (sw),
-         .seg (seg)
-      );
+       // ---------------------------------------------
+       //! Instantiate 7-segment decoder
+       // ---------------------------------------------
+       bin2seg bin2seg_inst (
+           .bin(sw),
+           .seg(seg)
+       );
 
-      // Turn off decimal point (inactive = '1')
-      assign dp = ...
-
-      // Enable AN0 only (active-low)
-      assign an = ...
+       assign dp = // TODO: Turn off decimal point (inactive = '1')
+       assign an = // TODO: Enable AN0 only (active-low)
 
    endmodule
    ```
 
-   Only one digit must be enabled. All other digits must remain disabled to prevent multiple digits from lighting simultaneously.
+4. Complete all **TODO** items in the module. Only one digit must be enabled. All other digits must remain disabled to prevent multiple digits from lighting simultaneously.
 
-4. A **constraint** is a rule that dictates a placement or timing restriction for the implementation. Constraints are not VHDL, and the syntax of constraints files differ between FPGA vendors.
+5. A **constraint** is a rule that dictates a placement or timing restriction for the implementation. Constraints are not Verilog, and the syntax of constraints files differ between FPGA vendors.
 
    * __Physical constraints__ limit the placement of a signal or instance within the FPGA. The most common physical constraints are pin assignments. They tell the P&R (Place & Route) tool to which physical FPGA pins the top-level entity signals shall be mapped.
 
@@ -263,9 +265,9 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    In this design, only physical constraints are required.
 
-5. Create a new constraints file `nexys` (XDC file).
+6. Create a new constraints file `nexys` (XDC file).
 
-6. Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
+7. Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
 
    ```xdc
    set_property PACKAGE_PIN J15 [get_ports {sw[0]}]
@@ -295,28 +297,30 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
    set_property IOSTANDARD LVCMOS33 [get_ports {an[*]}]
    ```
 
-7. Implement your design to Nexys A7 board:
+8. Implement your design to Nexys A7 board:
 
    1. Click **Generate Bitstream** (the process is time consuming and may take some time).
    2. Open **Hardware Manager**.
    3. Select **Open Target > Auto Connect** (make sure Nexys A7 board is connected and switched on).
    4. Click **Program device** and select the generated file `YOUR-PROJECT-FOLDER/segment.runs/impl_1/segment_top.bit`.
 
-8. Test the functionality of the seven-segment display decoder by toggling the switches and observing the display.
+9. Test the functionality of the seven-segment display decoder by toggling the switches and observing the display.
 
-9. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
+10. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
 
 <a name="tasks"></a>
 
 ## Optional tasks
 
-1. Display input `bin` value on LEDs.
+1. Display input value on LEDs as well.
 
 2. Use 8 slide switches to extend the one-digit 7-segment decoder to drive a two-digit display. When the button `btnd` is pressed, the display should switch between the two digits and only one digit should be active at a time.
 
    ![Top level, 2-digit](images/top-level_2-digit.png)
 
    ```verilog
+   `timescale 1ns/1ps
+
    module segment_top (
        input  wire [3:0] sw_r,
 
@@ -328,8 +332,7 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
        // Internal signal for selected 4-bit input
        wire [3:0] sig_tmp;
 
-       // Instantiate your DUT
-       ...
+       // TODO: Instantiate your DUT
 
        // Select left or right 4-bit input (multiplexer)
        assign sig_tmp = (btnd == 1'b1) ? sw_l : sw_r;
@@ -338,8 +341,8 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
        assign an[7:2] = 6'b11_1111;
 
        // Enable only one digit at a time
-       assign an[1] = ...  // left digit
-       assign an[0] = ...  // right digit
+       assign an[1] = // TODO: Enable only left digit
+       assign an[0] = // TODO: Enable only right digit
 
    endmodule
    ```

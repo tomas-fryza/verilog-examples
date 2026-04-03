@@ -65,7 +65,7 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
 
 ## Task 1: UART transmitter
 
-1. Run Vivado, create a new RTL project named `uart`, and create a Verilog design source file named `uart_tx`. Use the following I/O ports and implement an FSM version of UART transmitter 8N1 on Nexys A7-50T:
+1. Run Vivado, create a new RTL project named `uart`, and create a Verilog design source file named `uart_tx` for Nexys A7-50T FPGA board. Use the following I/O ports and implement an FSM version of UART transmitter 8N1 on Nexys A7-50T:
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |

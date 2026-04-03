@@ -9,11 +9,11 @@
 
 After completing this laboratory, students will be able to:
 
-- Describe the structure of a simple Verilog module
-- Implement basic combinational logic using Verilog operators
-- Use continuous assignments (`assign`) correctly
-- Create a simple Verilog testbench
-- Simulate a design and analyze waveforms
+* Describe the structure of a simple Verilog module
+* Implement basic combinational logic using Verilog operators
+* Use continuous assignments (`assign`) correctly
+* Create a simple Verilog testbench
+* Simulate a design and analyze waveforms
 
 ### Background
 
@@ -87,32 +87,32 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
       * `y_or`, `out`
       * `y_xor`, `out`
 
-2. Open a file **`gates.v`** and complete the following template:
+2. Open a file `gates.v` and complete the following template:
 
-    ```verilog
-    `timescale 1ns/1ps
+   ```verilog
+   `timescale 1ns/1ps
 
-    // =================================================
-    // Basic logic gates
-    // =================================================
+   // =================================================
+   // Basic logic gates
+   // =================================================
 
-    module gates (
-        input  wire a,     // First input
+   module gates (
+       input  wire a,     // First input
 
-        // TODO: Complete input/output ports
+       // TODO: Complete input/output ports
 
-        output wire y_xor  // XOR output
-    );
+       output wire y_xor  // XOR output
+   );
 
-        // ---------------------------------------------
-        // TODO: Implement logic gates using assign
-        // ---------------------------------------------
-        // assign y_and = ...
-        // assign y_or  = ...
-        // assign y_xor = ...
+       // ---------------------------------------------
+       // TODO: Implement logic gates using assign
+       // ---------------------------------------------
+       // assign y_and = ...
+       // assign y_or  = ...
+       // assign y_xor = ...
 
-    endmodule
-    ```
+   endmodule
+   ```
 
 3. Create a truth table for all input combinations.
 
@@ -120,57 +120,57 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
    ![testench idea](images/testbench.png)
 
-   Add a new simulation file named **`gates_tb.v`**, complete the following template, and verify your design by simulation:
+   Add a new simulation file named `gates_tb.v`, complete the following template, and verify your design by simulation:
 
       - All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
       - Each input combination should remain stable for a defined simulation time (e.g., `#10`).
       - The simulation is terminated by `$finish`.
 
-    ```verilog
-    `timescale 1ns/1ps
+   ```verilog
+   `timescale 1ns/1ps
 
-    // =================================================
-    // Testbench for basic logic gates
-    // =================================================
+   // =================================================
+   // Testbench for basic logic gates
+   // =================================================
 
-    module gates_tb ();  // Testbench module has no ports
+   module gates_tb ();  // Testbench module has no ports
 
-        // ---------------------------------------------
-        // Testbench internal signals
-        // reg  = driven by testbench
-        // wire = driven by DUT outputs
-        // ---------------------------------------------
-        reg  a;
-        reg  b;
-        wire y_and;
-        wire y_or;
-        wire y_xor;
+       // ---------------------------------------------
+       // Testbench internal signals
+       // reg  = driven by testbench
+       // wire = driven by DUT outputs
+       // ---------------------------------------------
+       reg  a;
+       reg  b;
+       wire y_and;
+       wire y_or;
+       wire y_xor;
 
-        // ---------------------------------------------
-        // Instantiate Device Under Test (DUT)
-        // ---------------------------------------------
-        gates dut (
-            .a    (a),
-            .b    (b),
-            .y_and(y_and),
-            .y_or (y_or),
-            .y_xor(y_xor)
-        );
+       // ---------------------------------------------
+       // Instantiate Device Under Test (DUT)
+       // ---------------------------------------------
+       gates dut (
+           .a    (a),
+           .b    (b),
+           .y_and(y_and),
+           .y_or (y_or),
+           .y_xor(y_xor)
+       );
 
-        // ---------------------------------------------
-        // Testbench stimulus
-        // ---------------------------------------------
-        initial begin
-            // Set both `a`, `b`, then wait 10 time units
-            b = 0; a = 0; #10;
+       // ---------------------------------------------
+       // Testbench stimulus
+       // ---------------------------------------------
+       initial begin
+           // Set both `a`, `b`, then wait 10 time units
+           b = 0; a = 0; #10;
 
-            // TODO: Apply all input combinations
+           // TODO: Apply all input combinations
 
-            $finish;
-        end
+           $finish;
+       end
 
-    endmodule
-    ```
+   endmodule
+   ```
 
    > **Note:** An `initial` block in Verilog/SystemVerilog is a block of code that **runs once at the start of simulation (time 0)**, typically used to initialize signals or generate stimulus. Multiple `initial` blocks can be used; they run concurrently (i.e., execute in parallel rather than one after another).
 
