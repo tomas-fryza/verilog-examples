@@ -4,13 +4,13 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 
 ## Labs
 
-1. [Basic logic gates](lab1-gates)
+1. [Logic gates](lab1-gates)
 2. [Binary comparator](lab2-comparator)
 3. [Seven-segment display decoder](lab3-segment)
 4. [Binary counter](lab4-counter)
 5. [Multiple seven-segment displays](lab5-display)
 6. [Button debounce](lab6-debounce)
-7. UART transmitter
+7. [UART transmitter](lab7-uart)
 8. Project
    * [Verilog projects 2026](lab8-project/README_2026.md)
 9. [Verilog basic syntax reference](docs/README.md)
@@ -24,13 +24,12 @@ This repository contains Verilog examples for the bachelor-level course [Digital
 * **Icarus Verilog**, **GTKWave**, text editor such se VS Code, and command line.
 
    ```verilog
-   -- Part of testbench
+   // Part of testbench
    initial begin
-
        // Waveform dump for GTKWave
        $dumpfile("gates.vcd");
        $dumpvars(0, gates_tb);
-   ...
+   end
    ```
 
    Commands:

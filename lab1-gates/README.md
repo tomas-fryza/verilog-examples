@@ -1,4 +1,4 @@
-# Laboratory 1: Basic logic gates
+# Laboratory 1: Logic gates
 
 * [Task 1: Introduction to Verilog](#task1)
 * [Task 2: De Morgan's laws](#task2)
@@ -90,6 +90,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 2. Open a file **`gates.v`** and complete the following template:
 
     ```verilog
+    `timescale 1ns/1ps
+
     // =================================================
     // Basic logic gates
     // =================================================
@@ -122,7 +124,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
       - All four possible input combinations must be applied: `00`, `01`, `10`, `11`.
       - Each input combination should remain stable for a defined simulation time (e.g., `#10`).
-      - The simulation must terminate using `$finish`.
+      - The simulation is terminated by `$finish`.
 
     ```verilog
     `timescale 1ns/1ps
@@ -148,19 +150,18 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
         // Instantiate Device Under Test (DUT)
         // ---------------------------------------------
         gates dut (
-            .a     (a),
-            .b     (b),
-            .y_and (y_and),
-            .y_or  (y_or),
-            .y_xor (y_xor)
+            .a    (a),
+            .b    (b),
+            .y_and(y_and),
+            .y_or (y_or),
+            .y_xor(y_xor)
         );
 
         // ---------------------------------------------
-        // Stimulus process
+        // Testbench stimulus
         // ---------------------------------------------
         initial begin
-            // Test vectors
-            // Set both `a`, `b` and wait 10 time units
+            // Set both `a`, `b`, then wait 10 time units
             b = 0; a = 0; #10;
 
             // TODO: Apply all input combinations
@@ -171,15 +172,15 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
     endmodule
     ```
 
+   > **Note:** An `initial` block in Verilog/SystemVerilog is a block of code that **runs once at the start of simulation (time 0)**, typically used to initialize signals or generate stimulus. Multiple `initial` blocks can be used; they run concurrently (i.e., execute in parallel rather than one after another).
+
 6. Use **Flow > Run Simulation > Run Behavioral Simulation** and run Vivado simulator. To see the whole simulated signals, it is recommended to select **View > Zoom Fit**.
 
    ![Vivado-simulation](images/vivado_simulation_zoom.png)
 
    Verify that the behavior corresponds exactly to the truth table above.
 
-7. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
-
-8. To cleanup generated files, close simulation window, right click to SIMULATION or Run Simulation option, and select **Reset Behavioral Simulation** or type some the following command(s) to the Tcl console:
+7. To cleanup generated files, close simulation window, right click to SIMULATION or Run Simulation option, and select **Reset Behavioral Simulation** or type some the following command(s) to the Tcl console:
 
    ```tcl
    # Close the current simulation session
@@ -193,6 +194,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    # Closes the current open project
    close_project
    ```
+
+8. In Vivado, use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
 <a name="task2"></a>
 
@@ -227,19 +230,18 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
       // Instantiate Device Under Test (DUT)
       // ---------------------------------------------
       demorgan dut (
-         .a      (a),
-         .b      (b),
-         .c      (c),
-         .f_org  (f_org),
-         .f_nand (f_nand),
-         .f_nor  (f_nor)
+         .a     (a),
+         .b     (b),
+         .c     (c),
+         .f_org (f_org),
+         .f_nand(f_nand),
+         .f_nor (f_nor)
       );
 
       // ---------------------------------------------
-      // Stimulus process
+      // Testbench stimulus
       // ---------------------------------------------
       initial begin
-         // Test vectors
          c = 0; b = 0; a = 0; #10;
 
          // TODO: Apply all input combinations
@@ -261,64 +263,87 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 2. Modify the testbench to print results to the console using `$display`, such as:
 
    ```verilog
-   $display("Time(ps) b a | & | ^");
-   $display("-------------+------");
+   $display("\nStarting simulation...\n");
+   $display("Time  b a | AND OR XOR");
+   $display("----------+-----------");
 
-   b = 0; a = 0; #10;
-   $display("[%0t]  %b %b | %b %b %b", $time, b, a, y_and, y_or, y_xor);
+   // Use the monitor task to automaticaly display any change
+   $monitor("%4d  %b %b |  %b  %b  %b", $time, b, a, y_and, y_or, y_xor);
+
+   // `%b` prints a value in binary 
+   // `%h` prints a value in hexadecimal
+   // `%d` in decimal
    ```
 
 3. If you want to use online [EDA Playground](https://www.edaplayground.com) tool, you will need Google account, Facebook account, or register your account on EDA Playground.
 
-4. In addition to the professional Vivado tool, which requires significant local disk storage, other simulation tools are available, including [**Icarus Verilog**](https://github.com/steveicarus/iverilog), [**GTKWave**](https://gtkwave.sourceforge.net/), text editor such se VS Code, and command line.
+4. In addition to the professional Vivado tool, which requires significant local disk space, other simulation tools are available, including [**Icarus Verilog**](https://github.com/steveicarus/iverilog), [**GTKWave**](https://gtkwave.sourceforge.net/), a text editor such se VS Code, and the command line.
 
-   Add lines `$dumpfiles` and `$dumpvars` to your testbench.
+   Add a new `initial` block with `$dumpfiles` and `$dumpvars` to your testbench.
 
    ```verilog
    // ---------------------------------------------
-   // Stimulus process
+   // Testbench stimulus
    // ---------------------------------------------
    initial begin
-      // Waveform dump for GTKWave
-      $dumpfile("gates.vcd");
-      $dumpvars(0, gates_tb);
-
-      // Test vectors
-      // Set both `a`, `b` and wait 10 time units
+      // Set both `a`, `b`, then wait 10 time units
       b = 0; a = 0; #10;
 
       // TODO: Apply all input combinations
 
       $finish;
    end
+
+   initial begin
+      // Waveform dump for GTKWave
+      $dumpfile("gates.vcd");
+      $dumpvars(0, gates_tb);
+   end
    ```
 
-   Open the terminal nad use the following commands to simulate your design.
+   Open the terminal and use the following commands to simulate your design:
 
    ```bash
    # compile the design (`gates.v`)
    # compile the testbench (`gates_tb.v`)
-   # produce a simulation executable (`sim`)
-   $ iverilog -g2012 -o sim gates.v gates_tb.v
+   # produce a simulation executable (`sim.vvp`)
+   $ iverilog -g2012 -o sim.vvp gates.v gates_tb.v
 
    # run the simulation
    # generate the waveform file (`gates.vcd`)
-   $ vvp sim
+   $ vvp sim.vvp
 
    # open waveform in GTKWave
    $ gtkwave gates.vcd
    ```
 
+   As addition, you can use [Verilator](https://verilator.org/guide/latest/) as a **linting tool** to check your Verilog/SystemVerilog code for syntax errors, warnings, and common design issues—without running a simulation. This is a quick way to validate your code before simulation or synthesis.
+
+   ```bash
+   # lint the design and testbench
+   $ verilator --lint-only -Wno-fatal gates.v gates_tb.v
+   ```
+
+      * `--lint-only` checks the code without generating simulation output.
+      * `-Wall` enables a wide range of useful warnings.
+      * `-Wno-fatal` allows compilation to continue even if warnings occur.
+      * Helps catch issues such as:
+
+         * unused signals
+         * width mismatches
+         * implicit wires
+         * coding style problems
+
 <a name="questions"></a>
 
 ## Questions
 
-<!--What is the difference between assign and always blocks?-->
-
-1. Why does the testbench module have no ports?
-
-2. Using Boolean algebra, express XOR using only AND, OR, and NOT operators.
+1. Using Boolean algebra, express XOR using only AND, OR, and NOT operators.
 
 2. What happens if one `assign` statement is missing?
 
 3. Why are testbench input signals declared as `reg`?
+
+4. Why does the testbench module have no ports?
+
+5. What is the `initial` block?
