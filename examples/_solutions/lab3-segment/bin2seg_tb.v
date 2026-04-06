@@ -18,28 +18,24 @@ module bin2seg_tb ();
     // Instantiate Device Under Test (DUT)
     // ---------------------------------------------
     bin2seg dut (
-        .bin (bin),
-        .seg (seg)
+        .bin(bin),
+        .seg(seg)
     );
 
     integer i;  // Loop variable
 
     // ---------------------------------------------
-    // Stimulus process
+    // Testbench stimulus
     // Applies test vectors to DUT inputs over time
     // ---------------------------------------------
     initial begin
-        // Waveform dump for GTKWave
-        $dumpfile("bin2seg.vcd");
-        $dumpvars(0, bin2seg_tb);
-
         // Console header
         $display("\nStarting simulation...\n");
-        $display(" Time bin | seg (abcdefg, active-low)");
+        $display("Time  bin | seg (abcdefg, active-low)");
         $display("----------+--------------------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor("[%3d]  %h  | %b_%b", $time, bin, seg[6:4], seg[3:0]);
+        $monitor("%4d   %h  | %b_%b", $time, bin, seg[6:4], seg[3:0]);
 
         // -----------------------------------------
         // Enable display and test 0..F
@@ -53,4 +49,9 @@ module bin2seg_tb ();
         $finish;
     end
 
+    initial begin
+        // Waveform dump for GTKWave
+        $dumpfile("bin2seg.vcd");
+        $dumpvars(0, bin2seg_tb);
+    end
 endmodule

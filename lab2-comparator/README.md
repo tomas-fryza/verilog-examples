@@ -153,7 +153,7 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
        integer i, j;  // Integer in Verilog is typically 32-bit signed
 
        // ---------------------------------------------
-       // Stimulus process
+       // Testbench stimulus
        // Applies test vectors to DUT inputs over time
        // ---------------------------------------------
        initial begin
@@ -230,8 +230,9 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
            $display("------------+------------");
 
            // Use the monitor task to automaticaly display any change
-           $monitor("%3d   %b %b |  %b   %b   %b",
-               $time, b, a, b_gt, b_a_eq, a_gt);
+           $monitor("%4d  %b %b |  %b   %b   %b",
+               $time, b, a,
+               b_gt, b_a_eq, a_gt);
 
            // Exhaustive testing
            for (i = 0; i < 4; i = i+1) begin
@@ -250,11 +251,7 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
                        b_a_eq !== exp_b_a_eq ||
                        a_gt !== exp_a_gt) begin
 
-                       $display("[Error] a=%0d b=%0d | DUT=%b%b%b EXPECTED=%b%b%b",
-                           a, b,
-                           b_gt, b_a_eq, a_gt,
-                           exp_b_gt, exp_b_a_eq, exp_a_gt);
-                        
+                       $display("[Error] a=%0d b=%0d", a, b);
                        errors = errors + 1;
                    end
                end

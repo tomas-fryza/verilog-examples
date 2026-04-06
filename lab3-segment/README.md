@@ -85,22 +85,22 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
        always @(*) begin
            case (bin)
-               4'h0: seg = 7'b000_0001;  // 0
-               4'h1: seg = 7'b100_1111;  // 1
-               4'h2: seg = 7'b001_0010;  // 2
-               4'h3: seg = 7'b000_0110;  // 3
+               4'h0: seg = 7'b000_0001;
+               4'h1: seg = 7'b100_1111;
+               4'h2: seg = 7'b001_0010;
+               4'h3: seg = 7'b000_0110;
 
                // TODO: Complete settings for 4, 5, 6
 
-               4'h7: seg = 7'b000_1111;  // 7
-               4'h8: seg = 7'b000_0000;  // 8
-               4'h9: seg = 7'b000_0100;  // 9
+               4'h7: seg = 7'b000_1111;
+               4'h8: seg = 7'b000_0000;
+               4'h9: seg = 7'b000_0100;
 
                // TODO: Complete settings for A, b, C
 
-               4'hd: seg = 7'b100_0010;  // d
-               4'hE: seg = 7'b011_0000;  // E
-               4'hF: seg = 7'b011_1000;  // F
+               4'hd: seg = 7'b100_0010;
+               4'hE: seg = 7'b011_0000;
+               4'hF: seg = 7'b011_1000;
 
                default: seg = 7'b111_1111;  // Blank for safety
            endcase

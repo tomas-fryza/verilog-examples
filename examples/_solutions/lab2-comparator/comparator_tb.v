@@ -11,21 +11,21 @@ module comparator_tb ();
     // Testbench internal signals
     // Must be `reg`, so we can assign values
     // ---------------------------------------------
-    reg [1:0] b;  // DUT input b
-    reg [1:0] a;  // DUT input a
-    wire      b_gt;
-    wire      b_a_eq;
-    wire      a_gt;
+    reg  [1:0] b;  // DUT input b
+    reg  [1:0] a;  // DUT input a
+    wire b_gt;
+    wire b_a_eq;
+    wire a_gt;
 
     // ---------------------------------------------
     // Instantiate Device Under Test (DUT)
     // ---------------------------------------------
     comparator dut (
-        .b      (b),
-        .a      (a),
-        .b_gt   (b_gt),
-        .b_a_eq (b_a_eq),
-        .a_gt   (a_gt)
+        .b     (b),
+        .a     (a),
+        .b_gt  (b_gt),
+        .b_a_eq(b_a_eq),
+        .a_gt  (a_gt)
     );
 
     integer i, j;  // Integer in Verilog is typically 32-bit signed
@@ -36,21 +36,17 @@ module comparator_tb ();
     reg exp_a_gt;
 
     // ---------------------------------------------
-    // Stimulus process
+    // Testbench stimulus
     // Applies test vectors to DUT inputs over time
     // ---------------------------------------------
     initial begin
-        // Waveform dump for GTKWave
-        $dumpfile("comparator.vcd");
-        $dumpvars(0, comparator_tb);
-
         // Console header
         $display("\nStarting simulation...\n");
-        $display(" Time   b  a | b>a b=a b<a");
-        $display("-------------+------------");
+        $display("Time   b  a | b>a b=a b<a");
+        $display("------------+------------");
 
         // Use the monitor task to automaticaly display any change
-        $monitor("[%3d]  %b %b |  %b   %b   %b",
+        $monitor("%4d  %b %b |  %b   %b   %b",
             $time, b, a,
             b_gt, b_a_eq, a_gt);
 
@@ -78,7 +74,6 @@ module comparator_tb ();
                     a_gt !== exp_a_gt) begin
 
                     $display("[Error] a=%0d b=%0d", a, b);
-                    
                     errors += 1;
                 end
             end
@@ -92,4 +87,9 @@ module comparator_tb ();
         $finish;
     end
 
+    initial begin
+        // Waveform dump for GTKWave
+        $dumpfile("comparator.vcd");
+        $dumpvars(0, comparator_tb);
+    end
 endmodule

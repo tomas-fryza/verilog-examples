@@ -17,11 +17,11 @@
 `timescale 1ns/1ps
 
 module comparator (
-    input  wire [1:0] b,       //! Input bus b[1:0]
-    input  wire [1:0] a,       //! Input bus a[1:0]
-    output wire       b_gt,    //! Output is 1 when b > a
-    output wire       b_a_eq,  //! Output is 1 when b == a
-    output wire       a_gt     //! Output is 1 when b < a
+    input  wire [1:0] b,  //! Input bus b[1:0]
+    input  wire [1:0] a,  //! Input bus a[1:0]
+    output wire b_gt,     //! Output is 1 when b > a
+    output wire b_a_eq,   //! Output is 1 when b == a
+    output wire a_gt      //! Output is 1 when b < a
 );
 
     // ---------------------------------------------
