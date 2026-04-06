@@ -67,6 +67,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
       ![schema of gates](images/schematic_gates.png)
 
+
 1. Run Vivado and create a new project:
 
    > **Note:** When running for the first time, it is recommended to specify the project directory and target language in the **Tools > Settings...** menu.
@@ -195,7 +196,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    close_project
    ```
 
-8. In Vivado, use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+8. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
 <a name="task2"></a>
 
@@ -252,7 +253,7 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    endmodule
    ```
 
-3. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+3. Use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis.
 
 <a name="tasks"></a>
 

@@ -242,7 +242,7 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
    );
 
        // ---------------------------------------------
-       //! Instantiate 7-segment decoder
+       // Instantiate 7-segment decoder
        // ---------------------------------------------
        bin2seg bin2seg_inst (
            .bin(sw),
@@ -329,13 +329,15 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
        output wire [7:0] an
    );
        
-       // Internal signal for selected 4-bit input
-       wire [3:0] sig_tmp;
+       wire [3:0] digit;
+       bin2seg bin2seg_inst (
 
-       // TODO: Instantiate your DUT
+           // TODO: Instantiate 7-segment decoder
+
+       );
 
        // Select left or right 4-bit input (multiplexer)
-       assign sig_tmp = (btnd == 1'b1) ? sw_l : sw_r;
+       assign digit = (btnd == 1'b1) ? sw_l : sw_r;
 
        // Disable unused digits (active-low logic)
        assign an[7:2] = 6'b11_1111;

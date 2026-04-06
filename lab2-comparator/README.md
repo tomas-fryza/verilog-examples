@@ -33,7 +33,7 @@ After completing this lab, students should be able to:
    - `b_a_eq`: Output is `1` when `b == a`
    - `a_gt`: Output is `1` when `b < a`
 
-      | **Dec. equivalent** | **B[1:0]** | **A[1:0]** | **B is greater than A** | **B equals A** | **A is greater than B** |
+      | **Dec. equivalent** | **b[1:0]** | **a[1:0]** | **b is greater than a** | **b equals a** | **a is greater than b** |
       | :-: | :-: | :-: | :-: | :-: | :-: |
       |  0 | 0 0 | 0 0 | 0 | 1 | 0 |
       |  1 | 0 0 | 0 1 | 0 | 0 | 1 |
@@ -270,7 +270,7 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 
    > **Note:** In Verilog testbenches, the operators `===` (case equality) and `!==` (case inequality) should be used when comparing signals. Unlike `==` and `!=`, which perform logical comparisons, `===` and `!==` compare every bit explicitly, including unknown (`X`) and high-impedance (`Z`) values. This guarantees reliable mismatch detection and prevents hidden simulation errors.
 
-2. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+2. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
 <a name="tasks"></a>
 
