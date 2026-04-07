@@ -38,11 +38,11 @@ This repository contains Verilog examples for the bachelor-level course [Digital
    # compile the design (`gates.v`)
    # compile the testbench (`gates_tb.v`)
    # produce a simulation executable (`sim`)
-   $ iverilog -g2012 -o sim gates.v gates_tb.v
+   $ iverilog -g2012 -o sim.vvp gates.v gates_tb.v
 
    # run the simulation
    # generate the waveform file (`gates.vcd`)
-   $ vvp sim
+   $ vvp sim.vvp
 
    # open waveform in GTKWave
    $ gtkwave gates.vcd
