@@ -169,8 +169,7 @@ The following example shows a simple structural design consisting of two 2-input
 
    ```verilog
    module xor2 (
-       input  in1,
-       input  in2,
+       input  in1, in2,
        output out1
    );
        assign out1 = in1 ^ in2;
@@ -186,16 +185,12 @@ The following example shows a simple structural design consisting of two 2-input
    );
 
        wire sig_tmp;  // Internal signal
-
-       // First XOR instance
-       xor2 U1 (
+       xor2 U1 (      // First XOR instance
            .in1 (a),
            .in2 (b),
            .out1(sig_tmp)
        );
-
-       // Second XOR instance
-       xor2 U2 (
+       xor2 U2 (      // Second XOR instance
            .in1 (sig_tmp),
            .in2 (c),
            .out1(y)
@@ -329,15 +324,15 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
        output wire [7:0] an
    );
        
+       // Select left or right 4-bit input (multiplexer)
        wire [3:0] digit;
+       assign digit = (btnd == 1'b1) ? sw_l : sw_r;
+
        bin2seg bin2seg_inst (
 
-           // TODO: Instantiate 7-segment decoder
+           // TODO: Add instantiation of `bin2seg`
 
        );
-
-       // Select left or right 4-bit input (multiplexer)
-       assign digit = (btnd == 1'b1) ? sw_l : sw_r;
 
        // Disable unused digits (active-low logic)
        assign an[7:2] = 6'b11_1111;
