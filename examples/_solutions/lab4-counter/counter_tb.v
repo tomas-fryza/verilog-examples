@@ -6,32 +6,30 @@ module counter_tb ();
     localparam N = 5;  // Change only this value to scale the counter
 
     // Testbench signals
-    reg          clk;
-    reg          rst;
-    reg          en;
+    reg  clk;
+    reg  rst;
+    reg  en;
     wire [N-1:0] cnt;
 
-    // Instantiate the counter
+    // Instantiate Device Under Test (DUT)
     counter #(
-        .N (N)
+        .N(N)
     ) dut (
-        .i_clk (clk),
-        .i_rst (rst),
-        .i_en  (en),
-        .o_cnt (cnt)
+        .clk(clk),
+        .rst(rst),
+        .en (en),
+        .cnt(cnt)
     );
 
     // Clock generation: 10ns period (100 MHz)
+    initial clk = 0;
     always #5 clk = ~clk;
+    // `always` defines a process that runs indefinitely during
+    // simulation. This block repeats forever.
 
-    // The initial block executes once at the start of the simulation
+    // Testbench stimulus
     initial begin
-        // Waveform dump for GTKWave
-        $dumpfile("counter.vcd");
-        $dumpvars(0, counter_tb);
-
         // Initialize
-        clk = 0;
         rst = 0;
         en  = 1;
 
@@ -68,6 +66,12 @@ module counter_tb ();
         $display(" Time \tclk \trst \ten \tcnt");
         $monitor("[%4d] \t%b \t%b \t%b \t%0d",
             $time, clk, rst, en, cnt);
+    end
+
+    initial begin
+        // Waveform dump for GTKWave
+        $dumpfile("counter.vcd");
+        $dumpvars(0, counter_tb);
     end
 
 endmodule

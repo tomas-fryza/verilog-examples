@@ -3,12 +3,12 @@
 # ======================================================
 
 # Files
-# SRCS = \
-# 	counter.v \
-# 	counter_tb.v
 SRCS = \
-	clk_en.v \
-	clk_en_tb.v
+	counter.v \
+	counter_tb.v
+# SRCS = \
+# 	clk_en.v \
+# 	clk_en_tb.v
 
 # Lint (static code analysis), compile, and run simulation
 all:

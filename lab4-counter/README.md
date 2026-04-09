@@ -27,14 +27,14 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
 ## Task 1: Binary counter
 
-1. Run Vivado, create a new RTL project named `counter`, add a Verilog source file `counter`, and implement a 4-bit binary counter. Use the following I/O ports:
+1. Run Vivado, create a new RTL project named `counter`, and create a Verilog source file named `counter` for Nexys A7-50T FPGA board. Use the following I/O ports and implement a 4-bit binary counter:
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `i_clk` | input | `wire` | Main clock |
-   | `i_rst` | input | `wire` | High-active synchronous reset |
-   | `i_en` | input | `wire` | Clock enable |
-   | `o_cnt` | output | `reg [3:0]` | Counter value |
+   | `clk` | input | `wire` | Main clock |
+   | `rst` | input | `wire` | High-active synchronous reset |
+   | `en`  | input | `wire` | Clock enable |
+   | `cnt` | output | `reg [3:0]` | Counter value |
 
 2. A **parameter** in Verilog allows the designer to configure a module at instantiation time, making the design flexible and reusable. The same module can therefore be used with different parameter values without modifying its internal implementation.
 
@@ -47,13 +47,13 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
    ```verilog
    module counter #(
-       // #() after a module name introduces a parameter list
+       // "#()" after a module name introduces a parameter list
        parameter N = 4  // Number of bits for the counter
    )(
-       input  wire         i_clk,  // Main clock
-       input  wire         i_rst,  // High-active synchronous reset
-       input  wire         i_en,   // Clock enable
-       output reg  [N-1:0] o_cnt   // Counter value
+       input  wire clk,         // Main clock
+       input  wire rst,         // High-active synchronous reset
+       input  wire en,          // Clock enable
+       output reg  [N-1:0] cnt  // Counter value
    );
    ```
 
@@ -61,12 +61,12 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
    ```verilog
    ...
-       always @(posedge i_clk) begin
-           if (i_rst) begin
-               o_cnt <= 0;  // Reset counter; non-blocking assignment (<=)
+       always @(posedge clk) begin
+           if (rst) begin
+               cnt <= 0;  // Reset counter; non-blocking assignment (<=)
            end
-           else if (i_en) begin
-               o_cnt <= o_cnt + 1'b1;  // Increment counter when enabled
+           else if (en) begin
+               cnt <= cnt + 1'b1;  // Increment counter when enabled
            end
        end
 
@@ -75,7 +75,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
    > **Note:** Verilog suppors **blocking** and **non-blocking** assignments. Blocking assignments (`=`) execute immediately and in order, while non-blocking assignments (`<=`) update at the end of the time step, which correctly models how flip-flops update simultaneously in hardware.
 
-4. Create a Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `i_rst` and `i_en` signals, and try several values of `N`.
+4. Create a Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `rst` and `en` signals, and try several values of `N`.
 
    A module parameter allows the designer to **configure the internal properties of a module during instantiation**. When a module is instantiated, its parameters can be overridden using the `#(...)` syntax placed between the module name and the instance name.
 
@@ -88,38 +88,39 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
        localparam N = 5;  // Change only this value to scale the counter
 
        // Testbench signals
-       reg          clk;
-       reg          rst;
-       reg          en;
+       reg  clk;
+       reg  rst;
+       reg  en;
        wire [N-1:0] cnt;
 
-       // Instantiate the counter
+       // Instantiate Device Under Test (DUT)
        counter #(
-           .N (N)
+           .N(N)
        ) dut (
-           .i_clk (clk),
-           .i_rst (rst),
-           .i_en  (en),
-           .o_cnt (cnt)
+           .clk(clk),
+           .rst(rst),
+           .en (en),
+           .cnt(cnt)
        );
 
        // Clock generation: 10ns period (100 MHz)
+       initial clk = 0;
        always #5 clk = ~clk;
+       // `always` defines a process that runs indefinitely during
+       // simulation. This block repeats forever.
 
-       // The initial block executes once at the start of the simulation
+       // Testbench stimulus
        initial begin
            // Initialize
-           clk = 0;
            rst = 0;
            en  = 1;
-
-           #200  // 20 periods
 
            // TODO: Reset generation
     
            // TODO: Clock enable/disable sequence
  
            // Finish simulation
+           $display("\nSimulation finished\n");
            $finish;
        end
 
@@ -130,7 +131,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
    > 
    > ![Change radix](images/vivado_radix.png)
 
-5. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+5. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
 6. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
 
@@ -146,19 +147,19 @@ To drive other logic in the design that requires a slower operation, it is bette
 
    | **Time interval** | **Clock cycles (decimal)** | **Binary** | **Hexadecimal** | **Required bits** |
    | :-: | :-: | :-: | :-: | :-: |
-   | 2&nbsp;ms | 200_000 | `b"11_0000_1101_0100_0000"` | `x"3_0d40"` | 18 |
-   | 4&nbsp;ms |  |  |  |  |
-   | 8&nbsp;ms |  |  |  |  |
-   | 10&nbsp;ms |  |  |  |  |
-   | 250&nbsp;ms | 25_000_000 | `b"1_0111_1101_0111_1000_0100_0000"` | `x"17d_7840"` | 25 |
-   | 500&nbsp;ms |  |  |  |
-   | 1&nbsp;sec | 100_000_000 | `b"101_1111_0101_1110_0001_0000_0000"` | `x"5F5_E100"` | 27 |
+   | 2&nbsp;ms   | 200_000     | `18'b11_0000_1101_0100_0000`  | `18'x3_0d40` | 18 |
+   | 4&nbsp;ms   | 400_000     | `19'b110_0001_1010_1000_0000` | `19'x6_1a80` | 19 |
+   | 8&nbsp;ms   |             |  |  |  |
+   | 10&nbsp;ms  |             |  |  |  |
+   | 250&nbsp;ms | 25_000_000  | `25'b1_0111_1101_0111_1000_0100_0000`   | `25'x17d_7840` | 25 |
+   | 500&nbsp;ms |             |  |  |  |
+   | 1&nbsp;sec  | 100_000_000 | `27'b101_1111_0101_1110_0001_0000_0000` | `27'x5f5_e100` | 27 |
 
 2. In your project, create a new Verilog design source file named `clk_en`, and implement a clock enable circuit which generates one-clock-cycle positive pulse every `MAX` clock periods.
 
 3. Copy the [design](https://raw.githubusercontent.com/tomas-fryza/verilog-examples/refs/heads/main/examples/_solutions/lab4-counter/clk_en.v) into your `clk_en.v` file.
 
-4. (Optionaly) Create a VHDL simulation source file named `clk_en_tb`, copy the [testbench](https://raw.githubusercontent.com/tomas-fryza/verilog-examples/refs/heads/main/examples/_solutions/lab4-counter/clk_en_tb.v), and test several `MAX` values.
+4. (Optionaly) Create a new Verilog simulation source file named `clk_en_tb`, copy the [testbench](https://raw.githubusercontent.com/tomas-fryza/verilog-examples/refs/heads/main/examples/_solutions/lab4-counter/clk_en_tb.v), and test several `MAX` values.
 
    > **Note:** To select which testbench to simulate, right-click to the testbench file name and choose `Set as Top`.
    >
@@ -176,73 +177,56 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | Synchronous reset |
-   | `led` | output | `wire [7:0]` | 8-bit counter value |
+   | `clk`  | input  | `wire` | Main clock |
+   | `btnu` | input  | `wire` | Synchronous reset |
+   | `led`  | output | `wire [7:0]` | 8-bit counter value |
 
 2. Use module instantiation of `clk_en` and `counter`, and define the top-level structure as follows.
 
    ![top level ver1](images/top-level_ver1.png)
 
    ```verilog
-       // Internal signal
-       wire en_10ms;  // Clock enable for 8-bit counter
+   `timescale 1ns/1ps
+
+   module counter_top (
+       input  wire clk,       // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire [7:0] led  // 8-bit counter value
+   );
 
        // ---------------------------------------------------------
        // Clock enable for 10 ms
        // ---------------------------------------------------------
+       wire en_10ms;
        clk_en #(
-           .MAX (1_000_000)
-       ) u_enable0 (
-           .i_clk (clk),
-           .i_rst (btnu),
-           .o_ce  (en_10ms)
+           .MAX(1_000_000)
+       ) enable_inst (
+           .clk(clk),
+           .rst(btnu),
+           .ce (en_10ms)
        );
 
        // ---------------------------------------------------------
        // 8-bit binary counter
        // ---------------------------------------------------------
        counter #(
-           .N (8)
-       ) u_counter0 (
+           .N(8)
+       ) counter_inst (
 
-           // TODO: Complete the instantiation
+           // TODO: Complete instantiation of `counter`
 
        );
 
    endmodule
    ```
 
-3. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
+3. Complete all **TODO** items in the module.
 
-   ```xdc
-   # -----------------------------------------------
-   # Clock signal
-   # -----------------------------------------------
-   set_property -dict { PACKAGE_PIN E3 IOSTANDARD LVCMOS33 } [get_ports {clk}]; 
-   create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {clk}];
+4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
 
-   # -----------------------------------------------
-   # Push button
-   # -----------------------------------------------
-   set_property PACKAGE_PIN M18 [get_ports {btnu}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {btnu}]
-
-   # -----------------------------------------------
-   # LEDs
-   # -----------------------------------------------
-   set_property PACKAGE_PIN H17 [get_ports {led[0]}] ;
-   set_property PACKAGE_PIN K15 [get_ports {led[1]}] ;
-   set_property PACKAGE_PIN J13 [get_ports {led[2]}] ;
-   set_property PACKAGE_PIN N14 [get_ports {led[3]}] ;
-   set_property PACKAGE_PIN R18 [get_ports {led[4]}] ;
-   set_property PACKAGE_PIN V17 [get_ports {led[5]}] ;
-   set_property PACKAGE_PIN U17 [get_ports {led[6]}] ;
-   set_property PACKAGE_PIN U16 [get_ports {led[7]}] ;
-   set_property IOSTANDARD LVCMOS33 [get_ports {led[*]}]
-   ```
-
-4. Implement your design to Nexys A7 board:
+5. Implement your design to Nexys A7 board:
 
    1. Click **Generate Bitstream** (the process is time consuming and may take some time).
    2. Open **Hardware Manager**.
@@ -253,15 +237,15 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
 ### Variant 2: Counter and 7-segment display
 
-1. In your project, create a new VHDL design source file named `counter_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `counter_top`. Define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | in  | `wire` | Main clock |
-   | `btnu` | in | `wire` | Synchronous reset |
-   | `seg` | out | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
-   | `dp` | out | `wire` | Seven-segment decimal point (active-low, not used) |
-   | `an` | out | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
+   | `clk`  | input  | `wire` | Main clock |
+   | `btnu` | input  | `wire` | Synchronous reset |
+   | `seg`  | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
+   | `dp`   | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `an`   | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
 
 2. In your project, add the design source file `bin2seg.v` from the previous lab and check the "Copy sources into project".
 
@@ -272,100 +256,66 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    ![top level ver2](images/top-level_ver2.png)
 
    ```verilog
+   module counter_top (
+       input  wire clk,      // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire [7:0] an  // Seven-segment anodes AN7..AN0 (active-low)
+   );
+
        // Internal signals
-       wire       en_250ms;  // Clock enable for 4-bit counter
-       wire [3:0] cnt;       // 4-bit counter value
 
        // ---------------------------------------------------------
        // Clock enable for 250 ms
        // ---------------------------------------------------------
+       wire en_250ms;
        clk_en #(
-           .MAX (25_000_000)
-       ) u_enable0 (
-           .i_clk (clk),
-           .i_rst (btnu),
-           .o_ce  (en_250ms)
+           .MAX(25_000_000)
+       ) enable_inst (
+           .clk(clk),
+           .rst(btnu),
+           .ce (en_250ms)
        );
 
        // ---------------------------------------------------------
        // 4-bit binary counter
        // ---------------------------------------------------------
+       wire [3:0] cnt;
        counter #(
-           .N (4)
-       ) u_counter0 (
+           .N(4)
+       ) counter_inst (
 
-           // TODO: Complete counter instantiation
+           // TODO: Complete instantiation of `counter`
 
        );
 
        // ---------------------------------------------------------
        // Binary to 7-segment decoder
        // ---------------------------------------------------------
-       bin2seg u_segment (
-           .i_bin (cnt),
-           .o_seg (seg)
+       bin2seg decoder_inst (
+           .bin(cnt),
+           .seg(seg)
        );
 
-       // Turn off decimal point (active-low: 1 = off)
-       assign dp =  // TODO
-
-       // Enable only rightmost digit (active-low)
-       assign an =  // TODO
+       assign dp = // TODO: Turn off decimal point (inactive = '1')
+       assign an = // TODO: Enable AN0 only (active-low)
 
    endmodule
    ```
 
-4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file or use the following minimal constrains:
+4. Complete all **TODO** items in the module.
 
-   ```xdc
-   # -----------------------------------------------
-   # Clock signal
-   # -----------------------------------------------
-   set_property -dict { PACKAGE_PIN E3 IOSTANDARD LVCMOS33 } [get_ports {clk}]; 
-   create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {clk}];
+5. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
 
-   # -----------------------------------------------
-   # Push button
-   # -----------------------------------------------
-   set_property PACKAGE_PIN M18 [get_ports {btnu}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {btnu}]
-
-   # -----------------------------------------------
-   # Seven-segment cathodes CA..CG + DP (active-low)
-   # seg[6]=A ... seg[0]=G
-   # -----------------------------------------------
-   set_property PACKAGE_PIN T10 [get_ports {seg[6]}] ; # CA
-   set_property PACKAGE_PIN R10 [get_ports {seg[5]}] ; # CB
-   set_property PACKAGE_PIN K16 [get_ports {seg[4]}] ; # CC
-   set_property PACKAGE_PIN K13 [get_ports {seg[3]}] ; # CD
-   set_property PACKAGE_PIN P15 [get_ports {seg[2]}] ; # CE
-   set_property PACKAGE_PIN T11 [get_ports {seg[1]}] ; # CF
-   set_property PACKAGE_PIN L18 [get_ports {seg[0]}] ; # CG
-   set_property PACKAGE_PIN H15 [get_ports {dp}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {seg[*] dp}]
-
-   # -----------------------------------------------
-   # Seven-segment anodes AN7..AN0 (active-low)
-   # -----------------------------------------------
-   set_property PACKAGE_PIN J17 [get_ports {an[0]}]
-   set_property PACKAGE_PIN J18 [get_ports {an[1]}]
-   set_property PACKAGE_PIN T9  [get_ports {an[2]}]
-   set_property PACKAGE_PIN J14 [get_ports {an[3]}]
-   set_property PACKAGE_PIN P14 [get_ports {an[4]}]
-   set_property PACKAGE_PIN T14 [get_ports {an[5]}]
-   set_property PACKAGE_PIN K2  [get_ports {an[6]}]
-   set_property PACKAGE_PIN U13 [get_ports {an[7]}]
-   set_property IOSTANDARD LVCMOS33 [get_ports {an[*]}]
-   ```
-
-5. Implement your design to Nexys A7 board:
+6. Implement your design to Nexys A7 board:
 
    1. Click **Generate Bitstream** (the process is time consuming and may take some time).
    2. Open **Hardware Manager**.
    3. Select **Open Target > Auto Connect** (make sure Nexys A7 board is connected and switched on).
    4. Click **Program device** and select the generated file `YOUR-PROJECT-FOLDER/counter.runs/impl_1/counter_top.bit`.
 
-6. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
+7. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
 
 <a name="tasks"></a>
 
@@ -375,21 +325,23 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    * 4-bit counter with a 250 ms time base
    * 10-bit counter with a 10 ms time base
 
-   <!--![top level](images/top-level_ver3.png)-->
+      ![top level](images/top-level_ver3.png)
 
-2. Create a new component `up_down_counter` implementing bi-directional (up/down) binary counter.
+2. Create a new component `counter_bcd` implementing BCD counter.
+
+3. Create a new component `up_down_counter` implementing bi-directional (up/down) binary counter.
 
 <a name="questions"></a>
 
 ## Questions
 
-1. What is the purpose of the `i_en` (clock enable) signal in the counter, and what happens when it is `0`?
+1. What is the purpose of the `en` (clock enable) signal in the counter, and what happens when it is `0`?
 
 2. How many bits are required in a counter to generate a pulse every 10 ms on a 100 MHz clock?
 
 3. What is the role of the parameter `N` in the counter module?
 
-4. Why is the sequential process written as `always @(posedge i_clk)` instead of `always @(i_clk)`?
+4. Why is the sequential process written as `always @(posedge clk)` instead of `always @(clk)`?
 
 5. What is the purpose of the `#(...)` syntax when instantiating the counter module in the testbench?
 

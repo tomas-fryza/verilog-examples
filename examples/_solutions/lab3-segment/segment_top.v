@@ -25,7 +25,7 @@ module segment_top (
     //! Instantiate 7-segment decoder
     //! (Prefix `u_` means unit or instance.)
     // ---------------------------------------------
-    bin2seg u_bin2seg (
+    bin2seg decoder_inst (
         .bin (sw),
         .seg (seg)
     );

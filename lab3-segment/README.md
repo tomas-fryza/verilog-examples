@@ -334,6 +334,8 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
        );
 
+       assign dp = // TODO: Turn off decimal point (inactive = '1')
+
        // Disable unused digits (active-low logic)
        assign an[7:2] = 6'b11_1111;
 
