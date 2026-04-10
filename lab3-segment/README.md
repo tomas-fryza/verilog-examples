@@ -30,6 +30,8 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
 
    ![nexys A7 led and segment](images/nexys-a7_leds-display.png)
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Seven-segment display decoder
@@ -151,7 +153,9 @@ The Nexys A7 board provides two four-digit common anode seven-segment LED displa
    endmodule
    ```
 
-5. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+5. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+
+---
 
 <a name="task2"></a>
 
@@ -201,6 +205,8 @@ The following example shows a simple structural design consisting of two 2-input
 
 In this example, `U1` and `U2` are two independent instances of the same component, the signal `sig_tmp` connects the output of the first XOR gate to the input of the second, and the architecture describes a structural netlist rather than behavioral logic.
 
+---
+
 <a name="task3"></a>
 
 ## Task 3: Top-level design and FPGA implementation
@@ -212,10 +218,10 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `sw` | input | `wire [3:0]` | Slide switches SW3..SW0 |
+   | `sw`  | input  | `wire [3:0]` | Slide switches SW3..SW0 |
    | `seg` | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
-   | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
-   | `an` | output | `wire` | Seven-segment anodes AN7..AN0 (active-low) |
+   | `dp`  | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `an`  | output | `wire` | Seven-segment anodes AN7..AN0 (active-low) |
 
 3. Use component instantiation to connect `bin2seg` and define the top-level architecture.
 
@@ -303,6 +309,8 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
 10. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
 
+---
+
 <a name="tasks"></a>
 
 ## Optional tasks
@@ -345,6 +353,8 @@ In this task, you will integrate your `bin2seg` decoder into a **top-level entit
 
    endmodule
    ```
+
+---
 
 <a name="questions"></a>
 

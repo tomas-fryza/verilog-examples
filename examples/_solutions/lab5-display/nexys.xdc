@@ -12,21 +12,19 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {cl
 # -----------------------------------------------
 # Push buttons
 # -----------------------------------------------
-set_property PACKAGE_PIN M18 [get_ports {btnu}]
-set_property IOSTANDARD LVCMOS33 [get_ports {btnu}]
+set_property -dict { PACKAGE_PIN M18 IOSTANDARD LVCMOS33 } [get_ports {btnu}];
 
 # -----------------------------------------------
 # Switches
 # -----------------------------------------------
-set_property PACKAGE_PIN J15 [get_ports {sw[0]}]
-set_property PACKAGE_PIN L16 [get_ports {sw[1]}]
-set_property PACKAGE_PIN M13 [get_ports {sw[2]}]
-set_property PACKAGE_PIN R15 [get_ports {sw[3]}]
-set_property PACKAGE_PIN R17 [get_ports {sw[4]}]
-set_property PACKAGE_PIN T18 [get_ports {sw[5]}]
-set_property PACKAGE_PIN U18 [get_ports {sw[6]}]
-set_property PACKAGE_PIN R13 [get_ports {sw[7]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {sw[*]}]
+set_property -dict { PACKAGE_PIN J15 IOSTANDARD LVCMOS33 } [get_ports {sw[0]}];
+set_property -dict { PACKAGE_PIN L16 IOSTANDARD LVCMOS33 } [get_ports {sw[1]}];
+set_property -dict { PACKAGE_PIN M13 IOSTANDARD LVCMOS33 } [get_ports {sw[2]}];
+set_property -dict { PACKAGE_PIN R15 IOSTANDARD LVCMOS33 } [get_ports {sw[3]}];
+set_property -dict { PACKAGE_PIN R17 IOSTANDARD LVCMOS33 } [get_ports {sw[4]}];
+set_property -dict { PACKAGE_PIN T18 IOSTANDARD LVCMOS33 } [get_ports {sw[5]}];
+set_property -dict { PACKAGE_PIN U18 IOSTANDARD LVCMOS33 } [get_ports {sw[6]}];
+set_property -dict { PACKAGE_PIN R13 IOSTANDARD LVCMOS33 } [get_ports {sw[7]}];
 
 # -----------------------------------------------
 # Seven-segment cathodes CA..CG + DP (active-low)

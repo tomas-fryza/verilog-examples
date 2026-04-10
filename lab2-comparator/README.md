@@ -23,6 +23,8 @@ After completing this lab, students should be able to:
 
    ![Binary comparator](images/two-bit-comparator.png)
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Logic function minimization
@@ -57,6 +59,8 @@ After completing this lab, students should be able to:
    ![2-bit comparator Karnaugh maps](images/k-maps.png)
 
 3. Use K-maps to create simplified SoP and PoS forms of "B greater than A" function.
+
+---
 
 <a name="task2"></a>
 
@@ -198,6 +202,8 @@ Design a circuit that implements a **2-bit binary comparator**. The comparator s
 
    > **Note:** The behavioral implementation is synthesizable and preferred in real designs because it is clearer, scalable, and less error-prone than manual Boolean equations.
 
+---
+
 <a name="task3"></a>
 
 ## Task 3: Checking simulation values
@@ -272,6 +278,8 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
 
 2. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
+---
+
 <a name="tasks"></a>
 
 ## Optional tasks
@@ -300,6 +308,8 @@ Relying only on waveform inspection is not sufficient. Modern digital design req
    $ vvp sim.vvp
    $ gtkwave comparator.vcd
    ```
+
+---
 
 <a name="questions"></a>
 

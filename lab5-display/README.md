@@ -25,19 +25,21 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
 
    ![display multiplexing](images/waveform_multiplexing-general.png)
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Two-digit display driver
 
-1. Run Vivado, create a new RTL project named `display` and add a Verilog source file `display_driver`. Use the following I/O ports:
+1. Run Vivado, create a new RTL project named `display`, and create a Verilog design source file named `display_driver` for Nexys A7-50T FPGA board. Use the following I/O ports and implement a two-digit display driver:
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `i_clk` | input | `wire` | Main clock |
-   | `i_rst` | input | `wire` | High-active synchronous reset |
-   | `i_data` | input | `wire [7:0]` | Vector of input bits, 4 per digit |
-   | `o_seg` | output | `wire [6:0]` | {a,b,c,d,e,f,g} active-low outputs |
-   | `o_anode` | output | `reg [1:0]` | Anodes AN1..AN0 (active-low) |
+   | `clk`   | input  | `wire` | Main clock |
+   | `rst`   | input  | `wire` | High-active synchronous reset |
+   | `data`  | input  | `wire [7:0]` | Two hexadecimal digits |
+   | `seg`   | output | `wire [6:0]` | {a,b,c,d,e,f,g} active-low |
+   | `anode` | output | `reg [1:0]` | Anodes AN1..AN0 (active-low) |
 
 2. In your project, add the design source files `clk_en.v`, `counter.v`, and `bin2seg.v` from the previous lab(s) and check the **Copy sources into project** option. The selected files will be copied into the corresponding Vivado project folders, ensuring that the project contains local copies of all source files.
 
@@ -48,29 +50,33 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
    ![schematic of display driver](images/schematic_display-driver.png)
 
    ```verilog
-       // Internal signals
-       wire w_en;
-       wire w_digit;
-       wire [3:0] w_bin;
+   `timescale 1ns/1ps
+
+   module display_driver (
+       input  wire clk,         // Main clock
+
+       // TODO: Complete input/output ports
+
+       output reg  [1:0] anode  // Anodes AN1..AN0 (active-low)
+   );
 
        // ---------------------------------------------------------
-       // Clock enable generator for refresh timing
+       // Refresh timing
        // ---------------------------------------------------------
+       wire cnt_en;
        clk_en #(
-           .MAX (8)  // Adjust for flicker-free multiplexing
-                     // For simulation: 8
-       ) clock_0 (   // For implementation: 8_000_000
-           .i_clk (i_clk),
-           .i_rst (i_rst),
-           .o_ce  (w_en)
+           .MAX(8)      // Adjust for flicker-free multiplexing
+                        // For simulation: 8
+       ) enable_inst (  // For implementation: 8_000_000
+           .clk(clk),
+           .rst(rst),
+           .ce (cnt_en)
        );
 
-       // ---------------------------------------------------------
-       // N-bit counter for digit selection
-       // ---------------------------------------------------------
+       wire digit_sel;
        counter #(
-           .N (1)
-       ) counter_0 (
+           .N(1)
+       ) counter_inst (
 
            // TODO: Add instantiation of `counter`
 
@@ -79,14 +85,15 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
        // ---------------------------------------------------------
        // Digit select multiplexer
        // ---------------------------------------------------------
-       // w_digit = 0 -> right digit  (i_data[3:0])
-       // w_digit = 1 -> left digit   (i_data[7:4])
-       assign w_bin = (w_digit == 1'b0) ? i_data[3:0] : i_data[7:4];
+       wire [3:0] digit_val;
+       // digit_sel = 0 -> right digit (data[3:0])
+       // digit_sel = 1 -> left digit  (data[7:4])
+       assign digit_val = (digit_sel == 1'b0) ? data[3:0] : data[7:4];
 
        // ---------------------------------------------------------
        // 7-segment decoder
        // ---------------------------------------------------------
-       bin2seg decoder_0 (
+       bin2seg decoder_inst (
 
            // TODO: Add instantiation of `bin2seg`
 
@@ -96,8 +103,8 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
        // Anode select (active-low)
        // ---------------------------------------------------------
        always @(*) begin
-           o_anode = 2'b11;          // All digits off (active-low)
-           o_anode[w_digit] = 1'b0;  // Enable selected digit
+           anode = 2'b11;            // All digits off (active-low)
+           anode[digit_sel] = 1'b0;  // Enable selected digit
        end
 
    endmodule
@@ -105,42 +112,36 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
 
 4. Complete all **TODO** items in the module.
 
-5. Create a Verilog simulation file named `display_driver_tb`, complete the provided template, and test the functionality of the display driver with several input data values.
+5. Create a new Verilog simulation file named `display_driver_tb`, complete the provided template, and test the functionality of the display driver with several input data values.
 
    ```verilog
    `timescale 1ns/1ps
 
    module display_driver_tb ();
 
-       // ---------------------------------------------------------
        // Testbench signals
-       // ---------------------------------------------------------
-       reg clk;
-       reg rst;
-       reg [7:0] data;
+       reg  clk;
+       reg  rst;
+       reg  [7:0] data;
        wire [6:0] seg;
        wire [1:0] anode;
 
-       // ---------------------------------------------------------
-       // Instantiate DUT (Device Under Test)
-       // ---------------------------------------------------------
+       // Instantiate Device Under Test (DUT)
        display_driver dut (
-           .i_clk   (clk),
-           .i_rst   (rst),
-           .i_data  (data),
-           .o_seg   (seg),
-           .o_anode (anode)
+           .clk  (clk),
+           .rst  (rst),
+           .data (data),
+           .seg  (seg),
+           .anode(anode)
        );
 
        // Clock generation: 10ns period (100 MHz)
+       initial clk = 0;
        always #5 clk = ~clk;
 
-       // ---------------------------------------------------------
-       // Stimulus
-       // ---------------------------------------------------------
+       // Testbench stimulus
        initial begin
-           // Initialize signals
-           clk = 0;
+           // Initialize
            data = 8'h00;
 
            // Hold reset for a few cycles
@@ -159,13 +160,12 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
            data = 8'h20;
            #2000;
 
-           // End simulation
+           // Finish simulation
+           $display("\nSimulation finished\n");
            $finish;
        end
 
-       // ---------------------------------------------------------
-       // Monitor signals
-       // ---------------------------------------------------------
+       // Monitor outputs
        initial begin
 
            // TODO: Add display and monitor tasks
@@ -179,9 +179,13 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
 
    ![Vivado: add internal signal](images/vivado_add-wave.png)
 
-8. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+8. Complete all **TODO** items in the testbench module.
 
-9. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
+9. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+
+10. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
+
+---
 
 <a name="task2"></a>
 
@@ -193,26 +197,34 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 **Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
-1. In your project, create a new Verilog design source file named `display_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `display_top`, and define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `sw` | input | `wire [7:0]` | Input bits for two digits |
-   | `seg` | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
-   | `an` | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
-   | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `clk`  | input  | `wire` | Main clock |
+   | `btnu` | input  | `wire` | High-active synchronous reset |
+   | `sw`   | input  | `wire [7:0]` | Two hexadecimal digits |
+   | `seg`  | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
+   | `an`   | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
+   | `dp`   | output | `wire` | Seven-segment decimal point (active-low, not used) |
 
-2. Instantiate the `display_driver` circuit and complete the top-level architecture according to the following schematic and template.
+2. Instantiate the `display_driver` circuit and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver1.png)
 
    ```verilog
-       // ---------------------------------------------------------
+   `timescale 1ns/1ps
+
+   module display_top (
+       input  wire clk,   // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire dp     // Decimal point
+   );
+
        // Display driver instance
-       // ---------------------------------------------------------
-       display_driver display_0 (
+       display_driver display_inst (
 
            // TODO: Add instantiation of `display_driver`
 
@@ -244,48 +256,52 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 **Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
-1. In your project, create a new VHDL design source file named `display_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `display_top`, and define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `seg` | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
-   | `an` | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
-   | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `clk`  | input  | `wire` | Main clock |
+   | `btnu` | input  | `wire` | High-active synchronous reset |
+   | `seg`  | output | `wire [6:0]` | Seven-segment cathodes CA..CG (active-low) |
+   | `an`   | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
+   | `dp`   | output | `wire` | Seven-segment decimal point (active-low, not used) |
 
 2. Instantiate the `display_driver` circuit, independent `clock_en` and 8-bit binary `counter`, and complete the top-level architecture according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver2.png)
 
    ```verilog
-       // Internal signals
-       wire w_cnt_en;
-       wire [7:0] w_cnt_val;
+   `timescale 1ns/1ps
 
-       // ---------------------------------------------------------
+   module display_top (
+       input  wire clk,   // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire dp     // Decimal point
+   );
+
        // 8-bit counter
-       // ---------------------------------------------------------
+       wire cnt_en;
        clk_en #(
-           .MAX (25_000_000)  // Adjust counter speed
-       ) clock_1 (
-           .i_clk (clk),
-           .i_rst (btnu),
-           .o_ce  (w_cnt_en)
+           .MAX(25_000_000)  // Adjust counter speed
+       ) clock2_inst (
+           .clk(clk),
+           .rst(btnu),
+           .ce (cnt_en)
        );
 
+       wire [7:0] cnt_val;
        counter #(
-           .N (8)
-       ) counter_1 (
+           .N(8)
+       ) counter2_inst (
 
            // TODO: Add instantiation of `counter`
 
        );
 
-       // ---------------------------------------------------------
        // 7-segment display driver
-       // ---------------------------------------------------------
-       display_driver display_0 (
+       display_driver display_inst (
 
            // TODO: Add instantiation of `display_driver`
 
@@ -313,6 +329,8 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 7. Use **Implementation > Open Implemented Design > Schematic** to see the generated structure.
 
+---
+
 <a name="tasks"></a>
 
 ## Optional tasks
@@ -326,6 +344,8 @@ Choose one of the following variants and implement a display driver on the Nexys
    ![top level ver2](images/top-level_ver3.png)
 
 2. Extend the `display_driver` design to control four or even eight 7-segment displays.
+
+---
 
 <a name="questions"></a>
 

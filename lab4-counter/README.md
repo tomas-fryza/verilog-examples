@@ -23,11 +23,13 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
 ![simple counter](images/waveform_counter.png)
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Binary counter
 
-1. Run Vivado, create a new RTL project named `counter`, and create a Verilog source file named `counter` for Nexys A7-50T FPGA board. Use the following I/O ports and implement a 4-bit binary counter:
+1. Run Vivado, create a new RTL project named `counter`, and create a Verilog design source file named `counter` for Nexys A7-50T FPGA board. Use the following I/O ports and implement a 4-bit binary counter:
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
@@ -75,7 +77,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
 
    > **Note:** Verilog suppors **blocking** and **non-blocking** assignments. Blocking assignments (`=`) execute immediately and in order, while non-blocking assignments (`<=`) update at the end of the time step, which correctly models how flip-flops update simultaneously in hardware.
 
-4. Create a Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `rst` and `en` signals, and try several values of `N`.
+4. Create a new Verilog simulation file named `counter_tb`, complete the provided template, test the functionality of the `rst` and `en` signals, and try several values of `N`.
 
    A module parameter allows the designer to **configure the internal properties of a module during instantiation**. When a module is instantiated, its parameters can be overridden using the `#(...)` syntax placed between the module name and the instance name.
 
@@ -131,9 +133,11 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
    > 
    > ![Change radix](images/vivado_radix.png)
 
-5. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+5. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
 6. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
+
+---
 
 <a name="task2"></a>
 
@@ -147,13 +151,13 @@ To drive other logic in the design that requires a slower operation, it is bette
 
    | **Time interval** | **Clock cycles (decimal)** | **Binary** | **Hexadecimal** | **Required bits** |
    | :-: | :-: | :-: | :-: | :-: |
-   | 2&nbsp;ms   | 200_000     | `18'b11_0000_1101_0100_0000`  | `18'x3_0d40` | 18 |
-   | 4&nbsp;ms   | 400_000     | `19'b110_0001_1010_1000_0000` | `19'x6_1a80` | 19 |
+   | 2&nbsp;ms   | 200_000     | `18'b11_0000_1101_0100_0000`  | `18'h3_0d40` | 18 |
+   | 4&nbsp;ms   | 400_000     | `19'b110_0001_1010_1000_0000` | `19'h6_1a80` | 19 |
    | 8&nbsp;ms   |             |  |  |  |
    | 10&nbsp;ms  |             |  |  |  |
-   | 250&nbsp;ms | 25_000_000  | `25'b1_0111_1101_0111_1000_0100_0000`   | `25'x17d_7840` | 25 |
+   | 250&nbsp;ms | 25_000_000  | `25'b1_0111_1101_0111_1000_0100_0000`   | `25'h17d_7840` | 25 |
    | 500&nbsp;ms |             |  |  |  |
-   | 1&nbsp;sec  | 100_000_000 | `27'b101_1111_0101_1110_0001_0000_0000` | `27'x5f5_e100` | 27 |
+   | 1&nbsp;sec  | 100_000_000 | `27'b101_1111_0101_1110_0001_0000_0000` | `27'h5f5_e100` | 27 |
 
 2. In your project, create a new Verilog design source file named `clk_en`, and implement a clock enable circuit which generates one-clock-cycle positive pulse every `MAX` clock periods.
 
@@ -164,6 +168,8 @@ To drive other logic in the design that requires a slower operation, it is bette
    > **Note:** To select which testbench to simulate, right-click to the testbench file name and choose `Set as Top`.
    >
    > ![Set as Top](images/vivado_set-top.png)
+
+---
 
 <a name="task3"></a>
 
@@ -181,7 +187,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    | `btnu` | input  | `wire` | Synchronous reset |
    | `led`  | output | `wire [7:0]` | 8-bit counter value |
 
-2. Use module instantiation of `clk_en` and `counter`, and define the top-level structure as follows.
+2. Use module instantiation of `clk_en` and `counter`, and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver1.png)
 
@@ -224,7 +230,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
 3. Complete all **TODO** items in the module.
 
-4. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
+4. Create a new constraints file `nexys` (XDC file) and copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
 
 5. Implement your design to Nexys A7 board:
 
@@ -306,7 +312,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
 4. Complete all **TODO** items in the module.
 
-5. Create a new constraints file `nexys` (XDC file). Copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
+5. Create a new constraints file `nexys` (XDC file) and copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) constraint file.
 
 6. Implement your design to Nexys A7 board:
 
@@ -316,6 +322,8 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
    4. Click **Program device** and select the generated file `YOUR-PROJECT-FOLDER/counter.runs/impl_1/counter_top.bit`.
 
 7. Use **IMPLEMENTATION > Open Implemented Design > Schematic** to see the generated structure.
+
+---
 
 <a name="tasks"></a>
 
@@ -327,9 +335,11 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
       ![top level](images/top-level_ver3.png)
 
-2. Create a new component `counter_bcd` implementing BCD counter.
+2. Create a new module `counter_bcd` implementing BCD counter.
 
-3. Create a new component `up_down_counter` implementing bi-directional (up/down) binary counter.
+3. Create a new module `up_down_counter` implementing bi-directional (up/down) binary counter.
+
+---
 
 <a name="questions"></a>
 

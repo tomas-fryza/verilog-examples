@@ -47,6 +47,8 @@ In Verilog, combinational logic can be described using **continuous assignments*
    assign y = a & b;  // AND gate
    ```
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Introduction to Verilog
@@ -198,6 +200,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
 
 8. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
+---
+
 <a name="task2"></a>
 
 ## Task 2: De Morgan's laws
@@ -253,7 +257,9 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
    endmodule
    ```
 
-3. Use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis.
+3. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
+
+---
 
 <a name="tasks"></a>
 
@@ -334,6 +340,8 @@ The module shall have two single-bit inputs `a`, `b` and three single-bit output
          * width mismatches
          * implicit wires
          * coding style problems
+
+---
 
 <a name="questions"></a>
 
