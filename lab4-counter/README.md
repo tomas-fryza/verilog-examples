@@ -105,7 +105,7 @@ Many digital circuits include an **enable** (clock enable) input. This signal co
            .cnt(cnt)
        );
 
-       // Clock generation: 10ns period (100 MHz)
+       // Clock generation: 10 ns period (100 MHz)
        initial clk = 0;
        always #5 clk = ~clk;
        // `always` defines a process that runs indefinitely during
@@ -257,7 +257,7 @@ Choose one of the following variants, implement a counter on the Nexys A7 board,
 
    ![vivado_copy-sources](images/vivado_copy-sources.png)
 
-3. Use instantiation of modules `clk_en`, `counter`, and `bin2seg`, and define the top-level architecture as follows.
+3. Use instantiation of modules `clk_en`, `counter`, and `bin2seg`, and define the top-level module as follows.
 
    ![top level ver2](images/top-level_ver2.png)
 

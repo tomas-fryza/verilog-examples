@@ -8,32 +8,24 @@ module debounce_counter_top (
     output wire led16_b
 );
 
-    //------------------------------------------------------------
-    // Internal signals
-    //------------------------------------------------------------
-    wire sig_cnt_en;
-
-    //------------------------------------------------------------
     // Debounce instance
-    //------------------------------------------------------------
+    wire sig_cnt_en;
     debounce debounce_inst (
-        .clk       (clk),
-        .rst       (btnu),
-        .btn_in    (btnd),
-        .btn_state (led16_b),
-        .btn_press (sig_cnt_en)
+        .clk  (clk),
+        .rst  (btnu),
+        .pin  (btnd),
+        .state(led16_b),
+        .press(cnt_en)
     );
 
-    //------------------------------------------------------------
-    // Counter instance
-    //------------------------------------------------------------
+    // 8-bit counter
     counter #(
         .N(8)
     ) counter_inst (
-        .i_clk (clk),
-        .i_rst (btnu),
-        .i_en  (sig_cnt_en),
-        .i_cnt (led)
+        .clk(clk),
+        .rst(btnu),
+        .en (cnt_en),
+        .cnt(led)
     );
 
 endmodule

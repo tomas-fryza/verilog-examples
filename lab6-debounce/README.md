@@ -40,19 +40,21 @@ The main methods to eliminate switch bounce are:
 
    3. **Combination approach**. In many practical systems, a combination of **hardware filtering** and **digital debouncing logic** is used to achieve robust signal conditioning.
 
+---
+
 <a name="task1"></a>
 
 ## Task 1: Debounce button
 
-1. Run Vivado, create a new RTL project named `debounce`, and create a Verilog design source file named `debounce`. Use the following I/O ports:
+1. Run Vivado, create a new RTL project named `debounce`, and create a Verilog design source file named `debounce` for Nexys A7-50T FPGA board. Use the following I/O ports:
 
       | **Port name** | **Direction** | **Type** | **Description** |
       | :-: | :-: | :-- | :-- |
-      | `clk` | input  | `wire` | Main clock |
-      | `rst` | input  | `wire` | High-active synchronous reset |
-      | `btn_in` | input  | `wire` | Raw push-button input (may contain bounce) |
-      | `btn_state` | output | `wire` | Debounced button level |
-      | `btn_press` | output | `wire` | One-clock pulse generated when the button is pressed |
+      | `clk`   | input  | `wire` | Main clock |
+      | `rst`   | input  | `wire` | High-active synchronous reset |
+      | `pin`   | input  | `wire` | Raw push-button input (may contain bounce) |
+      | `state` | output | `wire` | Debounced button level |
+      | `press` | output | `wire` | One-clock pulse generated when the button is pressed |
 
 2. In your project, add the design source file `clk_en.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
@@ -67,32 +69,41 @@ The main methods to eliminate switch bounce are:
    3. Generate the **output signals**. The debounced signal `btn_state` represents the stable state of the button after filtering out bouncing. The signal `btn_press` is a one-clock pulse generated when the button transitions from released (`0`) to pressed (`1`).
 
    ```verilog
+   `timescale 1ns/1ps
+
+   module debounce (
+       input  wire clk,   // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire press  // One-clock pulse generated when the button is pressed
+   );
+
        //------------------------------------------------------------
        // Constants (internal)
        //------------------------------------------------------------
-       localparam C_SHIFT_LEN = 4;  // Debounce history
-       localparam C_MAX       = 2;  // Sampling period
-                                    // 2 for simulation
-                                    // 200_000 (2 ms) for implementation !!!
+       localparam SHIFT_LEN = 4;  // Debounce history
+       localparam MAX       = 2;  // Sampling period
+                                  // 2 for simulation
+                                  // 200_000 (2 ms) for implementation !!!
 
        //------------------------------------------------------------
        // Internal signals
        //------------------------------------------------------------
        wire ce_sample;
        reg sync0, sync1;
-       reg [C_SHIFT_LEN-1:0] shift_reg;
-       reg debounced;
-       reg delayed;
+       reg [SHIFT_LEN-1:0] shift_reg;
+       reg debounced, delayed;
 
        //------------------------------------------------------------
        // Clock enable instance
        //------------------------------------------------------------
        clk_en #(
-           .MAX (C_MAX)
+           .MAX(MAX)
        ) clock_inst (
-           .i_clk (clk),
-           .i_rst (rst),
-           .o_ce  (ce_sample)
+           .clk(clk),
+           .rst(rst),
+           .ce (ce_sample)
        );
 
        //------------------------------------------------------------
@@ -108,13 +119,13 @@ The main methods to eliminate switch bounce are:
            end else begin
                // Input synchronizer
                sync1 <= sync0;
-               sync0 <= btn_in;
+               sync0 <= pin;
 
                // Sample only when enable pulse occurs
                if (ce_sample) begin
 
                    // Shift values to the left and load a new sample as LSB
-                   shift_reg <= {shift_reg[C_SHIFT_LEN-2:0], sync1};
+                   shift_reg <= {shift_reg[SHIFT_LEN-2:0], sync1};
 
                    // Check if all bits are '1'
                    if (&shift_reg)
@@ -133,9 +144,7 @@ The main methods to eliminate switch bounce are:
        // Outputs
        //------------------------------------------------------------
        assign btn_state = debounced;
-
-       // One-clock pulse when button pressed
-       assign btn_press = debounced & ~delayed;
+       assign btn_press = // TODO: Generate one-clock pulse when button is pressed
 
    endmodule
    ```
@@ -144,96 +153,99 @@ The main methods to eliminate switch bounce are:
    >
    > **Example:** 
    > ```verilog
-   >    wire [3:0] vect   = 4'b1010;
+   >    wire [3:0] vect = 4'b1010;
    >    wire [4:0] result;
    >
    >    assign result = {1'b1, vect};  // result = 5'b1_1010
    > ```
 
-4. Create a Verilog simulation file named `debounce_tb` and verify the functionality of the debouncer.
+4. Complete all **TODO** items in the module.
+
+5. Create a new Verilog simulation file named `debounce_tb`, complete the provided template, and test the functionality of the debouncer.
 
    ```verilog
    `timescale 1ns/1ps
 
    module debounce_tb ();
 
-       //------------------------------------------------------------
        // Testbench signals
-       //------------------------------------------------------------
        reg  clk;
        reg  rst;
-       reg  btn_in;
-       wire btn_state;
-       wire btn_press;
+       reg  pin;
+       wire state;
+       wire press;
 
-       //------------------------------------------------------------
-       // DUT (Device Under Test)
-       //------------------------------------------------------------
+       // Instantiate Device Under Test (DUT)
        debounce dut (
-           .clk       (clk),
-           .rst       (rst),
-           .btn_in    (btn_in),
-           .btn_state (btn_state),
-           .btn_press (btn_press)
+           .clk  (clk),
+           .rst  (rst),
+           .pin  (pin),
+           .state(state),
+           .press(press)
        );
 
-       //------------------------------------------------------------
-       // Clock generation (10 ns period = 100 MHz)
-       //------------------------------------------------------------
+       // Clock generation: 10 ns period (100 MHz)
+       initial clk = 0;
        always #5 clk = ~clk;
 
-       //------------------------------------------------------------
-       // Stimulus
-       //------------------------------------------------------------
+       // Testbench stimulus
        initial begin
-           // Init
-           clk    = 0;
-           rst    = 1;
-           btn_in = 0;
+           // Initialize
+           rst = 1;
+           pin = 0;
 
-           $display("Reset phase");
-           #50;
-           rst = 0;
-           #20;
+           // Hold reset for a few cycles
+           rst  = 1;
+           #50; rst = 0;
 
-           $display("Simulate bouncing (fast toggling)");
-           btn_in = 1; #30;
-           btn_in = 0; #20;
-           btn_in = 1; #40;
-           btn_in = 0; #30;
-           btn_in = 1;  // Finally stable HIGH
+           // Simulate bouncing (fast toggling)
+           pin = 1; #30;
+           pin = 0; #20;
+           pin = 1; #40;
+           pin = 0; #30;
+           pin = 1;  // Finally stable HIGH
            #300;
 
-           $display("Simulate button on release");
-           btn_in = 0; #30;
-           btn_in = 1; #20;
-           btn_in = 0; #40;
-           btn_in = 1; #30;
-           btn_in = 0;  // Finally stable LOW
+           // Simulate button on release
+           pin = 0; #30;
+           pin = 1; #20;
+           pin = 0; #40;
+           pin = 1; #30;
+           pin = 0;  // Finally stable LOW
            #300;
 
-           //--------------------------------------------------------
-           // End simulation
-           //--------------------------------------------------------
+           // Finish simulation
+           $display("\nSimulation finished\n");
            $finish;
+       end
+
+       // Monitor outputs
+       initial begin
+
+           // TODO: Add display and monitor tasks
+
        end
 
    endmodule
    ```
 
-5. Display the internal signals named `shift_reg`, `debounced`, and `delayed` in the waveform during the simulation.
+6. Display the internal signals named `shift_reg`, `debounced`, and `delayed` in the waveform during the simulation.
 
    <!--
    ![Vivado: add internal signal](images/vivado_add-wave.png)
    -->
 
-6. Use **Flow > Open Elaborated design** and see the schematic after RTL analysis.
+7. Complete all **TODO** items in the testbench module.
 
-7. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
+8. In Vivado, use **Flow > RTL Analysis > Open Elaborated design** and see the **Schematic** after RTL analysis. Note that RTL (Register Transfer Level) represents digital circuit at the abstract level.
 
-8. (Optional) Extend the edge detector to also detect transitions from high to low. Add an output signal `btn_release` to the entity and architecture. Which logic operation did you use to generate this signal (see figure below)?
+9. Use **Flow > Synthesis > Run Synthesis** and then see the schematic at the gate level.
+
+10. (Optional) Extend the edge detector to also detect transitions from high to low. Add an output signal `release` to the entity and architecture. Which logic operation did you use to generate this signal (see figure below)?
 
    ![edge detector](images/waveform_edge_detect.png)
+
+---
 
 <a name="task2"></a>
 
@@ -243,40 +255,46 @@ Choose one of the following variants and implement a button-triggered binary cou
 
 ### Variant 1: LEDs
 
-**Important:** Change the `C_MAX` constant in the `debounce` module to `200_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` constant in the `debounce` module to `200_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
-1. In your project, create a new Verilog design source file named `debounce_counter_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `debounce_counter_top`, and define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `btnd` | input | `wire` | Increment counter |
-   | `led` | output | `[7:0] wire` | Counter value |
+   | `clk`     | input  | `wire` | Main clock |
+   | `btnu`    | input  | `wire` | High-active synchronous reset |
+   | `btnd`    | input  | `wire` | Increment counter |
+   | `led`     | output | `[7:0] wire` | Counter value |
    | `led16_b` | output | `wire` | Button indicator |
 
 2. In your project, add the design source file `counter.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
-3. Instantiate the `debounce` and `counter` circuits, and complete the top-level module according to the following schematic and template.
+3. Instantiate the `debounce` and `counter` circuits and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver1.png)
 
    ```verilog
-       //------------------------------------------------------------
+   `timescale 1ns/1ps
+
+   module debounce_counter_top (
+       input  wire clk,     // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire led16_b  // Button indicator
+   );
+
        // Debounce instance
-       //------------------------------------------------------------
-       wire w_cnt_en;
+       wire cnt_en;
        debounce debounce_inst (
-           .clk       (clk),
-           .rst       (btnu),
-           .btn_in    (btnd),
-           .btn_state (led16_b),
-           .btn_press (w_cnt_en)
+           .clk  (clk),
+           .rst  (btnu),
+           .pin  (btnd),
+           .state(led16_b),
+           .press(cnt_en)
        );
 
-       //------------------------------------------------------------
-       // Counter instance
-       //------------------------------------------------------------
+       // 8-bit counter
        counter #(
            .N(8)
        ) counter_inst (
@@ -303,43 +321,49 @@ Choose one of the following variants and implement a button-triggered binary cou
 
 ### Variant 2: Display driver
 
-**Important:** Change the `C_MAX` constant in the debouncer architecture to `200_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` constant in the debouncer module to `200_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
-1. In your project, create a new Verilog design source file named `debounce_counter_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `debounce_counter_top`, and define I/O ports as follows.
 
    | **Port name** | **Direction** | **Type** | **Description** |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `btnd` | input | `wire` | Increment counter |
-   | `seg` | output | `[6:0] wire` | Seven-segment cathodes CA..CG (active-low) |
-   | `an` | output | `[7:0] wire` | Seven-segment anodes AN7..AN0 (active-low) |
-   | `dp` | output | `wire` | Seven-segment decimal point (active-low, not used) |
+   | `clk`     | input  | `wire` | Main clock |
+   | `btnu`    | input  | `wire` | High-active synchronous reset |
+   | `btnd`    | input  | `wire` | Increment counter |
+   | `seg`     | output | `[6:0] wire` | Seven-segment cathodes CA..CG (active-low) |
+   | `an`      | output | `[7:0] wire` | Seven-segment anodes AN7..AN0 (active-low) |
+   | `dp`      | output | `wire` | Seven-segment decimal point (active-low, not used) |
    | `led16_b` | output | `wire` | Button indicator |
 
 2. In your project, add the design source files `display_driver.v`, `counter.v`, and `bin2seg.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
-3. Provide an instantiation of the `debounce`, `counter`, and `display_driver` circuits and complete the top-level module according to the following schematic and template.
+3. Instantiate the `debounce`, `counter`, and `display_driver` circuits and complete the top-level module according to the following schematic and template.
 
    ![top level ver2](images/top-level_ver2.png)
 
    ```verilog
-       //------------------------------------------------------------
+   `timescale 1ns/1ps
+
+   module debounce_counter_top (
+       input  wire clk,     // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire led16_b  // Button indicator
+   );
+
        // Debounce instance
-       //------------------------------------------------------------
-       wire w_cnt_en;
+       wire cnt_en;
        debounce debounce_inst (
-           .clk       (clk),
-           .rst       (btnu),
-           .btn_in    (btnd),
-           .btn_state (led16_b),
-           .btn_press (w_cnt_en)
+           .clk  (clk),
+           .rst  (btnu),
+           .pin  (btnd),
+           .state(led16_b),
+           .press(cnt_en)
        );
 
-       //------------------------------------------------------------
-       // Counter instance
-       //------------------------------------------------------------
-       wire [7:0] w_cnt_val;
+       // 8-bit counter
+       wire [7:0] cnt_val;
        counter #(
            .N(8)
        ) counter_inst (
@@ -348,9 +372,7 @@ Choose one of the following variants and implement a button-triggered binary cou
 
        );
 
-       //------------------------------------------------------------
        // Display driver instance
-       //------------------------------------------------------------
        display_driver display_inst (
 
            // TODO: Add instantiation of `display_driver`
@@ -377,6 +399,8 @@ Choose one of the following variants and implement a button-triggered binary cou
 
 6. Use **Implementation > Open Implemented Design > Schematic** to see the generated structure.
 
+---
+
 <a name="tasks"></a>
 
 ## Optional tasks
@@ -384,6 +408,8 @@ Choose one of the following variants and implement a button-triggered binary cou
 1. Combine both variants from Task 2 and implement a button-triggered binary counter on the Nexys A7 board using LEDs and 7-segment display driver.
 
 2. Extend the debouncer to detect when the button is held down for a **longer period** of time. If the button remains pressed for a predefined duration (for example 500 ms), generate a new output signal `btn_long`. Use a counter driven by the system clock to measure the press duration.
+
+---
 
 <a name="questions"></a>
 
@@ -398,10 +424,10 @@ Choose one of the following variants and implement a button-triggered binary cou
 4. In the expression below, what is the purpose of the `{}` operator?
 
    ```verilog
-   shift_reg <= {shift_reg[C_SHIFT_LEN-2:0], sync1};
+   shift_reg <= {shift_reg[SHIFT_LEN-2:0], sync1};
    ```
 
-5. For a 100 MHz clock and `C_MAX = 200_000`, what is the clock enable period? Show your calculation.
+5. For a 100 MHz clock and `MAX = 200_000`, what is the clock enable period? Show your calculation.
 
 6. What is the difference between an edge detector and a level detector?
 

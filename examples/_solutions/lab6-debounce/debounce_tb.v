@@ -2,40 +2,31 @@
 
 module debounce_tb ();
 
-    //------------------------------------------------------------
     // Testbench signals
-    //------------------------------------------------------------
-    reg clk;
-    reg rst;
-    reg btn_in;
+    reg  clk;
+    reg  rst;
+    reg  pin;
+    wire state;
+    wire press;
 
-    wire btn_state;
-    wire btn_press;
-
-    //------------------------------------------------------------
-    // DUT (Device Under Test)
-    //------------------------------------------------------------
+    // Instantiate Device Under Test (DUT)
     debounce dut (
-        .clk       (clk),
-        .rst       (rst),
-        .btn_in    (btn_in),
-        .btn_state (btn_state),
-        .btn_press (btn_press)
+        .clk  (clk),
+        .rst  (rst),
+        .pin  (pin),
+        .state(state),
+        .press(press)
     );
 
-    //------------------------------------------------------------
-    // Clock generation (10 ns period = 100 MHz)
-    //------------------------------------------------------------
+    // Clock generation: 10 ns period (100 MHz)
+    initial clk = 0;
     always #5 clk = ~clk;
 
-    //------------------------------------------------------------
-    // Stimulus
-    //------------------------------------------------------------
+    // Testbench stimulus
     initial begin
-        // Init
-        clk    = 0;
-        rst    = 1;
-        btn_in = 0;
+        // Initialize
+        rst = 1;
+        pin = 0;
 
         $display("\nStarting simulation...\n");
         $display("Reset phase");
@@ -44,31 +35,27 @@ module debounce_tb ();
 
         #20;
         $display("Simulate bouncing (fast toggling)");
-        btn_in = 1; #30;
-        btn_in = 0; #20;
-        btn_in = 1; #40;
-        btn_in = 0; #30;
-        btn_in = 1;  // Finally stable HIGH
+        pin = 1; #30;
+        pin = 0; #20;
+        pin = 1; #40;
+        pin = 0; #30;
+        pin = 1;  // Finally stable HIGH
         #300;
 
         $display("Simulate button on release");
-        btn_in = 0; #30;
-        btn_in = 1; #20;
-        btn_in = 0; #40;
-        btn_in = 1; #30;
-        btn_in = 0;  // Finally stable LOW
+        pin = 0; #30;
+        pin = 1; #20;
+        pin = 0; #40;
+        pin = 1; #30;
+        pin = 0;  // Finally stable LOW
         #300;
 
-        //--------------------------------------------------------
-        // End simulation
-        //--------------------------------------------------------
+        // Finish simulation
         $display("\nSimulation finished\n");
         $finish;
-    end
+ end
 
-    // ---------------------------------------------------------
     // VCD waveform dump for GTKWave
-    // ---------------------------------------------------------
     initial begin
         $dumpfile("debounce.vcd");
         $dumpvars(0, debounce_tb);

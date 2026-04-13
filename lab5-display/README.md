@@ -41,7 +41,7 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
    | `seg`   | output | `wire [6:0]` | {a,b,c,d,e,f,g} active-low |
    | `anode` | output | `reg [1:0]` | Anodes AN1..AN0 (active-low) |
 
-2. In your project, add the design source files `clk_en.v`, `counter.v`, and `bin2seg.v` from the previous lab(s) and check the **Copy sources into project** option. The selected files will be copied into the corresponding Vivado project folders, ensuring that the project contains local copies of all source files.
+2. In your project, add the design source files `clk_en.v`, `counter.v`, and `bin2seg.v` from the previous lab(s) and check the **Copy sources into project** option so that the file is copied into the current project directory.
 
    ![vivado_copy-sources](images/vivado_copy-sources.png)
 
@@ -135,7 +135,7 @@ A common way to control multiple 7-segment displays is **multiplexing**, where t
            .anode(anode)
        );
 
-       // Clock generation: 10ns period (100 MHz)
+       // Clock generation: 10 ns period (100 MHz)
        initial clk = 0;
        always #5 clk = ~clk;
 
@@ -195,7 +195,7 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 ### Variant 1: Switches
 
-**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver module to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
 1. In your project, create a new Verilog design source file named `display_top`, and define I/O ports as follows.
 
@@ -254,7 +254,7 @@ Choose one of the following variants and implement a display driver on the Nexys
 
 ### Variant 2: Counter
 
-**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver architecture to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
+**Important:** Change the `MAX` parameter in the `clk_en` instantiation in the driver module to `8_000_000`. What is the resulting clock enable period for a 100&nbsp;MHz clock (10&nbsp;ns period)?
 
 1. In your project, create a new Verilog design source file named `display_top`, and define I/O ports as follows.
 
@@ -266,7 +266,7 @@ Choose one of the following variants and implement a display driver on the Nexys
    | `an`   | output | `wire [7:0]` | Seven-segment anodes AN7..AN0 (active-low) |
    | `dp`   | output | `wire` | Seven-segment decimal point (active-low, not used) |
 
-2. Instantiate the `display_driver` circuit, independent `clock_en` and 8-bit binary `counter`, and complete the top-level architecture according to the following schematic and template.
+2. Instantiate the `display_driver` circuit, independent `clock_en` and 8-bit binary `counter`, and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver2.png)
 
@@ -314,7 +314,7 @@ Choose one of the following variants and implement a display driver on the Nexys
    endmodule
    ```
 
-3. Complete all **TODO** items in the architecture section.
+3. Complete all **TODO** items in the module.
 
 4. Create a new constraints file named `nexys` (XDC file) and copy relevant pin assignments from the [Nexys A7-50T](../examples/nexys.xdc) template.
 

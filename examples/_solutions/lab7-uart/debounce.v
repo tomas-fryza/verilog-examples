@@ -20,42 +20,39 @@
 `timescale 1ns/1ps
 
 module debounce (
-    input  wire clk,
-    input  wire rst,
-    input  wire btn_in,      // Noisy button input
-
-    output wire btn_state,   // Debounced level
-    output wire btn_press    // 1-clock press pulse
-    // output wire btn_release
+    input  wire clk,    // Main clock
+    input  wire rst,    // High-active synchronous reset
+    input  wire pin,    // Raw push-button input (may contain bounce)
+    output wire state,  // Debounced button level
+    output wire press   // One-clock pulse generated when the button is pressed
+    // output wire release
 );
 
     //------------------------------------------------------------
     // Constants (internal)
     //------------------------------------------------------------
-    localparam C_SHIFT_LEN = 4;
-    localparam C_MAX       = 2;  // Sampling period
-                                 // 2 for simulation
-                                 // 200_000 (2 ms) for implementation !!!
+    localparam SHIFT_LEN = 4;  // Debounce history
+    localparam MAX       = 2;  // Sampling period
+                               // 2 for simulation
+                               // 200_000 (2 ms) for implementation !!!
 
     //------------------------------------------------------------
     // Internal signals
     //------------------------------------------------------------
     wire ce_sample;
-
     reg sync0, sync1;
-    reg [C_SHIFT_LEN-1:0] shift_reg;
-    reg debounced;
-    reg delayed;
+    reg [SHIFT_LEN-1:0] shift_reg;
+    reg debounced, delayed;
 
     //------------------------------------------------------------
     // Clock enable instance
     //------------------------------------------------------------
     clk_en #(
-        .MAX (C_MAX)
+        .MAX(MAX)
     ) clock_inst (
-        .i_clk (clk),
-        .i_rst (rst),
-        .o_ce  (ce_sample)
+        .clk(clk),
+        .rst(rst),
+        .ce (ce_sample)
     );
 
     //------------------------------------------------------------
@@ -69,21 +66,25 @@ module debounce (
             debounced <= 0;
             delayed   <= 0;
         end else begin
-            // Synchronizer
-            sync0 <= btn_in;
+            // Input synchronizer
             sync1 <= sync0;
+            sync0 <= pin;
 
-            // Sampling
+            // Sample only when enable pulse occurs
             if (ce_sample) begin
-                shift_reg <= {shift_reg[C_SHIFT_LEN-2:0], sync1};
 
+                // Shift values to the left and load a new sample as LSB
+                shift_reg <= {shift_reg[SHIFT_LEN-2:0], sync1};
+
+                // Check if all bits are '1'
                 if (&shift_reg)
                     debounced <= 1;
+                // Check if all bits are '0'
                 else if (~|shift_reg)
                     debounced <= 0;
             end
 
-            // Delay for edge detection
+            // One clock delayed output for edge detector
             delayed <= debounced;
         end
     end
@@ -91,8 +92,9 @@ module debounce (
     //------------------------------------------------------------
     // Outputs
     //------------------------------------------------------------
-    assign btn_state = debounced;
-    assign btn_press = debounced & ~delayed;
+    assign state = debounced;
+    // One-clock pulse when button pressed
+    assign press = debounced & ~delayed;
 
     // assign btn_release = ~debounced & delayed;
 
