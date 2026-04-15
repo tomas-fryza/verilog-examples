@@ -46,6 +46,8 @@ top.asc: top.json icebreaker.pcf
 		--asc top.asc \
 #		--report timing.rpt
 
+# nextpnr-ice40 -r ... --timing-allow-fail --detailed-timing-report --quiet --log pnr.log
+
 # Bitstream generation
 top.bin: top.asc
 	icepack top.asc top.bin
