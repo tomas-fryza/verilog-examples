@@ -21,12 +21,12 @@
 `timescale 1ns/1ps
 
 module uart_tx (
-    input  wire clk,            //! System clock
-    input  wire rst,            //! Active-high reset
-    input  wire tx_start,       //! Start transmission
-    input  wire [7:0] tx_data,  //! Data to transmit
-    output reg  tx,             //! UART transmit line
-    output reg  tx_busy         //! Transmission in progress
+    input  wire clk,         //! System clock
+    input  wire rst,         //! Active-high reset
+    input  wire start,       //! Start transmission
+    input  wire [7:0] data,  //! Data to transmit
+    output reg  tx,          //! UART transmit line
+    output reg  busy         //! Transmission in progress
 );
 
     //-------------------------------------------------
@@ -40,9 +40,9 @@ module uart_tx (
     reg [1:0] current_state;
 
     //-------------------------------------------------
-    // Internal constants
+    // Constants (internal)
     //-------------------------------------------------
-    localparam CLK_FREQ = 100_000_000;  // 100 MHz
+    localparam CLK_FREQ = 100_000_000;
     localparam BAUDRATE = 9600;
     localparam MAX = 2;  // Bit period
                          // 2 for simulation
@@ -63,7 +63,7 @@ module uart_tx (
         if (rst) begin
             current_state     <= IDLE;
             tx                <= 1'b1;
-            tx_busy           <= 1'b0;
+            busy              <= 1'b0;
             shift_reg         <= 8'd0;
             current_bit_index <= 3'd0;
             baud_count        <= 0;
@@ -76,14 +76,14 @@ module uart_tx (
                 // IDLE
                 //-------------------------------------------------
                 IDLE: begin
-                    tx      <= 1'b1;
-                    tx_busy <= 1'b0;
+                    tx   <= 1'b1;
+                    busy <= 1'b0;
 
-                    if (tx_start) begin
-                        shift_reg          <= tx_data;
-                        current_bit_index  <= 3'd0;
-                        baud_count         <= 0;
-                        current_state      <= TRANSMIT_START_BIT;
+                    if (start) begin
+                        shift_reg         <= data;
+                        current_bit_index <= 3'd0;
+                        baud_count        <= 0;
+                        current_state     <= TRANSMIT_START_BIT;
                     end
                 end
 
@@ -91,8 +91,8 @@ module uart_tx (
                 // START BIT
                 //-------------------------------------------------
                 TRANSMIT_START_BIT: begin
-                    tx      <= 1'b0;
-                    tx_busy <= 1'b1;
+                    tx   <= 1'b0;
+                    busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         baud_count    <= 0;
@@ -106,8 +106,8 @@ module uart_tx (
                 // DATA BITS
                 //-------------------------------------------------
                 TRANSMIT_DATA: begin
-                    tx      <= shift_reg[0];
-                    tx_busy <= 1'b1;
+                    tx   <= shift_reg[0];
+                    busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         // shift_reg <= {1'b0, shift_reg[7:1]};
@@ -129,8 +129,8 @@ module uart_tx (
                 // STOP BIT
                 //-------------------------------------------------
                 TRANSMIT_STOP_BIT: begin
-                    tx      <= 1'b1;
-                    tx_busy <= 1'b1;
+                    tx   <= 1'b1;
+                    busy <= 1'b1;
 
                     if (baud_count == (MAX - 1)) begin
                         current_state <= IDLE;

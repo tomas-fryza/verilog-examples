@@ -12,28 +12,24 @@ module uart_top (
     output wire led17_g
   );
 
-  //-------------------------------------------------
-  // Debounce instance
-  //-------------------------------------------------
-  wire tx_en;
-  debounce debounce_inst (
-             .clk      (clk),
-             .rst      (btnu),
-             .btn_in   (btnd),
-             .btn_state(),  // Unconnected output; will be high impedance (Z)
-             .btn_press(tx_en)
-           );
+    // Debounce instance
+    wire tx_en;
+    debounce debounce_inst (
+        .clk  (clk),
+        .rst  (btnu),
+        .pin  (btnd),
+        .state(),      // Unconnected output; will be high impedance (Z)
+        .press(tx_en)
+    );
 
-  //-------------------------------------------------
-  // UART TX instance
-  //-------------------------------------------------
-  uart_tx uart_tx_inst (
-            .clk     (clk),
-            .rst     (btnu),
-            .tx_start(tx_en),
-            .tx_data (sw),
-            .tx      (tx),
-            .tx_busy (led17_g)
-          );
+    // UART TX instance
+    uart_tx uart_tx_inst (
+        .clk  (clk),
+        .rst  (btnu),
+        .start(tx_en),
+        .data (sw),
+        .tx   (tx),
+        .busy (led17_g)
+    );
 
 endmodule

@@ -65,20 +65,30 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
 
 ## Task 1: UART transmitter
 
-1. Run Vivado, create a new RTL project named `uart`, and create a Verilog design source file named `uart_tx` for Nexys A7-50T FPGA board. Use the following I/O ports and implement an FSM version of UART transmitter 8N1 on Nexys A7-50T:
+1. Run Vivado, create a new RTL project named `uart`, and create a Verilog design source file named `uart_tx` for Nexys A7-50T FPGA board. Use the following I/O ports and implement an FSM version of UART transmitter 8N1:
 
-   | **Port name** | **Direction** | **Type** | **Description** |
+   | Port name | Direction | Type | Description |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input  | `wire` | Main clock |
-   | `rst` | input  | `wire` | High-active synchronous reset |
-   | `tx_start` | input | `wire` | Start transmission signal |
-   | `tx_data` | input | `wire [7:0]` | Data to transmit |
-   | `tx` | output | `reg` | UART transmit line |
-   | `tx_busy` | output | `reg` | Transmission in progress |
+   | `clk`   | input  | `wire` | Main clock |
+   | `rst`   | input  | `wire` | High-active synchronous reset |
+   | `start` | input  | `wire` | Start transmission signal |
+   | `data`  | input  | `wire [7:0]` | Data to transmit |
+   | `tx`    | output | `reg`  | UART transmit line |
+   | `busy`  | output | `reg`  | Transmission in progress |
 
 2. In your module, define local parameters for FSM, internal registers to count a sequence of data bits and clock periods, and complete the code according to the following template.
 
    ```verilog
+   `timescale 1ns/1ps
+
+   module uart_tx (
+       input  wire clk,  // Main clock
+
+       // TODO: Complete input/output ports
+
+       output reg  busy  // Transmission in progress
+   );
+
        //-------------------------------------------------
        // FSM states
        //-------------------------------------------------
@@ -90,9 +100,9 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
        reg [1:0] current_state;
 
        //-------------------------------------------------
-       // Internal constants
+       // Constants (internal)
        //-------------------------------------------------
-       localparam CLK_FREQ = 100_000_000;  // 100 MHz
+       localparam CLK_FREQ = 100_000_000;
        localparam BAUDRATE = 9600;
        localparam MAX = 2;  // Bit period
                             // 2 for simulation
@@ -113,7 +123,7 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
            if (rst) begin
                current_state     <= IDLE;
                tx                <= 1'b1;
-               tx_busy           <= 1'b0;
+               busy              <= 1'b0;
                shift_reg         <= 8'd0;
                current_bit_index <= 3'd0;
                baud_count        <= 0;
@@ -130,11 +140,11 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
 
                        // TODO: Clear busy to 0
 
-                       if (tx_start) begin
-                           shift_reg          <= tx_data;
-                           current_bit_index  <= 3'd0;
-                           baud_count         <= 0;
-                           current_state      <= TRANSMIT_START_BIT;
+                       if (start) begin
+                           shift_reg         <= data;
+                           current_bit_index <= 3'd0;
+                           baud_count        <= 0;
+                           current_state     <= TRANSMIT_START_BIT;
                        end
                    end
 
@@ -208,90 +218,80 @@ One of the most common UART formats is called **9600 8N1**, which means 8 data b
 
 3. Complete all **TODO** items in the module.
 
-4. Create a Verilog simulation file named `uart_tx_tb` and verify the functionality of the transmitter.
+4. Create a new Verilog simulation file named `uart_tx_tb`, complete the provided template, and test the functionality of the transmitter.
 
    ```verilog
    `timescale 1ns/1ps
 
    module uart_tx_tb ();
 
-       //-------------------------------------------------
        // Testbench signals
-       //-------------------------------------------------
-       reg       clk;
-       reg       rst;
-       reg       tx_start;
-       reg [7:0] tx_data;
-       wire      tx;
-       wire      tx_busy;
+       reg  clk;
+       reg  rst;
+       reg  start;
+       reg  [7:0] data;
+       wire tx;
+       wire busy;
 
-       //-------------------------------------------------
-       // Instantiate DUT
-       //-------------------------------------------------
+       // Instantiate Device Under Test (DUT)
        uart_tx dut (
-           .clk     (clk),
-           .rst     (rst),
-           .tx_start(tx_start),
-           .tx_data (tx_data),
-           .tx      (tx),
-           .tx_busy (tx_busy)
+           .clk  (clk),
+           .rst  (rst),
+           .start(start),
+           .data (data),
+           .tx   (tx),
+           .busy (busy)
        );
 
-       //-------------------------------------------------
-       // Clock generation (10 ns period = 100 MHz)
-       //-------------------------------------------------
+       // Clock generation: 10 ns period (100 MHz)
+       initial clk = 0;
        always #5 clk = ~clk;
 
-       //-------------------------------------------------
-       // Stimulus
-       //-------------------------------------------------
+       // Testbench stimulus
        initial begin
-           // Initialization
-           clk       = 1'b0;
-           rst       = 1'b1;
-           tx_data   = 8'd0;
-           tx_start  = 1'b0;
+           // Initialize
+           rst   = 1'b1;
+           data  = 8'd0;
+           start = 1'b0;
 
            $display("\nStarting simulation...\n");
-           $display("Reset generation");
            #50;
            rst = 1'b0;
-           #20;
 
            //-------------------------------------------------
-           $display("Send first byte: 0x44");
-           tx_data  = 8'h44;
-           tx_start = 1'b1;
+           // Send first byte: 0x44
+           data  = 8'h44;
+           start = 1'b1;
            #10;
-           tx_start = 1'b0;
+           start = 1'b0;
            #10;
         
-           wait (tx_busy == 0);
+           wait (busy == 0);
            #100;
         
            //-------------------------------------------------
-           $display("Send next byte: 0x45");
-           tx_data  = 8'h45;
-           tx_start = 1'b1;
+           // Send next byte: 0x45
+           data  = 8'h45;
+           start = 1'b1;
            #10;
-           tx_start = 1'b0;
+           start = 1'b0;
            #10;
         
-           wait (tx_busy == 0);
+           wait (busy == 0);
            #100;
         
            //-------------------------------------------------
-           $display("Send next byte: 0x31");
-           tx_data  = 8'h31;
-           tx_start = 1'b1;
+           // Send next byte: 0x31
+           // data  = 8'h31;
+           // start = 1'b1;
            #10;
-           tx_start = 1'b0;
+           // start = 1'b0;
            #10;
         
-           wait (tx_busy == 0);
+           wait (busy == 0);
            #100;
         
-           //-------------------------------------------------
+           // Finish simulation
            $display("\nSimulation finished\n");
            $finish;
        end
@@ -313,39 +313,45 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 **Important:** Change the `MAX` constant in the `uart_tx` architecture to `localparam MAX = CLK_FREQ / BAUDRATE;`.
 
-1. In your project, create a new Verilog design source file named `uart_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `uart_top`, and define I/O ports as follows.
 
-   | **Port name** | **Direction** | **Type** | **Description** |
+   | Port name | Direction | Type | Description |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `btnd` | input | `wire` | Start transmission |
-   | `sw` | input | `wire [7:0]` | Data to transmit |
-   | `tx` | output | `wire` | UART transmit line |
+   | `clk`     | input  | `wire` | Main clock |
+   | `btnu`    | input  | `wire` | High-active synchronous reset |
+   | `btnd`    | input  | `wire` | Start transmission |
+   | `sw`      | input  | `wire [7:0]` | Data to transmit |
+   | `tx`      | output | `wire` | UART transmit line |
    | `led17_g` | output | `wire` | Transmission in progress |
 
 2. In your project, add the design source files `debounce.v` and `clk_en.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
 
-3. Instantiate the `debounce` and `uart_tx` circuits, and complete the top-level module according to the following schematic and template.
+3. Instantiate the `debounce` and `uart_tx` circuits and complete the top-level module according to the following schematic and template.
 
    ![top level ver1](images/top-level_ver1.png)
 
    ```verilog
-       //-------------------------------------------------
+   `timescale 1ns/1ps
+
+   module uart_top (
+       input  wire clk,     // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire led17_g  // Transmission in progress
+   );
+
        // Debounce instance
-       //-------------------------------------------------
        wire tx_en;
        debounce debounce_inst (
-           .clk      (clk),
-           .rst      (btnu),
-           .btn_in   (btnd),
-           .btn_state(),      // Unconnected output; will be high impedance (Z)
-           .btn_press(tx_en)
+           .clk  (clk),
+           .rst  (btnu),
+           .pin  (btnd),
+           .state(),      // Unconnected output; will be high impedance (Z)
+           .press(tx_en)
        );
 
-       //-------------------------------------------------
        // UART TX instance
-       //-------------------------------------------------
        uart_tx uart_tx_inst (
 
            // TODO: Add component instantiation of `uart_tx`
@@ -373,14 +379,14 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
 **Important:** Change the `MAX` constant in the `uart_tx` architecture to `localparam MAX = CLK_FREQ / BAUDRATE;`.
 
-1. In your project, create a new Verilog design source file named `uart_top`. Define I/O ports as follows.
+1. In your project, create a new Verilog design source file named `uart_top`, and define I/O ports as follows.
 
-   | **Port name** | **Direction** | **Type** | **Description** |
+   | Port name | Direction | Type | Description |
    | :-: | :-: | :-- | :-- |
-   | `clk` | input | `wire` | Main clock |
-   | `btnu` | input | `wire` | High-active synchronous reset |
-   | `btnd` | input | `wire` | Start transmission |
-   | `tx` | output | `wire` | UART transmit line |
+   | `clk`     | input  | `wire` | Main clock |
+   | `btnu`    | input  | `wire` | High-active synchronous reset |
+   | `btnd`    | input  | `wire` | Start transmission |
+   | `tx`      | output | `wire` | UART transmit line |
    | `led17_g` | output | `wire` | Transmission in progress |
 
 2. In your project, add the design source files `debounce.v`, `clk_en.v`, and `counter.v` from the previous lab(s). When adding the file in Vivado, enable the **Copy sources into project** option so that the file is copied into the current project directory.
@@ -390,21 +396,27 @@ Choose one of the following variants and implement an UART transmitter on the Ne
    ![top level ver2](images/top-level_ver2.png)
 
    ```verilog
-       //-------------------------------------------------
+   `timescale 1ns/1ps
+
+   module uart_top (
+       input  wire clk,     // Main clock
+
+       // TODO: Complete input/output ports
+
+       output wire led17_g  // Transmission in progress
+   );
+
        // Debounce instance
-       //-------------------------------------------------
        wire cnt_en;
        debounce debounce_inst (
-           .clk      (clk),
-           .rst      (btnu),
-           .btn_in   (btnd),
-           .btn_state(),        // Unconnected output; will be high impedance (Z)
-           .btn_press(cnt_en)
+           .clk  (clk),
+           .rst  (btnu),
+           .pin  (btnd),
+           .state(),      // Unconnected output; will be high impedance (Z)
+           .press(cnt_en)
        );
 
-       // ---------------------------------------------------------
-       // Binary counter instance
-       // ---------------------------------------------------------
+       // 8-bit counter
        wire [7:0] cnt_val;
        counter #(
            .N(8)
@@ -414,9 +426,7 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
        );
 
-       //-------------------------------------------------
        // UART TX instance
-       //-------------------------------------------------
        uart_tx uart_tx_inst (
 
            // TODO: Add component instantiation of `uart_tx`
@@ -474,20 +484,20 @@ Choose one of the following variants and implement an UART transmitter on the Ne
 
    ![pmods](images/pmod_connector.png)
 
-   | Pin | Signal | FPGA Pin | Description        |
-   | :--: | :----- | :-------- | :----------------- |
-   | 1   | JA1    | C17        | Data / IO          |
-   | 2   | JA2    | D18        | Data / IO          |
-   | 3   | JA3    | E18        | Data / IO          |
-   | 4   | JA4    | G17        | Data / IO          |
-   | 5   | GND    | —         | Ground             |
-   | 6   | VCC    | —         | 3.3 V supply       |
-   | 7   | JA7    | D17       | Data / IO          |
-   | 8   | JA8    | E17       | Data / IO          |
-   | 9   | JA9    | F18       | Data / IO          |
-   | 10  | JA10   | G18       | Data / IO          |
-   | 11  | GND    | —         | Ground             |
-   | 12  | VCC    | —         | 3.3 V supply       |
+   | Pin  | Signal | FPGA Pin | Description  |
+   | :--: | :----- | :------- | :----------- |
+   | 1    | JA1    | C17      | Data / IO    |
+   | 2    | JA2    | D18      | Data / IO    |
+   | 3    | JA3    | E18      | Data / IO    |
+   | 4    | JA4    | G17      | Data / IO    |
+   | 5    | GND    | —        | Ground       |
+   | 6    | VCC    | —        | 3.3 V supply |
+   | 7    | JA7    | D17      | Data / IO    |
+   | 8    | JA8    | E17      | Data / IO    |
+   | 9    | JA9    | F18      | Data / IO    |
+   | 10   | JA10   | G18      | Data / IO    |
+   | 11   | GND    | —        | Ground       |
+   | 12   | VCC    | —        | 3.3 V supply |
 
    <span style="color:red">**Warning:** Since the Pmod pins are connected to Artix-7 FPGA pins using a 3.3V logic standard, care should be taken not to drive these pins over 3.4V.</span>
 
